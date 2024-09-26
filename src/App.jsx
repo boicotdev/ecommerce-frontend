@@ -1,22 +1,33 @@
 import { useState } from 'react'
 import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
-import Hero from "./components/Hero";
-import LatestProducts from "./components/LatestProducts";
 import Footer from "./components/Footer";
+import ProductDetails from "./pages/ProductDetails";
+import HomePage from "./pages/HomePage";
+import CheckoutPage from "./pages/CheckoutPage";
+import ShopPage from "./pages/Shop";
+import MyAccount from "./pages/MyAccount";
+import AuthView from "./pages/AuthView";
 import './index.css'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
+  <>
     <Header />
-    <Hero />
-    <LatestProducts />
+    <Routes>
+      <Route path="/shop/products/:product/" element={<ProductDetails />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="checkout" element={<CheckoutPage />} />
+      <Route path="shop" element={<ShopPage />} />
+      <Route path="account" element={<MyAccount />} />
+      <Route path="authenticate" element={<AuthView />} />
+      {/* Puedes agregar más rutas aquí si es necesario */}
+    </Routes>
     <Footer />
-    </>
-  )
+  </>
+);
+
 }
 
 export default App;

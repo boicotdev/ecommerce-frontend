@@ -7,6 +7,9 @@ export const products = [
       sku: "swx12",
       price: 1560,
       score: [1,1,1,1,1],
+      category: "Technology",
+      recommended: true,
+      bestSeller: true,
       url: "#"
     },
     {
@@ -17,6 +20,9 @@ export const products = [
       sku: "swx123",
       price: 360,
       score: [1,1],
+      category: "Gadgets",
+      recommended: false,
+      bestSeller: false,
       url: "#"
     },
     {
@@ -27,6 +33,9 @@ export const products = [
       sku: "swx789",
       price: 100.56,
       score: [1,1,1,1],
+      category: "Gadgets",
+      recommended: false,
+      bestSeller: true,
       url: "#"
     },
     {
@@ -37,6 +46,9 @@ export const products = [
       sku: "swx7899",
       price: 70.96,
       score: [1,1,1,1,1],
+      category: "Gadgets",
+      recommended: true,
+      bestSeller: true,
       url: "#"
     },
     {
@@ -47,6 +59,33 @@ export const products = [
       sku: "swx7099",
       price: 265.50,
       score: [1,1,1],
+      category: "Technology",
+      recommended: true,
+      bestSeller: true,
       url: "#"
     },
-  ]
+  ];
+  
+  export const testimonials = [
+    {
+      id: 1,
+      username: "Camila Cabello",
+      avatar: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcelebmafia.com%2Fwp-content%2Fuploads%2F2019%2F09%2Fcamila-cabello-le-defile-l-oreal-paris-show-at-paris-fashion-week-09-28-2019-14.jpg&f=1&nofb=1&ipt=26eece5a504a28fbf484ed8bf4afcb5eb5e038bb8aff765427056397f39f01ab&ipo=images",
+      testimonial: "Lorem ipsum odor amet, consectetuer adipiscing elit. Est turpis cubilia luctus finibus leo fringilla. Sem sodales lacus scelerisque sit molestie. Orci vestibulum nec habitant integer tortor integer sagittis. Pharetra accumsan montes; nam mus quisque cursus.",
+      pubDate: "2024-09-24",
+    },
+    {
+      id: 2,
+      username: "Jhon Doe",
+      avatar: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.Pa9uK-C9DYoQEmmLdQ3_MAHaJQ%26pid%3DApi&f=1&ipt=3d8a7434562ec90b510a17290d14f1c60c2a5f5969bd6f8ffbe54101d3ca40dc&ipo=images",
+      testimonial: "Lorem ipsum odor amet, consectetuer adipiscing elit. Est turpis cubilia luctus finibus leo fringilla. Sem sodales lacus scelerisque sit molestie. Orci vestibulum nec habitant integer tortor integer sagittis. Pharetra accumsan montes; nam mus quisque cursus.",
+      pubDate: "2024-09-17"
+    },
+    {
+      id: 3,
+      username: "Mia Khalifa",
+      avatar: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.2383le2KCZypPDr7NPxPpAHaHa%26pid%3DApi&f=1&ipt=f7a027941e4015891455bc688c674309856805c5a492c68b0bbc156960f9c052&ipo=images",
+      testimonial: "Lorem ipsum odor amet, consectetuer adipiscing elit. Est turpis cubilia luctus finibus leo fringilla. Sem sodales lacus scelerisque sit molestie. Orci vestibulum nec habitant integer tortor integer sagittis. Pharetra accumsan montes; nam mus quisque cursus.",
+      pubDate: "2024-07-12"
+    },
+  ];
