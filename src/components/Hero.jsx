@@ -23,7 +23,7 @@ function Hero() {
           to="/tienda" 
           className="inline-block bg-cyan-500 text-white text-xl font-semibold py-3 px-8 rounded-full hover:bg-cyan-600 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
         >
-          Ir a la tienda
+          Comprar Ahora
         </Link>
       </div>
     </div>

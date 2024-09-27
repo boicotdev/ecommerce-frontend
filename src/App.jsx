@@ -8,6 +8,8 @@ import CheckoutPage from "./pages/CheckoutPage";
 import ShopPage from "./pages/Shop";
 import MyAccount from "./pages/MyAccount";
 import AuthView from "./pages/AuthView";
+import Contact from './pages/Contact';
+import DashboardAdmin from './pages/DasboardAdmin';
 import './index.css'
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
       <Route path="shop" element={<ShopPage />} />
       <Route path="account" element={<MyAccount />} />
       <Route path="authenticate" element={<AuthView />} />
+      <Route path="contact" element={<Contact />} />
+      <Route path="dashboard" element={<DashboardAdmin />} />
       {/* Puedes agregar más rutas aquí si es necesario */}
     </Routes>
     <Footer />

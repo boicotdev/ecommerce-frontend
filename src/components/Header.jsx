@@ -74,7 +74,7 @@ function Header() {
             {cartItems && cartItems.length > 0 && (
               <>
                 <p className="text-lg font-bold">Total ${totalPrice().toFixed(2)}</p>
-                <Link to="checkout" className="px-4 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors">
+                <Link to="checkout" onClick={() => setShowItems(false)} className="px-4 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors">
                   Proceder al pago
                 </Link>
               </>
@@ -89,11 +89,13 @@ function Header() {
 
         <nav className="hidden lg:block">
           <ul className="flex space-x-6 text-slate-200">
-            <li><Link to="#" className="hover:text-white transition-colors">Inicio</Link></li>
-            <li><Link to="/shop/" className="hover:text-white transition-colors">Shop</Link></li>
-            <li><Link to="#" className="hover:text-white transition-colors">About</Link></li>
-            <li><Link to="#" className="hover:text-white transition-colors">My Account</Link></li>
-            <li><Link to="#" className="hover:text-white transition-colors">Contact Us</Link></li>
+            <li><Link to="/" className="hover:text-white transition-colors">Inicio</Link></li>
+            <li><Link to="/shop" className="hover:text-white transition-colors">Shop</Link></li>
+            <li><Link to="/#about" className="hover:text-white transition-colors">About</Link></li>
+            <li><Link to="/account" className="hover:text-white transition-colors">Mi cuenta</Link></li>
+            <li><Link to="/contact" className="hover:text-white transition-colors">Contactenos</Link></li>
+            <li><Link to="/dashboard" className="hover:text-white transition-colors">Dashboard</Link></li>
+            <li><Link to="/authenticate" className="hover:text-white transition-colors py-2 px-6 rounded-2xl bg-indigo-500 hover:bg-indigo-600">Login</Link></li>
           </ul>
         </nav>
 
@@ -109,8 +111,10 @@ function Header() {
               <li><Link to="/" onClick={() => setIsOpen(false)} className="hover:text-slate-300 transition-colors">Inicio</Link></li>
               <li><Link to="/shop" onClick={() => setIsOpen(false)} className="hover:text-slate-300 transition-colors">Shop</Link></li>
               <li><Link to="/#about" onClick={() => setIsOpen(false)} className="hover:text-slate-300 transition-colors">About</Link></li>
-              <li><Link to="/account" onClick={() => setIsOpen(false)} className="hover:text-slate-300 transition-colors">My Account</Link></li>
-              <li><Link to="/authenticate" onClick={() => setIsOpen(false)} className="hover:text-slate-300 transition-colors">Login</Link></li>
+              <li><Link to="/account" onClick={() => setIsOpen(false)} className="hover:text-slate-300 transition-colors">Mi cuenta</Link></li>
+              <li><Link to="/contact" onClick={() => setIsOpen(false)} className="hover:text-slate-300 transition-colors">Contactenos</Link></li>
+              <li><Link to="/dashboard" onClick={() => setIsOpen(false)} className="hover:text-slate-300 transition-colors">Dashboard</Link></li>
+              <li><Link to="/authenticate" onClick={() => setIsOpen(false)} className="hover:text-white transition-colors py-2 px-6 rounded-2xl bg-indigo-500 hover:bg-indigo-600">Login</Link></li>
             </ul>
           </nav>
         )}
