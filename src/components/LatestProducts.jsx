@@ -7,7 +7,7 @@ function LatestProducts() {
     <section className="bg-gray-50 py-16">
       <div className="container mx-auto px-4">
         <h2 className="text-center text-3xl md:text-4xl font-bold text-gray-800 mb-12">
-          Latest Products
+          Ultimos productos
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {products && products.length > 0 ? (
@@ -16,7 +16,7 @@ function LatestProducts() {
             ))
           ) : (
             <p className="col-span-full text-center text-gray-600 text-lg">
-              No products available at the moment.
+              No hay productos disponibles
             </p>
           )}
         </div>

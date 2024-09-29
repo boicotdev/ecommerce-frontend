@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import NewOrder from "../components/NewOrder";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 export default function Component() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isAccountDropdownOpen, setAccountDropdownOpen] = useState(false);
@@ -10,46 +10,42 @@ export default function Component() {
   const [sort, setSort] = useState("date");
   const [createNewOrder, setCreateNewOrder] = useState(false);
   const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
-  const toggleUserOptions = () => setAccountDropdownOpen(!isAccountDropdownOpen);
+  const toggleUserOptions = () =>
+    setAccountDropdownOpen(!isAccountDropdownOpen);
   const [showOptions, setShowOptions] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  
+
+
   const [orders, setOrders] = useState([
     {
-      id:7892,
+      id: 7892,
       customer: "Carlos Alberto Guzmán",
       date: "2024-10-06",
       status: "pending",
-      total: 5460
+      total: 5460,
     },
     {
-      id:99988,
+      id: 99988,
       customer: "Karen Yuliana Guzmán",
       date: "2024-24-04",
       status: "delivered",
-      total: 7689
+      total: 7689,
     },
-        {
-      id:6732,
+    {
+      id: 6732,
       customer: "Carlos Alberto Guzmán",
       date: "2024-10-06",
       status: "pending",
-      total: 8792
+      total: 8792,
     },
     {
-      id:8168,
+      id: 8168,
       customer: "Karen Yuliana Guzmán",
       date: "2024-24-04",
       status: "delivered",
-      total: 1793
-    }
-    ])
-  const setOrder = (order) => {
-    setSelectedOrder(order)
-    setShowOptions(!showOptions)
-    //alert(JSON.stringify(selectedOrder))
-  }
-  
+      total: 1793,
+    },
+  ]);
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-100">
       <header className="sticky top-0 z-30 flex justify-between h-14 items-center bg-white px-4 shadow">
@@ -102,16 +98,16 @@ export default function Component() {
           {isAccountDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               <div className="block px-4 py-2 text-sm text-gray-700">
-                My Account
+                Mi cuenta
               </div>
               <div className="block px-4 py-2 text-sm text-gray-700">
-                Settings
+                configuraciones
               </div>
               <div className="block px-4 py-2 text-sm text-gray-700">
-                Support
+                Soporte
               </div>
               <div className="block px-4 py-2 text-sm text-gray-700">
-                Logout
+                Salír
               </div>
             </div>
           )}
@@ -119,12 +115,17 @@ export default function Component() {
       </header>
       <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8">
         <div className="grid gap-4">
-          <div className="flex flex-col w-48 mt-3">
-            <h1 className="text-2xl font-bold">Order Management</h1>
-            <button onClick={() => setCreateNewOrder(true)} className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+          <div className="flex flex-col md:flex-row lg:flex-row justify-between items-center gap-3 mt-3">
+            <h1 className="text-2xl font-bold text-center md:text-left">
+              Gestión de pedidos
+            </h1>
+            <button
+              onClick={() => setCreateNewOrder(true)}
+              className="w-full md:w-auto rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 inline-block"
+                className="h-4 w-4 mr-2"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -136,9 +137,10 @@ export default function Component() {
                   d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                 />
               </svg>
-              Create Order
+              Crear Orden
             </button>
           </div>
+
           {createNewOrder && <NewOrder toggle={setCreateNewOrder} />}
           <div className="rounded-md border bg-white p-4">
             <div className="flex items-center justify-between">
@@ -164,13 +166,13 @@ export default function Component() {
                       />
                     </svg>
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Filter
+                      Filtrar
                     </span>
                   </button>
                   {isDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <div className="block px-4 py-2 text-sm text-gray-700">
-                        Filter by
+                        Filtrar por
                       </div>
                       <div
                         className="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
@@ -181,7 +183,7 @@ export default function Component() {
                           className="mr-2"
                           checked={filter === "Pending"}
                         />
-                        Pending
+                        Pendiente
                       </div>
                       <div
                         className="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
@@ -192,7 +194,7 @@ export default function Component() {
                           className="mr-2"
                           checked={filter === "Shipped"}
                         />
-                        Shipped
+                        Preparada
                       </div>
                       <div
                         className="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
@@ -203,7 +205,7 @@ export default function Component() {
                           className="mr-2"
                           checked={filter === "Delivered"}
                         />
-                        Delivered
+                        Entregada
                       </div>
                       <div
                         className="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
@@ -214,7 +216,7 @@ export default function Component() {
                           className="mr-2"
                           checked={filter === "Cancelled"}
                         />
-                        Cancelled
+                        Cancelada
                       </div>
                     </div>
                   )}
@@ -240,13 +242,13 @@ export default function Component() {
                       />
                     </svg>
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Sort
+                      Ordenar
                     </span>
                   </button>
                   {isDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <div className="block px-4 py-2 text-sm text-gray-700">
-                        Sort by
+                        filtrar por
                       </div>
                       <div
                         className="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
@@ -258,7 +260,7 @@ export default function Component() {
                           className="mr-2"
                           checked={sort === "date"}
                         />
-                        Date
+                        Fecha
                       </div>
                       <div
                         className="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
@@ -270,7 +272,7 @@ export default function Component() {
                           className="mr-2"
                           checked={sort === "customer"}
                         />
-                        Customer
+                        Cliente
                       </div>
                       <div
                         className="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
@@ -282,7 +284,7 @@ export default function Component() {
                           className="mr-2"
                           checked={sort === "status"}
                         />
-                        Status
+                        Estado
                       </div>
                       <div
                         className="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
@@ -317,93 +319,118 @@ export default function Component() {
                 </svg>
                 <input
                   type="search"
-                  placeholder="Search orders..."
+                  placeholder="Buscar pedido..."
                   className="w-full rounded-lg bg-white pl-8 py-1.5 ml-1 border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 md:w-[200px] lg:w-[336px]"
                 />
               </div>
             </div>
-            <div className="mt-4 w-[320px] overflow-scroll"><table className="w-full divide-y divide-gray-200">
-  <thead className="bg-gray-50">
-    <tr>
-      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-        Order #
-      </th>
-      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-        Customer
-      </th>
-      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-        Date
-      </th>
-      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-        Status
-      </th>
-      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-        Total
-      </th>
-      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-        Actions
-      </th>
-    </tr>
-  </thead>
-  <tbody className="divide-y divide-gray-200 bg-white">
-    {orders && orders.length > 0 ? (
-      orders.map((order, index) => (
-        <tr key={index}>
-          {Object.keys(order).map((key) => (
-            <td key={key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {order[key]}
-            </td>
-          ))}
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            <div className="relative">
-              <button
-                type="button"
-                className="rounded-md bg-white p-2 text-gray-400 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                aria-haspopup="true"
-                onClick={() => setShowOptions(index)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                  />
-                </svg>
-                <span className="sr-only">Order actions</span>
-              </button>
-              {showOptions === index && (
-                <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  <Link
-                    to={`/orders/order-details/${order.id}/`}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    View Details
-                  </Link>
-                  <div className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Edit
-                  </div>
-                </div>
-              )}
-            </div>
-          </td>
-        </tr>
-      ))
-    ) : (
-      <tr>
-        <td colSpan="6" className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-          No orders available
-        </td>
-      </tr>
-    )}
-  </tbody>
-</table>
+            <div className="mt-4 overflow-auto sm:w-full lg:w-full">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Pedído #
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Cliente
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Fecha
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Estado
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Total
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {orders && orders.length > 0 ? (
+                    orders.map((order, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        {Object.keys(order).map((key) => (
+                          <td
+                            key={key}
+                            className="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                          >
+                            {order[key]}
+                          </td>
+                        ))}
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <div className="relative">
+                            <button
+                              type="button"
+                              className="rounded-md bg-white p-2 text-gray-400 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                              aria-haspopup="true"
+                              onClick={() => setShowOptions(index)}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                                />
+                              </svg>
+                              <span className="sr-only">Acciones de ordén</span>
+                            </button>
+                            {showOptions === index && (
+                              <div className="absolute z-10 right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                <Link
+                                  to={`/orders/order-details/${order.id}/`}
+                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                >
+                                  Ver detalles
+                                </Link>
+                                <div className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                  Editar
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 text-center"
+                      >
+                        No hay ordenes disponibles
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

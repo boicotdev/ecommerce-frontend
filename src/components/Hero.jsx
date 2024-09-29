@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 function Hero() {
   return (
-    <div className="container mx-auto px-4 py-12" id="about">
+    <div className="container mt-32 mx-auto px-4 py-12" id="about">
       <div className="flex flex-col-reverse md:flex-row items-center gap-8 mb-8">
         <div className="md:w-1/2">
           <h2 className="text-4xl font-bold text-slate-800 mb-4">Por qué elegirnos</h2>
@@ -12,7 +12,7 @@ function Hero() {
         </div>
         <div className="md:w-1/2">
           <img 
-            src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.6GYS6oVbcl8UkjlEf_NoVAHaE7%26pid%3DApi&f=1&ipt=10b26cb4e3f6f8f6ced89d8f6a3e5ea317f9dafce3f45a87afacc2e7f49c5cf7&ipo=images" 
+            src="https://www.palomagazine.com/wp-content/uploads/2019/02/how_to_begin_to_lead_a_healthy_lifestyle.jpg" 
             alt="Hero image"
             className="w-full h-auto rounded-lg shadow-lg"
           />

@@ -30,11 +30,11 @@ function ProductCard({ item }) {
   return (
     <div className="shadow-lg rounded-lg bg-white hover:shadow-xl transition-shadow duration-300">
       <div className="p-4">
-        <h5 className="text-lg font-semibold text-slate-700 my-3">
-          <span className="font-bold text-slate-900">Product Name : </span>
+        <h5 className="text-lg font-semibold text-slate-900 my-3">
+          <span className="font-bold text-slate-700">Nombre del producto : </span>
           <Link
             to={`/shop/products/${item.name}/`}
-            className="hover:text-cyan-600 transition-colors"
+            className="text-slate-600 hover:text-slate-900 transition-colors"
           >
             {item.name}
           </Link>
@@ -64,12 +64,12 @@ function ProductCard({ item }) {
             ))}
         </div>
 
-        <p className="text-slate-500 mb-2 mt-2">
+        {/* <p className="text-slate-500 mb-2 mt-2">
           <span className="font-bold text-slate-900">
             Product Description :{" "}
           </span>
           {item.description}
-        </p>
+        </p> */}
         <div className="flex justify-between items-center mt-4">
           <span className="text-cyan-500 text-lg font-bold">${item.price}</span>
           <button
@@ -90,7 +90,7 @@ function ProductCard({ item }) {
                 d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
               />
             </svg>
-            Add to Cart
+            Agregar al carrito
           </button>
         </div>
       </div>
