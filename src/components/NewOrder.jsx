@@ -6,12 +6,26 @@ export default function Component() {
     { id: 2, name: "Product 2", price: 14.99 },
     { id: 3, name: "Product 3", price: 19.99 },
     { id: 4, name: "Product 4", price: 24.99 },
+    { id: 5, name: "Product 4", price: 24.99 },
+    { id: 6, name: "Product 4", price: 24.99 },
+    { id: 7, name: "Product 4", price: 24.99 },
+    { id: 8, name: "Product 4", price: 24.99 },
+    { id: 9, name: "Product 4", price: 24.99 },
   ])
   const [selectedProducts, setSelectedProducts] = useState([])
   const [quantities, setQuantities] = useState({})
   const [customerName, setCustomerName] = useState("")
   const [customerEmail, setCustomerEmail] = useState("")
   const [showConfirmation, setShowConfirmation] = useState(false)
+  const [showModal, setShowModal] = useState(false);
+  const closeModal = () => {
+    setShowModal(false);
+    setShowConfirmation(false)
+    setSelectedProducts([]);
+    setCustomerEmail("")
+    setCustomerName("");
+    setQuantities({})
+  };
   const handleProductSelect = (productId) => {
     if (selectedProducts.includes(productId)) {
       setSelectedProducts(selectedProducts.filter((id) => id !== productId))
@@ -52,9 +66,10 @@ export default function Component() {
   }, 0)
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg sm:p-8 overflow-y-scroll">
+      <div className="relative w-full max-w-md rounded-lg bg-white max-h-[750px] p-6 shadow-lg sm:p-8 overflow-y-scroll">
         {showConfirmation ? (
-          <div className="flex flex-col items-center justify-center gap-4">
+          <>
+          <div className="flex flex-col items-center justify-center gap-4 relative">
             <div className="flex items-center justify-center rounded-full bg-green-500 p-3 text-white">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                 <path
@@ -67,6 +82,11 @@ export default function Component() {
             <h2 className="text-2xl font-bold">Order Confirmed</h2>
             <p className="text-muted-foreground">Thank you for your order, {customerName}. We'll be in touch soon.</p>
           </div>
+          <div className="inline-block text-center absolute top-2 right-4 rounded-full shadow-lg w-6 font-semibold text-xl" onClick={closeModal}>
+            <i className="fa fa-times"></i>
+          </div>
+            
+          </>
         ) : (
           <>
             <div className="flex items-center justify-between">
@@ -92,7 +112,7 @@ export default function Component() {
                   value={customerName}
                   onChange={handleCustomerNameChange}
                   required
-                  className="rounded-md bg-muted/60 bg-slate-100 px-4 py-2 focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="rounded-md bg-stone-100 ring-offset-2 px-4 py-2 focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
               <div className="grid gap-2">
@@ -105,7 +125,7 @@ export default function Component() {
                   value={customerEmail}
                   onChange={handleCustomerEmailChange}
                   required
-                  className="rounded-md bg-muted/40 bg-slate-100 px-4 py-2 focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="rounded-md bg-stone-100 ring-offset-2 border-gray-300  px-4 py-2 focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
               <div className="grid gap-4">
@@ -168,9 +188,9 @@ export default function Component() {
                 <button
                   type="submit"
                   disabled={!customerName || !customerEmail || selectedProducts.length === 0}
-                  className="rounded-md bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-1 focus:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                  className="rounded-md bg-green-500 px-4 py-2 text-primary-foreground transition-colors hover:bg-green-600 focus:outline-none focus:ring-1 text-white text-md font-semibold focus:ring-ring disabled:pointer-events-none disabled:opacity-50"
                 >
-                  Submit Order
+                  Crear Orden
                 </button>
               </div>
             </form>

@@ -10,6 +10,7 @@ import MyAccount from "./pages/MyAccount";
 import AuthView from "./pages/AuthView";
 import Contact from './pages/Contact';
 import DashboardAdmin from './pages/DasboardAdmin';
+import OrderDetails from './pages/OrderDetails';
 import './index.css'
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
       <Route path="authenticate" element={<AuthView />} />
       <Route path="contact" element={<Contact />} />
       <Route path="dashboard" element={<DashboardAdmin />} />
-      {/* Puedes agregar más rutas aquí si es necesario */}
+      <Route path="orders/order-details/:id" element={<OrderDetails />} />
     </Routes>
     <Footer />
   </>

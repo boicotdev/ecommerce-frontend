@@ -1,17 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NewOrder from "../components/NewOrder";
-
+import {Link} from "react-router-dom";
 export default function Component() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isAccountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const [filter, setFilter] = useState("Pending");
   const [sort, setSort] = useState("date");
   const [createNewOrder, setCreateNewOrder] = useState(false);
   const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
+  const toggleUserOptions = () => setAccountDropdownOpen(!isAccountDropdownOpen);
+  const [showOptions, setShowOptions] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  
+  const [orders, setOrders] = useState([
+    {
+      id:7892,
+      customer: "Carlos Alberto Guzmán",
+      date: "2024-10-06",
+      status: "pending",
+      total: 5460
+    },
+    {
+      id:99988,
+      customer: "Karen Yuliana Guzmán",
+      date: "2024-24-04",
+      status: "delivered",
+      total: 7689
+    },
+        {
+      id:6732,
+      customer: "Carlos Alberto Guzmán",
+      date: "2024-10-06",
+      status: "pending",
+      total: 8792
+    },
+    {
+      id:8168,
+      customer: "Karen Yuliana Guzmán",
+      date: "2024-24-04",
+      status: "delivered",
+      total: 1793
+    }
+    ])
+  const setOrder = (order) => {
+    setSelectedOrder(order)
+    setShowOptions(!showOptions)
+    //alert(JSON.stringify(selectedOrder))
+  }
+  
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-100">
-      <header className="sticky top-0 z-30 flex justify-start h-14 items-center gap-4 bg-white px-4 shadow">
+      <header className="sticky top-0 z-30 flex justify-between h-14 items-center bg-white px-4 shadow">
         <div className="flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -29,7 +70,7 @@ export default function Component() {
           </svg>
           <span className="text-lg font-bold">Acme Inc</span>
         </div>
-        <nav className="ml-auto flex items-center gap-4">
+        <nav className="hidden md:flex items-center gap-4">
           <a href="#" className="text-gray-500 hover:text-black">
             Dashboard
           </a>
@@ -42,43 +83,43 @@ export default function Component() {
           <a href="#" className="text-gray-500 hover:text-black">
             Customers
           </a>
-          <div className="relative">
-            <button
-              type="button"
-              className="overflow-hidden rounded-full border bg-white p-1 transition-all hover:bg-gray-100"
-              onClick={toggleDropdown}
-            >
-              <img
-                src="https://i.pinimg.com/originals/43/44/c7/4344c77d736a589511b1ad7f9e3dd70a.png"
-                width={36}
-                height={36}
-                alt="Avatar"
-                className="overflow-hidden rounded-full"
-                style={{ aspectRatio: "36/36", objectFit: "cover" }}
-              />
-            </button>
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <div className="block px-4 py-2 text-sm text-gray-700">
-                  My Account
-                </div>
-                <div className="block px-4 py-2 text-sm text-gray-700">
-                  Settings
-                </div>
-                <div className="block px-4 py-2 text-sm text-gray-700">
-                  Support
-                </div>
-                <div className="block px-4 py-2 text-sm text-gray-700">
-                  Logout
-                </div>
-              </div>
-            )}
-          </div>
         </nav>
+        <div className="relative">
+          <button
+            type="button"
+            className="overflow-hidden rounded-full border bg-white p-1 transition-all hover:bg-gray-100"
+            onClick={toggleUserOptions}
+          >
+            <img
+              src="https://i.pinimg.com/originals/43/44/c7/4344c77d736a589511b1ad7f9e3dd70a.png"
+              width={36}
+              height={36}
+              alt="Avatar"
+              className="overflow-hidden rounded-full"
+              style={{ aspectRatio: "36/36", objectFit: "cover" }}
+            />
+          </button>
+          {isAccountDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="block px-4 py-2 text-sm text-gray-700">
+                My Account
+              </div>
+              <div className="block px-4 py-2 text-sm text-gray-700">
+                Settings
+              </div>
+              <div className="block px-4 py-2 text-sm text-gray-700">
+                Support
+              </div>
+              <div className="block px-4 py-2 text-sm text-gray-700">
+                Logout
+              </div>
+            </div>
+          )}
+        </div>
       </header>
       <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8">
         <div className="grid gap-4">
-          <div className="flex items-center justify-between mt-3">
+          <div className="flex flex-col w-48 mt-3">
             <h1 className="text-2xl font-bold">Order Management</h1>
             <button onClick={() => setCreateNewOrder(true)} className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
               <svg
@@ -259,10 +300,10 @@ export default function Component() {
                   )}
                 </div>
               </div>
-              <div className="relative flex-1 md:grow-0">
+              <div className="relative  md:grow-0">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400"
+                  className="absolute left-2.5 top-3 h-4 w-4 text-gray-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -277,113 +318,92 @@ export default function Component() {
                 <input
                   type="search"
                   placeholder="Search orders..."
-                  className="w-full rounded-lg bg-white pl-8 md:w-[200px] lg:w-[336px]"
+                  className="w-full rounded-lg bg-white pl-8 py-1.5 ml-1 border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 md:w-[200px] lg:w-[336px]"
                 />
               </div>
             </div>
-            <div className="mt-4 overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Order #
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Customer
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Date
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Status
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Total
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  <tr>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      <a href="#" className="text-blue-600 hover:underline">
-                        #123
-                      </a>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      John Doe
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      2023-04-15
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-                        Pending
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      $99.99
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="relative">
-                        <button
-                          type="button"
-                          className="rounded-md bg-white p-2 text-gray-400 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                          aria-haspopup="true"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                            />
-                          </svg>
-                          <span className="sr-only">Order actions</span>
-                        </button>
-                        <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                          <a
-                            href="#"
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            View Details
-                          </a>
-                          <div className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Edit
-                          </div>
-                          <div className="" />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="mt-4 w-[320px] overflow-scroll"><table className="w-full divide-y divide-gray-200">
+  <thead className="bg-gray-50">
+    <tr>
+      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        Order #
+      </th>
+      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        Customer
+      </th>
+      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        Date
+      </th>
+      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        Status
+      </th>
+      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        Total
+      </th>
+      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        Actions
+      </th>
+    </tr>
+  </thead>
+  <tbody className="divide-y divide-gray-200 bg-white">
+    {orders && orders.length > 0 ? (
+      orders.map((order, index) => (
+        <tr key={index}>
+          {Object.keys(order).map((key) => (
+            <td key={key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {order[key]}
+            </td>
+          ))}
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <div className="relative">
+              <button
+                type="button"
+                className="rounded-md bg-white p-2 text-gray-400 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                aria-haspopup="true"
+                onClick={() => setShowOptions(index)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                  />
+                </svg>
+                <span className="sr-only">Order actions</span>
+              </button>
+              {showOptions === index && (
+                <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <Link
+                    to={`/orders/order-details/${order.id}/`}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    View Details
+                  </Link>
+                  <div className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Edit
+                  </div>
+                </div>
+              )}
+            </div>
+          </td>
+        </tr>
+      ))
+    ) : (
+      <tr>
+        <td colSpan="6" className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+          No orders available
+        </td>
+      </tr>
+    )}
+  </tbody>
+</table>
             </div>
           </div>
         </div>
