@@ -1,5 +1,5 @@
 import { useState } from "react";
-function LoginForm({ callback, isAuth }) {
+function LoginForm({ callback, isSignup }) {
   return (
     <div className="w-full h-screen bg-gray-100 flex justify-center items-center">
       <div className="bg-white shadow-md rounded-lg p-6 max-w-md w-full">
@@ -46,7 +46,7 @@ function LoginForm({ callback, isAuth }) {
                 ¿No tienes una cuenta?{' '}
                 <span
                   className="text-indigo-500 hover:text-indigo-600 cursor-pointer"
-                  onClick={() => callback(!isAuth)}
+                  onClick={() => callback(!isSignup)}
                 >
                   Regístrate aquí
                 </span>
@@ -59,7 +59,7 @@ function LoginForm({ callback, isAuth }) {
   );
 }
 
-function RegisterForm({ callback, isAuth }) {
+function RegisterForm({ callback, isSignup }) {
   return (
     <div className="w-full h-screen bg-gray-100 flex justify-center items-center">
       <div className="bg-white shadow-md rounded-lg p-6 max-w-md w-full">
@@ -141,7 +141,7 @@ function RegisterForm({ callback, isAuth }) {
                 ¿Ya tienes una cuenta?{' '}
                 <span
                   className="text-indigo-500 hover:text-indigo-600 cursor-pointer"
-                  onClick={() => callback(!isAuth)}
+                  onClick={() => callback(!isSignup)}
                 >
                   Inicia sesión aquí
                 </span>
@@ -156,10 +156,10 @@ function RegisterForm({ callback, isAuth }) {
 
 
 export default function AuthView() {
-  const [isAuth, setIsAuth] = useState(true);
-  return isAuth ? (
-    <RegisterForm isAuth={isAuth} callback={setIsAuth} />
+  const [isSignup, setIsSignup] = useState(false);
+  return isSignup ? (
+    <RegisterForm isSignup={isSignup} callback={setIsSignup} />
   ) : (
-    <LoginForm callback={setIsAuth} isAuth={isAuth} />
+    <LoginForm callback={setIsSignup} isSignup={isSignup} />
   );
 }

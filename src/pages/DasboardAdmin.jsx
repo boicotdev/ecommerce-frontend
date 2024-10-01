@@ -20,71 +20,6 @@ export default function Component() {
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-100">
-      <header className="sticky top-0 z-30 flex justify-between h-14 items-center bg-white px-4 shadow">
-        <div className="flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-            />
-          </svg>
-          <span className="text-lg font-bold">Acme Inc</span>
-        </div>
-        <nav className="hidden md:flex items-center gap-4">
-          <a href="#" className="text-gray-500 hover:text-black">
-            Dashboard
-          </a>
-          <a href="#" className="text-blue-600">
-            Orders
-          </a>
-          <a href="#" className="text-gray-500 hover:text-black">
-            Products
-          </a>
-          <a href="#" className="text-gray-500 hover:text-black">
-            Customers
-          </a>
-        </nav>
-        <div className="relative">
-          <button
-            type="button"
-            className="overflow-hidden rounded-full border bg-white p-1 transition-all hover:bg-gray-100"
-            onClick={toggleUserOptions}
-          >
-            <img
-              src="https://i.pinimg.com/originals/43/44/c7/4344c77d736a589511b1ad7f9e3dd70a.png"
-              width={36}
-              height={36}
-              alt="Avatar"
-              className="overflow-hidden rounded-full"
-              style={{ aspectRatio: "36/36", objectFit: "cover" }}
-            />
-          </button>
-          {isAccountDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="block px-4 py-2 text-sm text-gray-700">
-                Mi cuenta
-              </div>
-              <div className="block px-4 py-2 text-sm text-gray-700">
-                configuraciones
-              </div>
-              <div className="block px-4 py-2 text-sm text-gray-700">
-                Soporte
-              </div>
-              <div className="block px-4 py-2 text-sm text-gray-700">
-                Salír
-              </div>
-            </div>
-          )}
-        </div>
-      </header>
       <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8">
         <div className="grid gap-4">
           <div className="flex flex-col md:flex-row lg:flex-row justify-between items-center gap-3 mt-3">
@@ -296,7 +231,7 @@ export default function Component() {
                 />
               </div>
             </div>
-            <div className="mt-4 overflow-auto sm:w-full lg:w-full">
+            <div className="mt-4 overflow-auto sm:w-full lg:w-full" id="orders">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
