@@ -11,7 +11,7 @@ const sampleProducts = [
   // ... más productos
 ];
 
-const ProductList = () => {
+function ProductList() {
   const [products, setProducts] = useState(sampleProducts);
   const [filteredProducts, setFilteredProducts] = useState(sampleProducts);
   const [currentPage, setCurrentPage] = useState(1);
@@ -54,7 +54,7 @@ const ProductList = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Listado de Productos</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">Listado de productos</h1>
 
       {/* Filtros */}
       <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">

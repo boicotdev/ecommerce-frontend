@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import CreateComment from "./components/CreateComment";
 import CreateProduct from "./components/CreateProduct";
 import ProductList from "./components/ProductList";
+import Clients from "./pages/Clients";
 import ProductDetails from "./pages/ProductDetails";
 import HomePage from "./pages/HomePage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -23,18 +24,19 @@ function App() {
     <>
       {isAdmin ? <AdminHeader /> : <Header />}
       <Routes>
-        <Route path="/shop/products/:product/" element={<ProductDetails />} />
         <Route path="/" element={<HomePage />} />
+        <Route path="/shop/products/:product/" element={<ProductDetails />} />
         <Route path="checkout" element={<CheckoutPage />} />
         <Route path="shop" element={<ShopPage />} />
         <Route path="account" element={<MyAccount />} />
         <Route path="authenticate" element={<AuthView />} />
         <Route path="contact" element={<Contact />} />
         <Route path="dashboard" element={<DashboardAdmin />} />
+        <Route path="clientes" element={<Clients />} />
         <Route path="orders/order-details/:id" element={<OrderDetails />} />
         <Route path="comments/create-comment/:product-id" element={<CreateComment />} />
         <Route path="shop/create-product/" element={<CreateProduct />} />
-        <Route path="shop/products/list/" element={<ProductList />} />
+        <Route path="shop/products/" element={<ProductList />} />
       </Routes>
       <Footer />
     </>

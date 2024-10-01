@@ -8,6 +8,7 @@ function AdminHeader() {
   const toggleUserOptions = () => setAccountDropdownOpen(!isAccountDropdownOpen);
   return (
     <header className="sticky top-0 z-30 flex justify-between h-14 items-center bg-white px-4 shadow">
+      <Link to="/dashboard">
         <div className="flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -25,6 +26,7 @@ function AdminHeader() {
           </svg>
           {/*<span className="text-lg font-bold">Dashboard</span>*/}
         </div>
+      </Link>
         <nav className="flex  items-center gap-4">
           {/*<Link to="/dashboard" className="text-gray-500 hover:text-black">
             Dashboard
@@ -32,10 +34,10 @@ function AdminHeader() {
           <Link to="/dashboard/#orders" className="text-blue-600">
             Pedidos
           </Link>
-          <Link to="/shop/products/list/" className="text-gray-500 hover:text-black">
+          <Link to="/shop/products/" className="text-gray-500 hover:text-black">
             Productos
           </Link>
-          <Link href="#" className="text-gray-500 hover:text-black">
+          <Link to="clientes/" className="text-gray-500 hover:text-black">
             Clientes
           </Link>
         </nav>

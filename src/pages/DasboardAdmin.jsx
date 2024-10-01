@@ -19,16 +19,16 @@ export default function Component() {
   const [orders, setOrders] = useState(localOrders);
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-gray-100">
+    <div className="flex min-h-screen w-full flex-col bg-gray-100 overflow-auto">
       <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8">
         <div className="grid gap-4">
-          <div className="flex flex-col md:flex-row lg:flex-row justify-between items-center gap-3 mt-3">
+          <div className="flex flex-col md:flex-row lg:flex-row justify-between items-start gap-3 mt-3">
             <h1 className="text-2xl font-bold text-center md:text-left">
               Gestión de pedidos
             </h1>
             <button
               onClick={() => setCreateNewOrder(true)}
-              className="w-full md:w-auto rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center"
+              className=" md:w-auto rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
