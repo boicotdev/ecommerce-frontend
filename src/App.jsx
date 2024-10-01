@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import CreateComment from "./components/CreateComment";
 import ProductDetails from "./pages/ProductDetails";
 import HomePage from "./pages/HomePage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -28,6 +29,7 @@ function App() {
       <Route path="contact" element={<Contact />} />
       <Route path="dashboard" element={<DashboardAdmin />} />
       <Route path="orders/order-details/:id" element={<OrderDetails />} />
+      <Route path="comments/create-comment/:product-id" element={<CreateComment />} />
     </Routes>
     <Footer />
   </>

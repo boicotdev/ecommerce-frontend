@@ -4,7 +4,7 @@ import ProductCard from "../components/ProductCard";
 const allProducts = products;
 
 //const categories = ["Ropa", "Calzado", "Accesorios"]
-const categories = ["Frutas", "Verduras", "Legumbres"];
+const categories = ["Frutas", "Verduras", "Legumbres", "Otros"];
 
 export default function ShopPage() {
   const [searchTerm, setSearchTerm] = useState("");

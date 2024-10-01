@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import NewOrder from "../components/NewOrder";
 import { Link } from "react-router-dom";
+import {localOrders} from "../assets/assets";
 export default function Component() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isAccountDropdownOpen, setAccountDropdownOpen] = useState(false);
@@ -15,36 +16,7 @@ export default function Component() {
   const [showOptions, setShowOptions] = useState(false);
 
 
-  const [orders, setOrders] = useState([
-    {
-      id: 7892,
-      customer: "Carlos Alberto Guzmán",
-      date: "2024-10-06",
-      status: "pending",
-      total: 5460,
-    },
-    {
-      id: 99988,
-      customer: "Karen Yuliana Guzmán",
-      date: "2024-24-04",
-      status: "delivered",
-      total: 7689,
-    },
-    {
-      id: 6732,
-      customer: "Carlos Alberto Guzmán",
-      date: "2024-10-06",
-      status: "pending",
-      total: 8792,
-    },
-    {
-      id: 8168,
-      customer: "Karen Yuliana Guzmán",
-      date: "2024-24-04",
-      status: "delivered",
-      total: 1793,
-    },
-  ]);
+  const [orders, setOrders] = useState(localOrders);
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-100">

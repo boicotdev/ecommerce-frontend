@@ -84,7 +84,7 @@ function Header() {
       )}
       <header className="fixed z-50 top-0 flex justify-between items-center px-4 w-full h-16 bg-slate-900 shadow-md">
         <h1 className="text-slate-50 text-xl font-bold">
-          <Link to="/" className="hover:text-slate-200 transition-colors">Guzmán Shop</Link>
+          <Link to="/" className="hover:text-slate-200 transition-colors">Raíces Verdes</Link>
         </h1>
 
         <nav className="hidden lg:block">
