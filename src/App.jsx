@@ -15,7 +15,6 @@ import AuthView from "./pages/AuthView";
 import Contact from "./pages/Contact";
 import DashboardAdmin from "./pages/DasboardAdmin";
 import OrderDetails from "./pages/OrderDetails";
-import "./index.css";
 import AdminProtectedRoute from "./routes/ProtectedAdminRoute";
 import { useAuth } from "./context/AuthContext";
 import PrivateUserRoute from "./routes/ProtectedUserRoute";

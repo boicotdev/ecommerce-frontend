@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { products } from "../assets/assets";
 import ProductCard from "../components/ProductCard";
 import { useLocation } from "react-router-dom";
-import { capitalize } from "../utils/capitalize";
+import { capitalize } from "../utils/utils";
 
 const allProducts = products;
 const categories = ["Frutas", "Verduras", "Legumbres", "Otros"];

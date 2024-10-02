@@ -1,4 +1,5 @@
 import { useState, createContext, useContext } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
@@ -18,7 +19,6 @@ export const AuthContextProvider = ({ children }) => {
   });
 
   const handleLogin = (userData) => {
-    console.log(userData)
     // Simulando login con token
     if (
       userData.password === user.password &&
@@ -40,8 +40,10 @@ export const AuthContextProvider = ({ children }) => {
       navigate("/account")
     }
     else {
-      alert("Usuario o contraseña incorrectos");
+      toast.error("Usuario o contraseña incorrectos");
+      return;
     }
+    toast.success("Inicío sesión correctamente");
   };
 
   const handleLogout = () => {
@@ -50,6 +52,7 @@ export const AuthContextProvider = ({ children }) => {
     setToken("");
     // setUser(null);
     navigate("/")
+    toast.success("Sesión cerrada correctamente");
   };
 
   return (
