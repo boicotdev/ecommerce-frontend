@@ -12,36 +12,64 @@ import CheckoutPage from "./pages/CheckoutPage";
 import ShopPage from "./pages/Shop";
 import MyAccount from "./pages/MyAccount";
 import AuthView from "./pages/AuthView";
-import Contact from './pages/Contact';
-import DashboardAdmin from './pages/DasboardAdmin';
-import OrderDetails from './pages/OrderDetails';
-import './index.css'
+import Contact from "./pages/Contact";
+import DashboardAdmin from "./pages/DasboardAdmin";
+import OrderDetails from "./pages/OrderDetails";
+import "./index.css";
+import AdminProtectedRoute from "./routes/ProtectedAdminRoute";
+import { useAuth } from "./context/AuthContext";
+import PrivateUserRoute from "./routes/ProtectedUserRoute";
 
 function App() {
-  const isAdmin = true; // Aquí controlas si es admin o no
+  const { isAdmin, isLoggedIn } = useAuth();
 
   return (
     <>
-      {isAdmin ? <AdminHeader /> : <Header />}
+      {isLoggedIn && isAdmin ? <AdminHeader /> : <Header />}
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/shop/products/:product/" element={<ProductDetails />} />
-        <Route path="checkout" element={<CheckoutPage />} />
-        <Route path="shop" element={<ShopPage />} />
-        <Route path="account" element={<MyAccount />} />
+        <Route
+          path="checkout"
+          element={<PrivateUserRoute element={<CheckoutPage />} />}
+        />
+        <Route
+          path="account"
+          element={<PrivateUserRoute element={<MyAccount />} />}
+        />
         <Route path="authenticate" element={<AuthView />} />
         <Route path="contact" element={<Contact />} />
-        <Route path="dashboard" element={<DashboardAdmin />} />
-        <Route path="clientes" element={<Clients />} />
-        <Route path="orders/order-details/:id" element={<OrderDetails />} />
-        <Route path="comments/create-comment/:product-id" element={<CreateComment />} />
-        <Route path="shop/create-product/" element={<CreateProduct />} />
-        <Route path="shop/products/" element={<ProductList />} />
+        <Route
+          path="dashboard"
+          element={<AdminProtectedRoute element={<DashboardAdmin />} />}
+        />
+        <Route
+          path="clientes"
+          element={<AdminProtectedRoute element={<Clients />} />}
+        />
+        <Route
+          path="orders/order-details/:id"
+          element={<PrivateUserRoute element={<OrderDetails />} />}
+        />
+        <Route
+          path="comments/create-comment/:product-id"
+          element={<PrivateUserRoute element={<CreateComment />} />}
+        />
+        <Route
+          path="shop/create-product/"
+          element={<AdminProtectedRoute element={<CreateProduct />} />}
+        />
+        <Route
+          path="shop/products/"
+          element={<AdminProtectedRoute element={<ProductList />} />}
+        />
+        {/* Routes without authentication required */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="shop" element={<ShopPage />} />
+          <Route path="/shop/products/:product/" element={<ProductDetails />} />
+        {/* Routes without authentication required */}
       </Routes>
       <Footer />
     </>
   );
 }
-
 
 export default App;

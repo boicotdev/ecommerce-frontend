@@ -16,20 +16,20 @@ function Footer() {
               <li><Link to="#" className="hover:text-slate-400 transition-colors">Politica de privacídad</Link></li>
             </ul>
           </div>
-          {/*<div>
+          <div>
             <h6 className="text-xl font-semibold mb-4 text-slate-100">Tienda</h6>
             <ul className="space-y-2">
               <li><Link to="#" className="hover:text-slate-400 transition-colors">Politica de retorno</Link></li>
               <li><Link to="#" className="hover:text-slate-400 transition-colors">Seguro</Link></li>
               <li><Link to="#" className="hover:text-slate-400 transition-colors"></Link></li>
             </ul>
-          </div>*/}
+          </div>
           <div>
             <h6 className="text-xl font-semibold mb-4 text-slate-100">Categorias</h6>
             <ul className="space-y-2">
-              <li><Link to="?=frutas" className="hover:text-slate-400 transition-colors">Frutas</Link></li>
-              <li><Link to="?=verduras" className="hover:text-slate-400 transition-colors">Verduras</Link></li>
-              <li><Link to="?=legumbres" className="hover:text-slate-400 transition-colors">Legumbres</Link></li>
+              <li><Link to="/shop/?category=frutas" className="hover:text-slate-400 transition-colors">Frutas</Link></li>
+              <li><Link to="/shop/?category=verduras" className="hover:text-slate-400 transition-colors">Verduras</Link></li>
+              <li><Link to="/shop/?category=legumbres" className="hover:text-slate-400 transition-colors">Legumbres</Link></li>
             </ul>
           </div>
         </div>

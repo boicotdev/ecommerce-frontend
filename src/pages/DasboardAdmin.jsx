@@ -19,7 +19,7 @@ export default function Component() {
   const [orders, setOrders] = useState(localOrders);
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-gray-100 overflow-auto">
+    <div className="flex min-h-screen w-full flex-col bg-gray-100 overflow-auto lg:mt-16">
       <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8">
         <div className="grid gap-4">
           <div className="flex flex-col md:flex-row lg:flex-row justify-between items-start gap-3 mt-3">

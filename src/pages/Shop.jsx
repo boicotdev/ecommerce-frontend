@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { products } from "../assets/assets";
 import ProductCard from "../components/ProductCard";
-const allProducts = products;
+import { useLocation } from "react-router-dom";
+import { capitalize } from "../utils/capitalize";
 
-//const categories = ["Ropa", "Calzado", "Accesorios"]
+const allProducts = products;
 const categories = ["Frutas", "Verduras", "Legumbres", "Otros"];
 
 export default function ShopPage() {
@@ -11,6 +12,19 @@ export default function ShopPage() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState(allProducts);
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const category = searchParams.get("category");
+
+
+  // Set initial category based on URL parameter
+  useEffect(() => {
+    if (category) {
+      setSelectedCategories([capitalize(category)]);
+    }
+  }, [category]);
+
+  // Update filtered products whenever searchTerm or selectedCategories changes
   useEffect(() => {
     const filtered = allProducts.filter(
       (product) =>
@@ -48,9 +62,7 @@ export default function ShopPage() {
       </div>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-700">
-          Categorías
-        </h2>
+        <h2 className="text-2xl font-semibold mb-4 text-gray-700">Categorías</h2>
         <div className="flex flex-wrap gap-4">
           {categories.map((category) => (
             <label

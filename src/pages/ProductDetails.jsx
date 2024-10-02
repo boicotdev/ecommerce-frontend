@@ -6,23 +6,34 @@ import { useCart } from "../context/CartContext";
 function ProductDetails() {
   const { product: productName } = useParams();
   const [product, setProduct] = useState({});
-  const { setItems, items, setOrders } = useCart();
+  const { setItems, setOrders } = useCart();
  
   const checkItem = (item) => {
     if (!item || !item.sku) return;
-    const existingProduct = items.find(prod => prod.sku === item.sku);
-    if (existingProduct) {
-      setItems((prevItems) =>
-        prevItems.map((prod) =>
+  
+    // Actualizamos el estado de items
+    setItems((prevItems) => {
+      const product = prevItems.find((prod) => prod.sku === item.sku);
+  
+      let updatedItems;
+      
+      if (product) {
+        // Si el producto ya existe en el carrito, aumentamos la cantidad
+        updatedItems = prevItems.map((prod) =>
           prod.sku === item.sku
             ? { ...prod, quantity: (prod.quantity || 0) + 1 }
             : prod
-        )
-      );
-    } else {
-      setItems((prevItems) => ([...prevItems, { ...item, quantity: 1 }]));
-    }
-    setOrders(items)
+        );
+      } else {
+        // Si el producto no está en el carrito, lo añadimos con cantidad 1
+        updatedItems = [...prevItems, { ...item, quantity: 1 }];
+      }
+  
+      // Actualizamos `orders` basándonos en el estado actualizado de `items`
+      setOrders([...updatedItems]);
+  
+      return updatedItems; // Devuelve el estado actualizado para `items`
+    });
   };
 
   const addProductToCart = (item) => {
@@ -50,7 +61,7 @@ function ProductDetails() {
             <img className="h-48 w-full object-cover md:h-full md:w-48" src={product.image} alt={product.name} />
           </div>
           <div className="p-8">
-            <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Detalles del producto</div>
+            <div className="uppercase tracking-wide text-sm text-green-500 font-semibold">Detalles del producto</div>
             <h2 className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
               {product.name}
             </h2>

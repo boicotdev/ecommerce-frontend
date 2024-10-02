@@ -2,29 +2,8 @@ import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
 function ProductCard({ item }) {
-  const { setItems, items, setOrders, orders } = useCart();
-  /*const checkItem = (item) => {
-    setOrders((orde) => ([...items, item]))
-    if (!item || !item.sku) return;
-  
-    // Actualizamos el estado de items
-    setItems((prevItems) => {
-      const product = prevItems.find((prod) => prod.sku === item.sku);
-  
-      if (product) {
-        // Si el producto ya existe en el carrito, aumentamos la cantidad
-        return prevItems.map((prod) =>
-          prod.sku === item.sku
-            ? { ...prod, quantity: (prod.quantity || 0) + 1 }
-            : prod
-        );
-      } else {
-        // Si el producto no está en el carrito, lo añadimos con cantidad 1
-        return [...prevItems, { ...item, quantity: 1 }];
-      }
-    });
-
-  };*/const checkItem = (item) => {
+  const { setItems, setOrders, } = useCart();
+  const checkItem = (item) => {
   if (!item || !item.sku) return;
 
   // Actualizamos el estado de items
@@ -62,10 +41,10 @@ const addProductAtToCart = (item) => {
     <div className="shadow-lg rounded-lg bg-white hover:shadow-xl transition-shadow duration-300">
       <div className="p-4">
         <h5 className="text-lg font-semibold text-slate-900 my-3">
-          <span className="font-bold text-slate-700">Nombre del producto : </span>
+          <span className="font-bold text-slate-700">Producto : </span>
           <Link
             to={`/shop/products/${item.name}/`}
-            className="text-slate-600 hover:text-slate-900 transition-colors"
+            className="text-green-500 hover:text-green-700 transition-colors"
           >
             {item.name}
           </Link>
@@ -108,7 +87,7 @@ const addProductAtToCart = (item) => {
           {item.description}
         </p> */}
         <div className="flex justify-between items-center mt-4">
-          <span className="text-cyan-500 text-lg font-bold">${item.price}</span>
+          <span className="text-slate-700 text-lg font-bold">${item.price}</span>
           <button
             onClick={() => addProductAtToCart(item)}
             className=" bg-green-500 text-white py-2 px-2 rounded-md hover:bg-green-600 transition-colors duration-300 flex items-center justify-center"

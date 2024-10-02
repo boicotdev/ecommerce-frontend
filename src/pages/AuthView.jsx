@@ -1,24 +1,42 @@
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 function LoginForm({ callback, isSignup }) {
+  const {handleLogin} = useAuth();
+  const [userAuth, setUserAuth] = useState({
+    username: "",
+    password: "",
+    isAdmin: false,
+  })
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserAuth((prevData) => ({...prevData, [name]: value}));
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleLogin(userAuth);
+  }
   return (
     <div className="w-full h-screen bg-gray-100 flex justify-center items-center">
       <div className="bg-white shadow-md rounded-lg p-6 max-w-md w-full">
         <h2 className="text-2xl font-semibold mb-6 text-center">
           Iniciar Sesión
         </h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-6">
             <div>
               <label
                 htmlFor="username"
                 className="block text-sm font-medium text-gray-700"
               >
-                Nombre completo
+                Nombre de usuario
               </label>
               <input
                 type="text"
                 id="username"
                 name="username"
+                onChange={handleChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
@@ -33,6 +51,7 @@ function LoginForm({ callback, isSignup }) {
                 type="password"
                 id="password"
                 name="password"
+                onChange={handleChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>

@@ -1,9 +1,11 @@
 import { useState } from "react";
 
 import {Link} from "react-router-dom"
+import { useAuth } from "../context/AuthContext";
 
 
 function AdminHeader() {
+  const {handleLogout} = useAuth();
   const [isAccountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const toggleUserOptions = () => setAccountDropdownOpen(!isAccountDropdownOpen);
   return (
@@ -58,16 +60,16 @@ function AdminHeader() {
           </button>
           {isAccountDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="block px-4 py-2 text-sm text-gray-700">
+              <div className="block px-4 py-2 text-sm text-gray-500 cursor-pointer hover:text-gray-800">
                 Mi cuenta
               </div>
-              <div className="block px-4 py-2 text-sm text-gray-700">
+              <div className="block px-4 py-2 text-sm text-gray-500 cursor-pointer hover:text-gray-800">
                 configuraciones
               </div>
-              <div className="block px-4 py-2 text-sm text-gray-700">
+              <div className="block px-4 py-2 text-sm text-gray-500 cursor-pointer hover:text-gray-800">
                 Soporte
               </div>
-              <div className="block px-4 py-2 text-sm text-gray-700">
+              <div className="block px-4 py-2 text-sm text-gray-500 cursor-pointer hover:text-gray-800" onClick={handleLogout}>
                 Salír
               </div>
             </div>
