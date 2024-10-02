@@ -18,8 +18,11 @@ import OrderDetails from "./pages/OrderDetails";
 import AdminProtectedRoute from "./routes/ProtectedAdminRoute";
 import { useAuth } from "./context/AuthContext";
 import PrivateUserRoute from "./routes/ProtectedUserRoute";
+import { apiURL } from "./api/baseUrls";
+
 
 function App() {
+
   const { isAdmin, isLoggedIn } = useAuth();
 
   return (
