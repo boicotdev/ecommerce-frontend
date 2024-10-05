@@ -1,5 +1,5 @@
-const debug = import.meta.VITE_APP_DEBUG;
-const baseURL = import.meta.VITE_APP_DEBUG_URL;
-const prodUrl = import.meta.VITE_APP_PROD_URL;
+const DEBUG = import.meta.VITE_APP_DEBUG;
+const debugUrl = import.meta.env.VITE_APP_BASE_URL;
+const prodUrl = import.meta.env.VITE_APP_BASE_URL_PROD;
 
-export const apiURL = debug ? baseURL : prodUrl;
+export const apiURL = DEBUG ? debugUrl : prodUrl;

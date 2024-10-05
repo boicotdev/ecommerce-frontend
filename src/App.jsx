@@ -20,10 +20,12 @@ import AdminProtectedRoute from "./routes/ProtectedAdminRoute";
 import { useAuth } from "./context/AuthContext";
 import { useCart } from "./context/CartContext";
 import PrivateUserRoute from "./routes/ProtectedUserRoute";
+
 import  {loadState} from "./utils/utils";
 
 
 function App() {
+
   const { isAdmin, isLoggedIn } = useAuth();
   const {setOrders, setItems} = useCart()
   
