@@ -1,3 +1,4 @@
+import {useState, useEffect} from "react";
 import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import AdminHeader from "./components/AdminHeader";
@@ -17,11 +18,22 @@ import DashboardAdmin from "./pages/DasboardAdmin";
 import OrderDetails from "./pages/OrderDetails";
 import AdminProtectedRoute from "./routes/ProtectedAdminRoute";
 import { useAuth } from "./context/AuthContext";
+import { useCart } from "./context/CartContext";
 import PrivateUserRoute from "./routes/ProtectedUserRoute";
+import  {loadState} from "./utils/utils";
+
 
 function App() {
   const { isAdmin, isLoggedIn } = useAuth();
-
+  const {setOrders, setItems} = useCart()
+  
+  useEffect(() => {
+    const productOrders = loadState("orders");
+    setOrders(productOrders)
+    setItems(productOrders)
+  }, [])
+  
+  
   return (
     <>
       {isLoggedIn && isAdmin ? <AdminHeader /> : <Header />}

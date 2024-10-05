@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import menuIcon from "../assets/menuIcon.svg";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-
+import {formatPrice} from "../utils/utils";
 function Header() {
   const { items, setItems } = useCart();
   const [cartItems, setCartItems] = useState([]);
@@ -19,6 +19,8 @@ function Header() {
       setCartItems((prevItems) => prevItems.filter((item) => item.sku !== sku));
     }
   };
+  
+  
 
   const CartItem = ({ item, quantity, subTotal }) => {
     return (
@@ -26,7 +28,7 @@ function Header() {
         <div className="flex justify-between items-center gap-2 text-xs md:text-sm lg:text-base py-2">
           <span className="font-medium">{item.name}</span>
           <span>Cantidad ({quantity})</span>
-          <span className="font-semibold">${subTotal.toFixed(2)}</span>
+          <span className="font-semibold">${parseFloat(formatPrice(subTotal))}</span>
           <button
             onClick={() => removeItem(item.sku)}
             className="bg-red-600 text-white rounded-full p-1 hover:bg-red-700 transition-colors"
@@ -80,7 +82,7 @@ function Header() {
             {cartItems && cartItems.length > 0 && (
               <>
                 <p className="text-lg font-bold">
-                  Total ${totalPrice().toFixed(2)}
+                  Total ${formatPrice(totalPrice())}
                 </p>
                 <Link
                   to="checkout"

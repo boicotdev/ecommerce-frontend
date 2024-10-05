@@ -1,5 +1,6 @@
 import { useCart } from "../context/CartContext";
 import { Link } from "react-router-dom";
+import {formatPrice} from "../utils/utils";
 
 export default function CheckoutPage() {
   const { orders } = useCart();
@@ -57,14 +58,14 @@ export default function CheckoutPage() {
                         <div className="flex justify-between">
                           <span>Producto {order.name}</span>
                           <span>Cantidad {order.quantity}</span>
-                          <span>${order.price * order.quantity}</span>
+                          <span>${formatPrice(order.price * order.quantity)}</span>
                         </div>
                         <hr />
                       </div>
                     ))}
                     <div className="flex justify-between">
                       <span>Subtotal Productos</span>
-                      <span>${getTotalCheck(orders)}</span>
+                      <span>${formatPrice(getTotalCheck(orders))}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Envío</span>
@@ -73,7 +74,7 @@ export default function CheckoutPage() {
                     <div className="border-t pt-4">
                       <div className="flex justify-between font-semibold">
                         <span>Total</span>
-                        <span>${getTotalCheck(orders) + delivery}</span>
+                        <span>${formatPrice(getTotalCheck(orders)) + delivery}</span>
                       </div>
                     </div>
                   </div>

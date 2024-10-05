@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import {saveState, loadState} from "../utils/utils";
+
 
 function ProductCard({ item }) {
-  const { setItems, setOrders, } = useCart();
+  const { setItems, setOrders,items, orders} = useCart();
   const checkItem = (item) => {
   if (!item || !item.sku) return;
 
@@ -23,10 +25,11 @@ function ProductCard({ item }) {
       // Si el producto no está en el carrito, lo añadimos con cantidad 1
       updatedItems = [...prevItems, { ...item, quantity: 1 }];
     }
-
     // Actualizamos `orders` basándonos en el estado actualizado de `items`
-    setOrders([...updatedItems]);
-
+    setOrders((prev) => {
+      [...updatedItems]
+      saveState("orders", updatedItems)
+      });
     return updatedItems; // Devuelve el estado actualizado para `items`
   });
 };

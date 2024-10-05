@@ -11,16 +11,17 @@ export function formatPrice(price) {
 }
 
 
-// capitalize the given category name
+// capitalize the given string name
 export const capitalize = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-
+// state into the localStorage
   export function saveState(key, value) {
       localStorage.setItem(key, JSON.stringify(value));
   }
-  
+
+// get the state from localStorage
   export function loadState(key) {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : null;
@@ -48,10 +49,10 @@ export const capitalize = (str) => {
   
   // clean fields from the form 
   export function resetForm(formId) {
-      // Obtener el formulario por su ID
+      // Get the form by ID
       const form = document.getElementById(formId);
-  
-      // Obtener todos los inputs dentro del formulario
+      
+      // Getting all input fields into the form
       const inputs = form.querySelectorAll('input');
   
       inputs.forEach(input => {
@@ -61,12 +62,12 @@ export const capitalize = (str) => {
               case 'number':
               case 'password':
               case 'tel':
-                  // Dejar en blanco los campos de texto, email, etc.
+                // set blank all input of type email, text, etc
                   input.value = '';
                   break;
               case 'checkbox':
               case 'radio':
-                  // Deseleccionar checkboxes y radios
+                  // Unselect checkboxes and radios inputs
                   input.checked = false;
                   break;
               default:
@@ -81,7 +82,13 @@ export const capitalize = (str) => {
       selects.forEach(select => select.selectedIndex = 0);
   }
   
-  // set username
+  /***
+   * Take the firstname and lastname
+   * convert this fields on lowercase
+   * remove blank spaces and replace by a dot
+   * Params String
+   * Returns String
+   */
   export function setUserName(firstname, lastname) {
     const firstnameTrimmed = firstname.trim();
     const lastnameTrimmed = lastname.trim();
