@@ -24,7 +24,7 @@ export const capitalize = (str) => {
 // get the state from localStorage
   export function loadState(key) {
       const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : null;
+      return item ? JSON.parse(item) : [];
   }
   
   

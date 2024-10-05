@@ -5,6 +5,9 @@ import {formatPrice} from "../utils/utils";
 export default function CheckoutPage() {
   const { orders } = useCart();
   const delivery = 5000;
+  const totalPrice = orders && orders.length > 0 ? orders.reduce((acc, item) => acc + item.price * (item.quantity || 1), 0) : 0;
+  const totalPriceWithDelivery = totalPrice + delivery;
+
 
   return (
     <div className="bg-gray-100 min-h-screen mt-8">
@@ -69,12 +72,12 @@ export default function CheckoutPage() {
                     </div>
                     <div className="flex justify-between">
                       <span>Envío</span>
-                      <span>${delivery}</span>
+                      <span>${formatPrice(delivery.toString())}</span>
                     </div>
                     <div className="border-t pt-4">
                       <div className="flex justify-between font-semibold">
                         <span>Total</span>
-                        <span>${formatPrice(getTotalCheck(orders)) + delivery}</span>
+                        <span>${formatPrice(totalPriceWithDelivery.toString())}</span>
                       </div>
                     </div>
                   </div>
@@ -115,7 +118,7 @@ export default function CheckoutPage() {
           </div>
         </div>
         {
-          orders.length > 0 && (
+         orders && orders.length > 0 && (
           <div className="mt-8">
             <button className="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               Realizar pedido

@@ -31,8 +31,10 @@ function App() {
   
   useEffect(() => {
     const productOrders = loadState("orders");
-    setOrders(productOrders)
-    setItems(productOrders)
+    if(productOrders != null) {
+      setOrders(productOrders)
+      setItems(productOrders)
+    }
   }, [])
   
   

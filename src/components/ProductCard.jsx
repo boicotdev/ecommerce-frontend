@@ -1,44 +1,42 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import {saveState, loadState} from "../utils/utils";
-
+import { saveState, formatPrice } from "../utils/utils";
 
 function ProductCard({ item }) {
-  const { setItems, setOrders,items, orders} = useCart();
+  const { setItems, setOrders } = useCart();
+
   const checkItem = (item) => {
-  if (!item || !item.sku) return;
+    if (!item || !item.sku) return;
 
-  // Actualizamos el estado de items
-  setItems((prevItems) => {
-    const product = prevItems.find((prod) => prod.sku === item.sku);
+    // Actualizamos el estado de items
+    setItems((prevItems) => {
+      const product = prevItems.find((prod) => prod.sku === item.sku);
 
-    let updatedItems;
-    
-    if (product) {
-      // Si el producto ya existe en el carrito, aumentamos la cantidad
-      updatedItems = prevItems.map((prod) =>
-        prod.sku === item.sku
-          ? { ...prod, quantity: (prod.quantity || 0) + 1 }
-          : prod
-      );
-    } else {
-      // Si el producto no está en el carrito, lo añadimos con cantidad 1
-      updatedItems = [...prevItems, { ...item, quantity: 1 }];
-    }
-    // Actualizamos `orders` basándonos en el estado actualizado de `items`
-    setOrders((prev) => {
-      [...updatedItems]
-      saveState("orders", updatedItems)
+      let updatedItems;
+
+      if (product) {
+        // Si el producto ya existe en el carrito, aumentamos la cantidad
+        updatedItems = prevItems.map((prod) =>
+          prod.sku === item.sku
+            ? { ...prod, quantity: (prod.quantity || 0) + 1 }
+            : prod
+        );
+      } else {
+        // Si el producto no está en el carrito, lo añadimos con cantidad 1
+        updatedItems = [...prevItems, { ...item, quantity: 1 }];
+      }
+      // Actualizamos `orders` basándonos en el estado actualizado de `items`
+      setOrders((prev) => {
+        [...updatedItems];
+        saveState("orders", updatedItems);
       });
-    return updatedItems; // Devuelve el estado actualizado para `items`
-  });
-};
+      return updatedItems; // Devuelve el estado actualizado para `items`
+    });
+  };
 
-const addProductAtToCart = (item) => {
-  checkItem(item);
-};
-
-
+  const addProductAtToCart = (item) => {
+    checkItem(item);
+  };
 
   return (
     <div className="shadow-lg rounded-lg bg-white hover:shadow-xl transition-shadow duration-300">
@@ -63,10 +61,10 @@ const addProductAtToCart = (item) => {
               Popular
             </span>
           )}
-         
         </div>
         <div className="flex items-center my-2">
-          {item.score && item.votes > 0 &&
+          {item.score &&
+            item.votes > 0 &&
             item.score.map((_, idx) => (
               <svg
                 key={idx}
@@ -76,11 +74,9 @@ const addProductAtToCart = (item) => {
                 <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
               </svg>
             ))}
-            {
-              item.votes > 0 && (
-                <span className="ml-1 text-slate-300">({item.votes})</span>
-              )
-            }
+          {item.votes > 0 && (
+            <span className="ml-1 text-slate-300">({item.votes})</span>
+          )}
         </div>
 
         {/* <p className="text-slate-500 mb-2 mt-2">
@@ -90,7 +86,9 @@ const addProductAtToCart = (item) => {
           {item.description}
         </p> */}
         <div className="flex justify-between items-center mt-4">
-          <span className="text-slate-700 text-lg font-bold">${item.price}</span>
+          <span className="text-slate-700 text-lg font-bold">
+            ${formatPrice(item.price)}
+          </span>
           <button
             onClick={() => addProductAtToCart(item)}
             className=" bg-green-500 text-white py-2 px-2 rounded-md hover:bg-green-600 transition-colors duration-300 flex items-center justify-center"

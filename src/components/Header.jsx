@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import menuIcon from "../assets/menuIcon.svg";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import {formatPrice} from "../utils/utils";
+import { formatPrice, saveState } from "../utils/utils";
 function Header() {
-  const { items, setItems } = useCart();
+  const { items, setItems, setOrders } = useCart();
   const [cartItems, setCartItems] = useState([]);
   const [showItems, setShowItems] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -16,11 +16,23 @@ function Header() {
     const response = confirm(`Desea eliminar el ${item.name}`);
     if (item && response) {
       setItems((prevItems) => prevItems.filter((item) => item.sku !== sku));
-      setCartItems((prevItems) => prevItems.filter((item) => item.sku !== sku));
+      setCartItems((prevItems) => {
+        const updatedItems = prevItems.filter((item) => item.sku !== sku);
+        if (updatedItems.length > 0) {
+          saveState("orders", updatedItems);
+        } else {
+          saveState("orders", []);
+        }
+        return updatedItems;
+      });
+      setOrders((prevOrders) => {
+        const updatedOrders = prevOrders.filter((item) => item.sku !== sku);
+        saveState("orders", updatedOrders);
+        setItems([...updatedOrders]);
+        return updatedOrders;
+      });
     }
   };
-  
-  
 
   const CartItem = ({ item, quantity, subTotal }) => {
     return (
@@ -28,7 +40,7 @@ function Header() {
         <div className="flex justify-between items-center gap-2 text-xs md:text-sm lg:text-base py-2">
           <span className="font-medium">{item.name}</span>
           <span>Cantidad ({quantity})</span>
-          <span className="font-semibold">${parseFloat(formatPrice(subTotal))}</span>
+          <span className="font-semibold">${formatPrice(subTotal)}</span>
           <button
             onClick={() => removeItem(item.sku)}
             className="bg-red-600 text-white rounded-full p-1 hover:bg-red-700 transition-colors"
@@ -262,7 +274,9 @@ function Header() {
           <button className="relative" onClick={() => setShowItems(!showItems)}>
             <i className="fa fa-shopping-cart text-2xl text-slate-200 hover:text-white transition-colors"></i>
             <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
-              {cartItems.reduce((acum, item) => acum + (item.quantity || 0), 0)}
+              {cartItems && cartItems.length > 0
+                ? cartItems.reduce((accum, item) => accum + item.quantity, 0)
+                : 0}
             </span>
           </button>
           <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden">
