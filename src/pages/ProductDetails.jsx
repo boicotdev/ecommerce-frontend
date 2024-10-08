@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { products } from "../assets/assets";
 import { useCart } from "../context/CartContext";
+import { formatPrice } from "../utils/utils";
 
 function ProductDetails() {
   const { product: productName } = useParams();
@@ -79,7 +80,7 @@ function ProductDetails() {
             </div>
             <p className="mt-4 text-gray-500">{product.description}</p>
             <div className="mt-6 flex items-center justify-between">
-              <span className="text-3xl font-bold text-gray-900">${product.price}</span>
+              <span className="text-3xl font-bold text-gray-900">${formatPrice(product.price)}</span>
               <button
                 onClick={() => addProductToCart(product)}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
