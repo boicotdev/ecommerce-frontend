@@ -22,9 +22,13 @@ import { useCart } from "./context/CartContext";
 import PrivateUserRoute from "./routes/ProtectedUserRoute";
 
 import  {loadState} from "./utils/utils";
+import { useShop } from "./context/ShopContext";
+import { getProducts } from "./api/actions.api";
+
 
 
 function App() {
+  const {setProducts} = useShop();
 
   const { isAdmin, isLoggedIn } = useAuth();
   const {setOrders, setItems} = useCart()
@@ -35,6 +39,10 @@ function App() {
       setOrders(productOrders)
       setItems(productOrders)
     }
+    //set products
+    getProducts().then((data) => {
+      setProducts(data)
+    })
   }, [])
   
   
@@ -79,7 +87,7 @@ function App() {
         {/* Routes without authentication required */}
           <Route path="/" element={<HomePage />} />
           <Route path="shop" element={<ShopPage />} />
-          <Route path="/shop/products/:product/" element={<ProductDetails />} />
+          <Route path="/shop/products/:sku/" element={<ProductDetails />} />
         {/* Routes without authentication required */}
       </Routes>
       <Footer />

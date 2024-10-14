@@ -1,21 +1,40 @@
 import { useState, useEffect } from "react";
-import { products } from "../assets/assets";
+// import { products } from "../assets/assets";
 import ProductCard from "../components/ProductCard";
 import { useLocation } from "react-router-dom";
 import { capitalize } from "../utils/utils";
+import { useShop } from "../context/ShopContext";
+import { getProducts } from "../api/actions.api";
 
-const allProducts = products;
 const categories = ["Frutas", "Verduras", "Legumbres", "Otros"];
 
 export default function ShopPage() {
+  const {  setProducts } = useShop();
+  const [allProducts, setAllProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState(allProducts);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const category = searchParams.get("category");
 
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const response = await getProducts();
+        if(response.status === 200) {
+          console.log(response.data);
+          setProducts(response.data);
+          setAllProducts(response.data);
+          setFilteredProducts(response.data);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    loadProducts();
+  }, []);
 
   // Set initial category based on URL parameter
   useEffect(() => {
@@ -62,7 +81,9 @@ export default function ShopPage() {
       </div>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-700">Categorías</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+          Categorías
+        </h2>
         <div className="flex flex-wrap gap-4">
           {categories.map((category) => (
             <label
@@ -103,9 +124,14 @@ function ProductSection({ title, products }) {
         {title}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {products.map((product) => (
-          <ProductCard key={product.id} item={product} />
-        ))}
+        {products.length === 0 && (
+          <p className="text-sm text-gray-500">No hay productos disponibles.</p>
+        )}
+        {products &&
+          products.length > 0 &&
+          products.map((product) => (
+            <ProductCard key={product.id} item={product} />
+          ))}
       </div>
     </section>
   );

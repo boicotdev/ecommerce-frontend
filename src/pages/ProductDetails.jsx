@@ -5,7 +5,7 @@ import { useCart } from "../context/CartContext";
 import { formatPrice } from "../utils/utils";
 
 function ProductDetails() {
-  const { product: productName } = useParams();
+  const { sku } = useParams();
   const [product, setProduct] = useState({});
   const { setItems, setOrders } = useCart();
  
@@ -42,13 +42,13 @@ function ProductDetails() {
   }
 
   useEffect(() => {
-    if (productName) {
-      const item = products.find(item => item.name === productName);
+    if (sku) {
+      const item = products.find(item => item.sku === sku);
       if (item) {
         setProduct(item);
       }
     }
-  }, [productName]);
+  }, [sku]);
 
   if (!product.name) {
     return <div className="container mx-auto px-4 py-8 text-center">Cargando...</div>;

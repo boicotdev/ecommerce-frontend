@@ -116,7 +116,7 @@ export const products = [
       name: "Ajo Hidroponico",
       image: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fhidroponia.mx%2Fwp-content%2Fuploads%2F2015%2F11%2FComo-cultivar-ajos-en-macetas.jpg&f=1&nofb=1&ipt=8309bf57182278c897e39ab2350cc73333b69f84539b4589fabfab7357b5c144&ipo=images",
       description: "El ajo hidropónico es cultivado de manera sostenible, brindando un sabor intenso y un aroma irresistible a tus platillos. Al ser cultivado sin tierra, se evita la exposición a contaminantes, garantizando un producto limpio y natural. El ajo es conocido por sus propiedades medicinales, como mejorar la salud cardiovascular y fortalecer el sistema inmunológico.",
-      sku: "gar1783",
+      sku: "garlic123",
       price: 1520,
       score: [1,1,1,1],
       category: "Verduras",

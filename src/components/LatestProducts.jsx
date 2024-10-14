@@ -1,8 +1,32 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
-import { products } from "../assets/assets";
+import { useShop } from "../context/ShopContext";
+import { useEffect, useState } from "react";
+import { getProducts } from "../api/actions.api";
 
 function LatestProducts() {
+  const { setProducts } = useShop();
+  const [loading, setLoading] = useState(true);
+  const [lastProducts, setLastProducts] = useState([]);
+
+  useEffect(() => {
+    // Fetch latest products from API
+    const loadProducts = async () => {
+      try {
+        const response = await getProducts();
+        if (response.status === 200) {
+          setProducts(response.data);
+          setLastProducts(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProducts();
+  }, []);
+
   return (
     <section className="bg-gray-50 py-16">
       <div className="container mx-auto px-4">
@@ -10,14 +34,16 @@ function LatestProducts() {
           Ultimos productos
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {products && products.length > 0 ? (
-            products.slice(0, 5).map(item => (
-              <ProductCard key={item.sku} item={item} />
-            ))
+          {loading ? (
+            <div className="col-span-full text-center">
+              <p>Cargando productos...</p>
+            </div>
           ) : (
-            <p className="col-span-full text-center text-gray-600 text-lg">
-              No hay productos disponibles
-            </p>
+            lastProducts &&
+            lastProducts.length > 0 &&
+            lastProducts
+              .slice(0, 5)
+              .map((item) => <ProductCard key={item.sku} item={item} />)
           )}
         </div>
         <div className="text-center">
@@ -30,7 +56,7 @@ function LatestProducts() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 export default LatestProducts;
