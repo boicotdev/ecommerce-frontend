@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { saveState, formatPrice } from "../utils/utils";
+import { apiImageURL } from "../api/baseUrls";
 
 function ProductCard({ item }) {
   const { setItems, setOrders } = useCart();
@@ -44,7 +45,7 @@ function ProductCard({ item }) {
         <h5 className="text-lg font-semibold text-slate-900 my-3">
           <span className="font-bold text-slate-700">Producto : </span>
           <Link
-            to={`/shop/products/${item.name}/`}
+            to={`/shop/products/${item.sku}/`}
             className="text-green-500 hover:text-green-700 transition-colors"
           >
             {item.name}
@@ -53,10 +54,10 @@ function ProductCard({ item }) {
         <div className="relative">
           <img
             className="rounded-lg w-full h-48 object-cover"
-            src={item.image}
+            src={`${apiImageURL}${item.main_image}`}
             alt={item.name}
           />
-          {item.bestSeller && (
+          {item.best_seller && (
             <span className="absolute top-2 right-2 bg-yellow-400 text-white px-2 py-1 rounded-full text-xs font-bold">
               Popular
             </span>
