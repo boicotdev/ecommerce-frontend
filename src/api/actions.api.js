@@ -9,6 +9,15 @@ export const authAxios = axios.create({
   // withCredentials: true, // para manejar cookies en las solicitudes
 });
 
+// simple registration config
+const axios_ = axios.create({
+  baseURL: apiURL,
+  timeout: 5000,
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+});
+
 // cargar los productos de la base de datos
 export const getProducts = async () => {
   return authAxios.get("products/list/");
@@ -17,4 +26,14 @@ export const getProducts = async () => {
 // retrieve a product details
 export const retrieveProductDetails = (sku) => {
   return authAxios.get(`products/product/details/?sku=${sku}`);
+};
+
+//create a new product
+export const createProduct = (data) => {
+  return axios_.post("/products/create/", data);
+};
+
+//retrieve category list
+export const retrieveCategoryList = () => {
+  return authAxios.get("products/categories/");
 };

@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import AdminHeader from "./components/AdminHeader";
@@ -21,31 +21,28 @@ import { useAuth } from "./context/AuthContext";
 import { useCart } from "./context/CartContext";
 import PrivateUserRoute from "./routes/ProtectedUserRoute";
 
-import  {loadState} from "./utils/utils";
+import { loadState } from "./utils/utils";
 import { useShop } from "./context/ShopContext";
 import { getProducts } from "./api/actions.api";
 
-
-
 function App() {
-  const {setProducts} = useShop();
+  const { setProducts } = useShop();
 
   const { isAdmin, isLoggedIn } = useAuth();
-  const {setOrders, setItems} = useCart()
-  
+  const { setOrders, setItems } = useCart();
+
   useEffect(() => {
     const productOrders = loadState("orders");
-    if(productOrders != null) {
-      setOrders(productOrders)
-      setItems(productOrders)
+    if (productOrders != null) {
+      setOrders(productOrders);
+      setItems(productOrders);
     }
     //set products
     getProducts().then((data) => {
-      setProducts(data)
-    })
-  }, [])
-  
-  
+      setProducts(data);
+    });
+  }, []);
+
   return (
     <>
       {isLoggedIn && isAdmin ? <AdminHeader /> : <Header />}
@@ -85,9 +82,9 @@ function App() {
           element={<AdminProtectedRoute element={<ProductList />} />}
         />
         {/* Routes without authentication required */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="shop" element={<ShopPage />} />
-          <Route path="/shop/products/:sku/" element={<ProductDetails />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="shop" element={<ShopPage />} />
+        <Route path="/shop/products/:sku/" element={<ProductDetails />} />
         {/* Routes without authentication required */}
       </Routes>
       <Footer />

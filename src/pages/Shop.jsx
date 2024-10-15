@@ -9,7 +9,7 @@ import { getProducts } from "../api/actions.api";
 const categories = ["Frutas", "Verduras", "Legumbres", "Otros"];
 
 export default function ShopPage() {
-  const {  setProducts } = useShop();
+  const { setProducts } = useShop();
   const [allProducts, setAllProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -23,8 +23,7 @@ export default function ShopPage() {
     const loadProducts = async () => {
       try {
         const response = await getProducts();
-        if(response.status === 200) {
-          console.log(response.data);
+        if (response.status === 200) {
           setProducts(response.data);
           setAllProducts(response.data);
           setFilteredProducts(response.data);
@@ -32,7 +31,7 @@ export default function ShopPage() {
       } catch (e) {
         console.log(e);
       }
-    }
+    };
     loadProducts();
   }, []);
 
