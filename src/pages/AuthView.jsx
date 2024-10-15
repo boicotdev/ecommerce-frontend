@@ -1,22 +1,22 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 function LoginForm({ callback, isSignup }) {
-  const {handleLogin} = useAuth();
+  const { handleLogin } = useAuth();
   const [userAuth, setUserAuth] = useState({
     username: "",
     password: "",
-    isAdmin: false,
-  })
+    isAdmin: true,
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserAuth((prevData) => ({...prevData, [name]: value}));
-  }
+    setUserAuth((prevData) => ({ ...prevData, [name]: value }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     handleLogin(userAuth);
-  }
+  };
   return (
     <div className="w-full h-screen bg-gray-100 flex justify-center items-center">
       <div className="bg-white shadow-md rounded-lg p-6 max-w-md w-full">
@@ -62,7 +62,7 @@ function LoginForm({ callback, isSignup }) {
             </div>
             <div className="mt-2 text-center">
               <p className="capitalize text-gray-700">
-                ¿No tienes una cuenta?{' '}
+                ¿No tienes una cuenta?{" "}
                 <span
                   className="text-indigo-500 hover:text-indigo-600 cursor-pointer"
                   onClick={() => callback(!isSignup)}
@@ -136,9 +136,7 @@ function RegisterForm({ callback, isSignup }) {
               >
                 Género
               </label>
-              <select
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
+              <select className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                 <option className="appearance-none bg-white" value="" disabled>
                   Seleccionar
                 </option>
@@ -157,7 +155,7 @@ function RegisterForm({ callback, isSignup }) {
             </div>
             <div className="mt-2 text-center">
               <p className="capitalize text-gray-700">
-                ¿Ya tienes una cuenta?{' '}
+                ¿Ya tienes una cuenta?{" "}
                 <span
                   className="text-indigo-500 hover:text-indigo-600 cursor-pointer"
                   onClick={() => callback(!isSignup)}
@@ -172,7 +170,6 @@ function RegisterForm({ callback, isSignup }) {
     </div>
   );
 }
-
 
 export default function AuthView() {
   const [isSignup, setIsSignup] = useState(false);
