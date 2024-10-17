@@ -24,6 +24,8 @@ import PrivateUserRoute from "./routes/ProtectedUserRoute";
 import { loadState } from "./utils/utils";
 import { useShop } from "./context/ShopContext";
 import { getProducts } from "./api/actions.api";
+import EditProduct from "./pages/EditProduct";
+import ProductAdminDetails from "./pages/ProductAdminDetails";
 
 function App() {
   const { setProducts } = useShop();
@@ -85,6 +87,10 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="shop" element={<ShopPage />} />
         <Route path="/shop/products/:sku/" element={<ProductDetails />} />
+        <Route path="/shop/products/edit/:sku/" element={<EditProduct />} />
+        <Route path="/dashboard/products/:sku/" element={<ProductAdminDetails />} />
+        <Route path="*" element={<h1>Page not found</h1>} />
+        
         {/* Routes without authentication required */}
       </Routes>
       <Footer />

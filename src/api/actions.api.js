@@ -37,3 +37,13 @@ export const createProduct = (data) => {
 export const retrieveCategoryList = () => {
   return authAxios.get("products/categories/");
 };
+
+//remove a single product
+export const deleteProduct = (data) => {
+  return authAxios.delete(`products/product/remove/`, {data});
+};
+
+//update a single product
+export const updateProduct = (data) => {
+  return axios_.put(`products/product/update/`, data);
+};
