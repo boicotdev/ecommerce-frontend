@@ -1,52 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { getProducts } from "../api/actions.api";
+import { Link, useNavigate } from "react-router-dom";
+import { deleteProduct, getProducts } from "../api/actions.api";
 import { toast } from "react-hot-toast";
-
-// Datos de ejemplo (en una aplicación real, estos vendrían de una API)
-const sampleProducts = [
-  {
-    id: 1,
-    name: "Camiseta",
-    category: "Ropa",
-    price: 19.99,
-    stock: 100,
-    image: "https://via.placeholder.com/50",
-  },
-  {
-    id: 2,
-    name: "Pantalón",
-    category: "Ropa",
-    price: 39.99,
-    stock: 50,
-    image: "https://via.placeholder.com/50",
-  },
-  {
-    id: 3,
-    name: "Zapatos",
-    category: "Calzado",
-    price: 59.99,
-    stock: 30,
-    image: "https://via.placeholder.com/50",
-  },
-  {
-    id: 4,
-    name: "Gorra",
-    category: "Accesorios",
-    price: 14.99,
-    stock: 80,
-    image: "https://via.placeholder.com/50",
-  },
-  {
-    id: 5,
-    name: "Reloj",
-    category: "Accesorios",
-    price: 99.99,
-    stock: 20,
-    image: "https://via.placeholder.com/50",
-  },
-  // ... más productos
-];
 
 function ProductList() {
   const [products, setProducts] = useState([]);
@@ -54,6 +9,7 @@ function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const navigate = useNavigate();
 
   const productsPerPage = 5;
   const categories = [
@@ -82,17 +38,26 @@ function ProductList() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDelete = (id) => {
+  const handleDelete = async (sku) => {
     if (
       window.confirm("¿Estás seguro de que quieres eliminar este producto?")
     ) {
-      setProducts(products.filter((product) => product.id !== id));
+      try {
+        const response = await deleteProduct({ sku });
+        if (response.status === 204) {
+          toast.success("Producto eliminado exitosamente");
+          setProducts(products.filter((product) => product.sku !== sku));
+        }
+      } catch (error) {
+        const { message } = error.response.data;
+        toast.error(message);
+        throw new Error(message);
+      }
     }
   };
 
-  const handleEdit = (id) => {
-    // Aquí iría la lógica para editar el producto
-    console.log(`Editar producto con id: ${id}`);
+  const handleEdit = (sku) => {
+    navigate(`/shop/products/edit/${sku}/`);
   };
 
   const handleView = (id) => {
@@ -204,20 +169,20 @@ function ProductList() {
                   <div className="text-sm text-gray-900">{product.stock}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button
-                    onClick={() => handleView(product.id)}
+                  <Link
+                    to={`/dashboard/products/${product.sku}/`}
                     className="text-blue-600 hover:text-blue-900 mr-2"
                   >
                     Ver
-                  </button>
+                  </Link>
                   <button
-                    onClick={() => handleEdit(product.id)}
+                    onClick={() => handleEdit(product.sku)}
                     className="text-green-600 hover:text-green-900 mr-2"
                   >
                     Editar
                   </button>
                   <button
-                    onClick={() => handleDelete(product.id)}
+                    onClick={() => handleDelete(product.sku)}
                     className="text-red-600 hover:text-red-900"
                   >
                     Eliminar
