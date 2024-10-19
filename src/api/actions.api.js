@@ -6,7 +6,7 @@ export const authAxios = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  // withCredentials: true, // para manejar cookies en las solicitudes
+  withCredentials: true, // para manejar cookies en las solicitudes
 });
 
 // simple registration config
@@ -40,10 +40,15 @@ export const retrieveCategoryList = () => {
 
 //remove a single product
 export const deleteProduct = (data) => {
-  return authAxios.delete(`products/product/remove/`, {data});
+  return authAxios.delete(`products/product/remove/`, { data });
 };
 
 //update a single product
 export const updateProduct = (data) => {
   return axios_.put(`products/product/update/`, data);
+};
+
+//token obtain
+export const tokenObtain = (data) => {
+  return authAxios.post("users/token/obtain/", data);
 };

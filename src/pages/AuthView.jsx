@@ -2,11 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 function LoginForm({ callback, isSignup }) {
   const { handleLogin } = useAuth();
-  const [userAuth, setUserAuth] = useState({
-    username: "",
-    password: "",
-    isAdmin: true,
-  });
+  const [userAuth, setUserAuth] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
