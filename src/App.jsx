@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Header from "./components/Header";
 import AdminHeader from "./components/AdminHeader";
 import Footer from "./components/Footer";
@@ -29,12 +29,25 @@ import ProductAdminDetails from "./pages/ProductAdminDetails";
 
 function App() {
   const { setProducts } = useShop();
+  const navigate = useNavigate();
 
-  const { isAdmin, isLoggedIn } = useAuth();
+  const { isAdmin, isLoggedIn, setIsLoggedIn, setUser, setIsAdmin } = useAuth();
   const { setOrders, setItems } = useCart();
 
   useEffect(() => {
     const productOrders = loadState("orders");
+    const userData = loadState("user");
+    if (userData != null && userData != []) {
+      const { is_superuser } = userData;
+      setIsAdmin(is_superuser)
+      setUser(userData);
+      setIsLoggedIn(true);
+      if (is_superuser) {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
+    }
     if (productOrders != null) {
       setOrders(productOrders);
       setItems(productOrders);
@@ -88,9 +101,12 @@ function App() {
         <Route path="shop" element={<ShopPage />} />
         <Route path="/shop/products/:sku/" element={<ProductDetails />} />
         <Route path="/shop/products/edit/:sku/" element={<EditProduct />} />
-        <Route path="/dashboard/products/:sku/" element={<ProductAdminDetails />} />
+        <Route
+          path="/dashboard/products/:sku/"
+          element={<ProductAdminDetails />}
+        />
         <Route path="*" element={<h1>Page not found</h1>} />
-        
+
         {/* Routes without authentication required */}
       </Routes>
       <Footer />

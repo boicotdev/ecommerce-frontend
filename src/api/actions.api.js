@@ -6,7 +6,7 @@ export const authAxios = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // para manejar cookies en las solicitudes
+  // withCredentials: true, // para manejar cookies en las solicitudes
 });
 
 // simple registration config
@@ -17,6 +17,16 @@ const axios_ = axios.create({
     "Content-Type": "multipart/form-data",
   },
 });
+
+// retrieve all user info
+export const fetchUserInfo = (userId) => {
+  return authAxios.get(`users/user/?user=${userId}`);
+};
+
+// update user info
+export const updateUserInfo = (data) => {
+  return authAxios.put("users/user/update/", data);
+};
 
 // cargar los productos de la base de datos
 export const getProducts = async () => {

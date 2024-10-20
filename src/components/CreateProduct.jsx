@@ -3,8 +3,9 @@ import { createProduct } from "../api/actions.api";
 import { resetForm } from "../utils/utils";
 import { toast } from "react-hot-toast";
 import { retrieveCategoryList } from "../api/actions.api";
+import { useNavigate } from "react-router-dom";
 
-const CreateProduct = ({ onSubmit }) => {
+const CreateProduct = () => {
   const [categories, setCategories] = useState([]);
   const [product, setProduct] = useState({
     name: "",
@@ -19,6 +20,7 @@ const CreateProduct = ({ onSubmit }) => {
   });
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,6 +50,7 @@ const CreateProduct = ({ onSubmit }) => {
       if (response.status === 201) {
         toast.success("Producto creado exitosamente");
         resetForm("product-create__form");
+        navigate("/shop/products");
         setImage(null);
       }
     } catch (error) {

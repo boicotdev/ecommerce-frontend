@@ -2,6 +2,7 @@ import { useState, createContext, useContext } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { tokenObtain } from "../api/actions.api";
+import { resetForm, saveState } from "../utils/utils";
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -18,7 +19,25 @@ export const AuthContextProvider = ({ children }) => {
       const response = await tokenObtain(userData);
       if (response.status === 200) {
         setIsLoggedIn(true);
-        setToken(response.data);
+        setToken(response.data.access);
+        const { username, id, is_superuser, access, refresh, avatar } = response.data;
+        setUser({
+          username,
+          id,
+          is_superuser,
+          access,
+          refresh,
+          avatar,
+        });
+        saveState("user", { username, is_superuser, id, access, refresh, avatar });
+        if (is_superuser) {
+          setIsAdmin(true);
+          navigate("/dashboard");
+        } else {
+          setIsAdmin(false);
+          navigate("/account");
+        }
+        resetForm("login_form");
       }
     } catch (error) {
       alert(error);
@@ -29,17 +48,20 @@ export const AuthContextProvider = ({ children }) => {
     setIsLoggedIn(false);
     setIsAdmin(false);
     setToken("");
-    // setUser(null);
     navigate("/");
     toast.success("Sesión cerrada correctamente");
+    saveState("user", null);
   };
 
   return (
     <AuthContext.Provider
       value={{
         isLoggedIn,
+        setIsLoggedIn,
         handleLogin,
         handleLogout,
+        user, 
+        setUser,
         username,
         setUsername,
         isAdmin,
