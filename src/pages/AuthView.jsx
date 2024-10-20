@@ -19,19 +19,19 @@ function LoginForm({ callback, isSignup }) {
         <h2 className="text-2xl font-semibold mb-6 text-center">
           Iniciar Sesión
         </h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} id="login_form">
           <div className="grid grid-cols-1 gap-6">
             <div>
               <label
-                htmlFor="username"
+                htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
                 Nombre de usuario
               </label>
               <input
-                type="text"
-                id="username"
-                name="username"
+                type="email"
+                id="email"
+                name="email"
                 onChange={handleChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
