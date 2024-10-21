@@ -34,29 +34,7 @@ function App() {
   const { isAdmin, isLoggedIn, setIsLoggedIn, setUser, setIsAdmin } = useAuth();
   const { setOrders, setItems } = useCart();
 
-  useEffect(() => {
-    const productOrders = loadState("orders");
-    const userData = loadState("user");
-    if (userData != null && userData != []) {
-      const { is_superuser } = userData;
-      setIsAdmin(is_superuser)
-      setUser(userData);
-      setIsLoggedIn(true);
-      if (is_superuser) {
-        navigate("/dashboard");
-      } else {
-        navigate("/");
-      }
-    }
-    if (productOrders != null) {
-      setOrders(productOrders);
-      setItems(productOrders);
-    }
-    //set products
-    getProducts().then((data) => {
-      setProducts(data);
-    });
-  }, []);
+  
 
   return (
     <>

@@ -23,6 +23,11 @@ export const fetchUserInfo = (userId) => {
   return authAxios.get(`users/user/?user=${userId}`);
 };
 
+//user register
+export const userCreate = (data) => {
+  return axios_.post("users/create/", data);
+};
+
 // update user info
 export const updateUserInfo = (data) => {
   return authAxios.put("users/user/update/", data);
@@ -61,4 +66,9 @@ export const updateProduct = (data) => {
 //token obtain
 export const tokenObtain = (data) => {
   return authAxios.post("users/token/obtain/", data);
+};
+
+//orders user list
+export const retrieveUserOrderList = (userId) => {
+  return authAxios.get(`carts/orders/list/?user=${userId}`);
 };
