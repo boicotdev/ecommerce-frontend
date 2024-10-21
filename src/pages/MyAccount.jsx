@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { fetchUserInfo, updateUserInfo } from "../api/actions.api";
+import {
+  fetchUserInfo,
+  updateUserInfo,
+  retrieveUserOrderList,
+} from "../api/actions.api";
 import { loadState, validateData } from "../utils/utils";
 import { apiImageURL } from "../api/baseUrls";
 import toast from "react-hot-toast";
@@ -55,6 +59,17 @@ export default function MyAccount() {
     );
   };
 
+  const retrieveOrders = async (id) => {
+    try {
+      const response = await retrieveUserOrderList(id);
+      if (response.status === 200) {
+        setOrders(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     const loadUserInfo = async () => {
       try {
@@ -62,7 +77,7 @@ export default function MyAccount() {
         const response = await fetchUserInfo(id);
         if (response.status === 200) {
           setUserData(response.data);
-          console.log(response.data);
+          retrieveOrders(response.data.id);
         }
       } catch (error) {
         console.error(error);
@@ -127,7 +142,7 @@ export default function MyAccount() {
                 <input
                   type="text"
                   id="last_name"
-                  name="username"
+                  name="last_name"
                   value={userData.last_name}
                   onChange={handleInputChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
@@ -184,7 +199,7 @@ export default function MyAccount() {
               {userData && userData.is_superuser && (
                 <div>
                   <label
-                    htmlFor="address"
+                    htmlFor="rol"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Rol
@@ -261,7 +276,7 @@ export default function MyAccount() {
         </div>
 
         {/* Gestión de Pedidos */}
-        {userData && !userData.is_superuser && (
+        {orders && userData && !userData.is_superuser && (
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold mb-4 text-gray-700">
               Mis Pedidos
@@ -273,26 +288,29 @@ export default function MyAccount() {
                     <span className="font-semibold">Pedido #:</span> {order.id}
                   </p>
                   <p>
-                    <span className="font-semibold">Fecha:</span> {order.date}
+                    <span className="font-semibold">Fecha:</span>{" "}
+                    {order.creation_date}
                   </p>
                   <p>
                     <span className="font-semibold">Total:</span> $
-                    {order.total.toFixed(2)}
+                    {/*order.total.toFixed(2)*/}
                   </p>
                   <p
                     className={
-                      order.status === "Entregado"
+                      order.status === "DELIVERED"
                         ? "text-green-400"
-                        : order.status === "Cancelado"
-                        ? "text-red-400"
-                        : "text-gray-700"
+                        : order.status === "CANCELL"
+                          ? "text-red-400"
+                          : order.status === "PENDING"
+                            ? "text-blue-400"
+                            : "text-gray-700"
                     }
                   >
                     <span className="font-semibold text-gray-900">Estado:</span>{" "}
                     {order.status}
                   </p>
-                  {order.status !== "Entregado" &&
-                    order.status !== "Cancelado" && (
+                  {order.status !== "DELIVERED" &&
+                    order.status !== "CANCELL" && (
                       <button
                         onClick={() => handleCancelOrder(order.id)}
                         className="mt-2 px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
