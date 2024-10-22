@@ -3,23 +3,16 @@ import {
   fetchUserInfo,
   updateUserInfo,
   retrieveUserOrderList,
+  orderCancell,
 } from "../api/actions.api";
 import { loadState, validateData } from "../utils/utils";
 import { apiImageURL } from "../api/baseUrls";
 import toast from "react-hot-toast";
 import { data } from "autoprefixer";
 
-const initialOrders = [
-  { id: 1, date: "2023-09-15", total: 99.99, status: "Entregado" },
-  { id: 2, date: "2023-09-20", total: 149.99, status: "En proceso" },
-  { id: 3, date: "2023-09-25", total: 79.7, status: "Pendiente" },
-  { id: 4, date: "2024-09-12", total: 67.99, status: "Cancelado" },
-  { id: 5, date: "2024-09-21", total: 120.99, status: "Pendiente" },
-];
-
 export default function MyAccount() {
   const [userData, setUserData] = useState({});
-  const [orders, setOrders] = useState(initialOrders);
+  const [orders, setOrders] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
 
   const handleInputChange = (e) => {
@@ -30,7 +23,6 @@ export default function MyAccount() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsEditing(false);
-    // Aquí iría la lógica para actualizar la información en el backend
     validateData(userData);
     handleEdit();
   };
@@ -51,12 +43,22 @@ export default function MyAccount() {
     }
   };
 
-  const handleCancelOrder = (orderId) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.id === orderId ? { ...order, status: "Cancelado" } : order
-      )
-    );
+  const handleCancelOrder = async (orderId) => {
+    try {
+      const data = { user: user.id, order: orderId };
+      const response = await orderCancell(data);
+      if (response.status === 200) {
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderId ? { ...order, status: "Cancelado" } : order
+          )
+        );
+        toast.success("Orden cancelada");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al cancelar la orden");
+    }
   };
 
   const retrieveOrders = async (id) => {

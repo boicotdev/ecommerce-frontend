@@ -72,3 +72,7 @@ export const tokenObtain = (data) => {
 export const retrieveUserOrderList = (userId) => {
   return authAxios.get(`carts/orders/list/?user=${userId}`);
 };
+
+export const orderCancell = (data) => {
+  return authAxios.put(`orders/order/cancell/`, data);
+};
