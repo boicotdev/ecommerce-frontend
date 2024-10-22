@@ -129,3 +129,8 @@ export const getOrders = () => {
 export const getOrderDetails = (orderId) => {
   return authAxios.get(`dashboard/order/details/?order=${orderId}`);
 };
+
+//retrieve all clients from database
+export const getUserClients = () => {
+  return authAxios.get("dashboard/clients/");
+};
