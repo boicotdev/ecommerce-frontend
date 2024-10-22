@@ -1,22 +1,40 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import NewOrder from "../components/NewOrder";
 import { Link } from "react-router-dom";
-import {localOrders} from "../assets/assets";
+import { getOrders } from "../api/actions.api";
 export default function Component() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isAccountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const [filter, setFilter] = useState("Pending");
   const [sort, setSort] = useState("date");
   const [createNewOrder, setCreateNewOrder] = useState(false);
   const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
-  const toggleUserOptions = () =>
-    setAccountDropdownOpen(!isAccountDropdownOpen);
   const [showOptions, setShowOptions] = useState(false);
 
+  const [orders, setOrders] = useState([]);
 
-  const [orders, setOrders] = useState(localOrders);
+  useEffect(() => {
+    const retrieveOrders = async () => {
+      try {
+        const response = await getOrders();
+        if (response.status === 200) {
+          const data = response.data;
+          const info = data.map((order) => {
+            return {
+              id: order.id,
+              customer: `${order.user.first_name} ${order.user.last_name}`,
+              date: order.creation_date,
+              status: order.status,
+              total: 0,
+            };
+          });
+          setOrders(info);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    retrieveOrders();
+  }, []);
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-gray-100 overflow-auto lg:mt-16">

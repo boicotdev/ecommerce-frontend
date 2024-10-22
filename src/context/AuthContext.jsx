@@ -40,7 +40,7 @@ export const AuthContextProvider = ({ children }) => {
         resetForm("login_form");
       }
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
 
@@ -50,7 +50,7 @@ export const AuthContextProvider = ({ children }) => {
     setToken("");
     navigate("/");
     toast.success("Sesión cerrada correctamente");
-    saveState("user", null);
+    saveState("user", {});
   };
 
   return (

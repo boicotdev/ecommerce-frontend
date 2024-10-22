@@ -34,7 +34,24 @@ function App() {
   const { isAdmin, isLoggedIn, setIsLoggedIn, setUser, setIsAdmin } = useAuth();
   const { setOrders, setItems } = useCart();
 
-  
+  useEffect(() => {
+    const { id, username, is_superuser, avatar } = loadState("user");
+    if (id && username && is_superuser) {
+      setIsLoggedIn(true);
+      setIsAdmin(true);
+      setUser({ id, username, is_superuser, avatar });
+    } else if (id && username && !is_superuser) {
+      setIsLoggedIn(true);
+      setIsAdmin(false);
+      setUser({ id, username, is_superuser, avatar });
+    }
+    // Setear los items y ordenes en el carrito
+    const savedOrders = loadState("orders");
+    if (savedOrders.length > 0) {
+      setOrders(savedOrders);
+      setItems(savedOrders);
+    }
+  }, []);
 
   return (
     <>
