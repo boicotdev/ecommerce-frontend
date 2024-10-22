@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { localOrders } from "../assets/assets";
+import { getOrderDetails } from "../api/actions.api";
 
 function OrderDetails() {
   const { id } = useParams();
@@ -8,16 +9,36 @@ function OrderDetails() {
 
   useEffect(() => {
     if (id) {
-      const foundOrder = localOrders.find(item => item.id == id);
+      const foundOrder = localOrders.find((item) => item.id == id);
       setOrder(foundOrder || null);
     }
   }, [id]);
 
+  useEffect(() => {
+    const orderDetails = async () => {
+      try {
+        const response = await getOrderDetails(id);
+        if (response.status === 200) {
+          setOrder(response.data);
+          console.log(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    orderDetails();
+  }, []);
+
   if (!order) {
     return (
       <div className="container mx-auto px-4 py-8 mt-20">
-        <h1 className="text-2xl font-bold text-slate-700 mb-4">Detalles del pedido</h1>
-        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded" role="alert">
+        <h1 className="text-2xl font-bold text-slate-700 mb-4">
+          Detalles del pedido
+        </h1>
+        <div
+          className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded"
+          role="alert"
+        >
           <p className="font-bold">Error</p>
           <p>No se ha encontrado una orden con el id: {id}</p>
         </div>
@@ -27,28 +48,38 @@ function OrderDetails() {
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20">
-      <h1 className="text-2xl font-bold text-slate-700 mb-4">Detalles del pedido</h1>
+      <h1 className="text-2xl font-bold text-slate-700 mb-4">
+        Detalles del pedido
+      </h1>
       <div className="bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Orden #{id}</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Orden #{id}
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <p className="text-sm font-medium text-gray-500">Cliente</p>
-              <p className="text-lg text-gray-800">{order.customer}</p>
+              <p className="text-lg text-gray-800">{`${order.user.first_name}  ${order.user.last_name}`}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500">Fecha</p>
-              <p className="text-lg text-gray-800">{order.date}</p>
+              <p className="text-lg text-gray-800">{order.creation_date}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500">Estado</p>
-              <p className={`text-lg font-semibold ${getStatusColor(order.status)}`}>
+              <p
+                className={`text-lg font-semibold ${getStatusColor(
+                  order.status
+                )}`}
+              >
                 {order.status}
               </p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500">Total</p>
-              <p className="text-lg font-bold text-gray-800">${order.total.toFixed(2)}</p>
+              <p className="text-lg font-bold text-gray-800">
+                {/* ${order.total.toFixed(2)} */}
+              </p>
             </div>
           </div>
         </div>
@@ -64,8 +95,12 @@ function OrderDetails() {
         </div>
       </div>
       <div className="flex justify-center gap-2 items-center mt-2">
-        <Link className="text-indigo-500 hover:text-indigo-600" to="/dashboard">Ver todas las ordenes</Link>
-        <Link className="text-slate-300 hover:text-slate-500" to="/">Inicio</Link>
+        <Link className="text-indigo-500 hover:text-indigo-600" to="/dashboard">
+          Ver todas las ordenes
+        </Link>
+        <Link className="text-slate-300 hover:text-slate-500" to="/">
+          Inicio
+        </Link>
       </div>
     </div>
   );
@@ -73,14 +108,14 @@ function OrderDetails() {
 
 function getStatusColor(status) {
   switch (status.toLowerCase()) {
-    case 'delivered':
-      return 'text-green-600';
-    case 'pending':
-      return 'text-yellow-600';
-    case 'cancell':
-      return 'text-red-600';
+    case "delivered":
+      return "text-green-600";
+    case "pending":
+      return "text-yellow-600";
+    case "cancell":
+      return "text-red-600";
     default:
-      return 'text-gray-600';
+      return "text-gray-600";
   }
 }
 

@@ -8,7 +8,6 @@ import {
 import { loadState, validateData } from "../utils/utils";
 import { apiImageURL } from "../api/baseUrls";
 import toast from "react-hot-toast";
-import { data } from "autoprefixer";
 
 export default function MyAccount() {
   const [userData, setUserData] = useState({});
@@ -45,12 +44,12 @@ export default function MyAccount() {
 
   const handleCancelOrder = async (orderId) => {
     try {
-      const data = { user: user.id, order: orderId };
+      const data = { user: userData.id, order: orderId, status: "CANCELLED" };
       const response = await orderCancell(data);
       if (response.status === 200) {
         setOrders((prevOrders) =>
           prevOrders.map((order) =>
-            order.id === orderId ? { ...order, status: "Cancelado" } : order
+            order.id === orderId ? { ...order, status: "CANCELLED" } : order
           )
         );
         toast.success("Orden cancelada");
@@ -284,44 +283,52 @@ export default function MyAccount() {
               Mis Pedidos
             </h2>
             <div className="space-y-4">
-              {orders.map((order) => (
-                <div key={order.id} className="border-b pb-4">
-                  <p>
-                    <span className="font-semibold">Pedido #:</span> {order.id}
-                  </p>
-                  <p>
-                    <span className="font-semibold">Fecha:</span>{" "}
-                    {order.creation_date}
-                  </p>
-                  <p>
-                    <span className="font-semibold">Total:</span> $
-                    {/*order.total.toFixed(2)*/}
-                  </p>
-                  <p
-                    className={
-                      order.status === "DELIVERED"
-                        ? "text-green-400"
-                        : order.status === "CANCELL"
+              {/* Mostrar los pedidos */}
+              {orders.length === 0 ? (
+                <p className="text-lg font-semibold mb-4 text-gray-700">No hay pedidos registrados.</p>
+              ) : (
+                orders.map((order) => (
+                  <div key={order.id} className="border-b pb-4">
+                    <p>
+                      <span className="font-semibold">Pedido #:</span>{" "}
+                      {order.id}
+                    </p>
+                    <p>
+                      <span className="font-semibold">Fecha:</span>{" "}
+                      {order.creation_date}
+                    </p>
+                    <p>
+                      <span className="font-semibold">Total:</span> $
+                      {/*order.total.toFixed(2)*/}
+                    </p>
+                    <p
+                      className={
+                        order.status === "DELIVERED"
+                          ? "text-green-400"
+                          : order.status === "CANCELLED"
                           ? "text-red-400"
                           : order.status === "PENDING"
-                            ? "text-blue-400"
-                            : "text-gray-700"
-                    }
-                  >
-                    <span className="font-semibold text-gray-900">Estado:</span>{" "}
-                    {order.status}
-                  </p>
-                  {order.status !== "DELIVERED" &&
-                    order.status !== "CANCELL" && (
-                      <button
-                        onClick={() => handleCancelOrder(order.id)}
-                        className="mt-2 px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
-                      >
-                        Cancelar Pedido
-                      </button>
-                    )}
-                </div>
-              ))}
+                          ? "text-blue-400"
+                          : "text-gray-700"
+                      }
+                    >
+                      <span className="font-semibold text-gray-900">
+                        Estado:
+                      </span>{" "}
+                      {order.status}
+                    </p>
+                    {order.status !== "DELIVERED" &&
+                      order.status !== "CANCELLED" && (
+                        <button
+                          onClick={() => handleCancelOrder(order.id)}
+                          className="mt-2 px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                        >
+                          Cancelar Pedido
+                        </button>
+                      )}
+                  </div>
+                ))
+              )}
             </div>
           </div>
         )}
