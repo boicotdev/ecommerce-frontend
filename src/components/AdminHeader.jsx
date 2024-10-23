@@ -15,7 +15,7 @@ function AdminHeader() {
 
   return (
     <header className="sticky top-0 z-30 flex justify-between h-14 items-center bg-white px-4 shadow">
-      <Link to="/dashboard">
+      <Link to="/">
         <div className="flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"

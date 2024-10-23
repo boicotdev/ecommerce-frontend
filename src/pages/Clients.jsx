@@ -1,35 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getUserClients } from "../api/actions.api";
-
-// Datos de ejemplo (en una aplicación real, estos vendrían de una API)
-const sampleUsers = [
-  {
-    id: 1,
-    username: "Carlos Alberto Guzmán",
-    category: "Cliente",
-    age: 19,
-    date_joined: "2024-09-18",
-    email: "dummiemail@email.com",
-    phone: "3123456789",
-    address: "Bogotá 123",
-    gender: "Female",
-    avatar: "https://via.placeholder.com/50",
-  },
-  {
-    id: 2,
-    username: "Francisco el hombre",
-    category: "Cliente",
-    age: 39,
-    date_joined: "2024-09-18",
-    email: "dummiemail@email.com",
-    phone: "3123456789",
-    address: "Bogotá 123",
-    gender: "Female",
-    avatar: "https://via.placeholder.com/50",
-  },
-  // Otros usuarios de ejemplo...
-];
+import toast from "react-hot-toast";
 
 function Clients() {
   const [users, setUsers] = useState([]);
@@ -79,50 +51,18 @@ function Clients() {
     console.log(`Ver detalles del usuario con id: ${id}`);
   };
 
-  // Llamada a la API para obtener usuarios
-  {
-    /*useEffect(() => {
-    const retrieveClients = async () => {
-      try {
-        const response = await getUserClients();
-        if (response.status === 200) {
-          setUsers(response.data);
-        } else {
-          setUsers(sampleUsers); // Usa los datos de ejemplo si falla la API
-        }
-      } catch (error) {
-        console.error(error);
-        setUsers(sampleUsers); // Manejo de error usando datos de ejemplo
-      }
-    };
-    //retrieveClients();
-  }, []);*/
-  }
 
   useEffect(() => {
     const retrieveClients = async () => {
       try {
         const response = await getUserClients();
-        console.log("Respuesta de la API:", response); // Depuración
         if (response.status === 200) {
-          if (Array.isArray(response.data)) {
-            setUsers(response.data);
-            setFilteredUsers(response.data);
-            console.log("Clientes obtenidos de la API:", response.data); // Depuración
-          } else {
-            alert(
-              "El formato de la respuesta no es el esperado:",
-              response.data
-            );
-            setUsers(sampleUsers); // Usa los datos de ejemplo si el formato no es el esperado
-          }
-        } else {
-          alert("Error al obtener los clientes, status:", response.status);
-          setUsers(sampleUsers); // Fallback
+          setUsers(response.data);
+          setFilteredUsers(response.data);
+        
         }
       } catch (error) {
-        alert("Error en la llamada a la API:", error);
-        setUsers(sampleUsers); // Fallback en caso de error
+        toast.error("Error en la llamada a la API:", error);
       }
     };
     retrieveClients();

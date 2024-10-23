@@ -76,7 +76,7 @@ export default function ProductAdminDetails() {
                 Categoría
               </h3>
               <p className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-gray-50 rounded-md shadow-sm">
-                {product.category_id}
+                {product.category}
               </p>
             </div>
             <div className="flex items-center mb-4">

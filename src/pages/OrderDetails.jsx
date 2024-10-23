@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { localOrders } from "../assets/assets";
 import { getOrderDetails } from "../api/actions.api";
+import Spinner from "../components/Spinner";
 
 function OrderDetails() {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (id) {
-      const foundOrder = localOrders.find((item) => item.id == id);
-      setOrder(foundOrder || null);
-    }
-  }, [id]);
 
   useEffect(() => {
     const orderDetails = async () => {
@@ -20,16 +15,21 @@ function OrderDetails() {
         const response = await getOrderDetails(id);
         if (response.status === 200) {
           setOrder(response.data);
-          console.log(response.data);
+          setLoading(false);
         }
       } catch (error) {
+        setLoading(true);
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
     orderDetails();
   }, []);
 
-  if (!order) {
+
+
+  if (!order && !loading) {
     return (
       <div className="container mx-auto px-4 py-8 mt-20">
         <h1 className="text-2xl font-bold text-slate-700 mb-4">
@@ -44,6 +44,8 @@ function OrderDetails() {
         </div>
       </div>
     );
+  } else if(loading) {
+    return <Spinner />
   }
 
   return (
