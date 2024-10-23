@@ -26,6 +26,7 @@ import { useShop } from "./context/ShopContext";
 import { getProducts } from "./api/actions.api";
 import EditProduct from "./pages/EditProduct";
 import ProductAdminDetails from "./pages/ProductAdminDetails";
+import CreateUserClient from "./components/CreateUserClient";
 
 function App() {
   const { setProducts } = useShop();
@@ -74,6 +75,9 @@ function App() {
         <Route
           path="clientes"
           element={<AdminProtectedRoute element={<Clients />} />}
+        /><Route
+          path="clientes/create"
+          element={<AdminProtectedRoute element={<CreateUserClient />} />}
         />
         <Route
           path="orders/order-details/:id"

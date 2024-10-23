@@ -225,7 +225,7 @@ function RegisterForm({ callback, isSignup }) {
                 htmlFor="address"
                 className="block text-sm font-medium text-gray-700"
               >
-                Direccióm
+                Dirección
               </label>
               <input
                 type="text"

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 // import { products } from "../assets/assets";
 import ProductCard from "../components/ProductCard";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { capitalize } from "../utils/utils";
 import { useShop } from "../context/ShopContext";
 import { getProducts } from "../api/actions.api";
@@ -38,9 +38,22 @@ export default function ShopPage() {
   // Set initial category based on URL parameter
   useEffect(() => {
     if (category) {
-      setSelectedCategories([capitalize(category)]);
+      // Capitaliza la categoría de la URL
+      const capitalizedCategory = capitalize(category);
+      // Actualiza las categorías seleccionadas
+      setSelectedCategories([capitalizedCategory]);
+
+      // Filtra productos usando la categoría de la URL
+      const filtered = allProducts.filter(
+        (product) =>
+          (searchTerm === "" ||
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
+          (selectedCategories.length === 0 ||
+            [capitalizedCategory].includes(product.category))
+      );
+      setFilteredProducts(filtered);
     }
-  }, [category]);
+  }, [category, allProducts, searchTerm]);
 
   // Update filtered products whenever searchTerm or selectedCategories changes
   useEffect(() => {
@@ -55,12 +68,33 @@ export default function ShopPage() {
   }, [searchTerm, selectedCategories]);
 
   const handleCategoryChange = (category) => {
+    // const selectedCategories = new URLSearchParams(`${window.location}/?category=${category}`)
     setSelectedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
         : [...prev, category]
     );
   };
+
+  // const handleCategoryChange = (category) => {
+  //   // Actualiza las categorías seleccionadas
+  //   setSelectedCategories((prev) =>
+  //     prev.includes(category)
+  //       ? prev.filter((c) => c !== category) // Si la categoría ya está seleccionada, la elimina
+  //       : [...prev, category] // Si no está seleccionada, la añade
+  //   );
+
+  //   // Actualiza la URL para reflejar la categoría seleccionada
+  //   const searchParams = new URLSearchParams(window.location.search);
+  //   if (selectedCategories.includes(category)) {
+  //     searchParams.delete('category'); // Si se está deseleccionando, eliminar el parámetro
+  //   } else {
+  //     searchParams.set('category', category); // Si se está seleccionando, añadir o actualizar el parámetro
+  //   }
+
+  //   // Actualiza la URL sin recargar la página
+  //   window.history.replaceState({}, '', `${window.location.pathname}?${searchParams.toString()}`);
+  // };
 
   return (
     <div className="container mx-auto px-4 py-8 bg-gray-50 mt-14">
@@ -85,18 +119,20 @@ export default function ShopPage() {
         </h2>
         <div className="flex flex-wrap gap-4">
           {categories.map((category) => (
-            <label
-              key={category}
-              className="inline-flex items-center cursor-pointer bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
-            >
-              <input
-                type="checkbox"
-                checked={selectedCategories.includes(category)}
-                onChange={() => handleCategoryChange(category)}
-                className="form-checkbox h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
-              />
-              <span className="ml-2 text-gray-700">{category}</span>
-            </label>
+            <Link to={`/shop/?category=${category}`}>
+              <label
+                key={category}
+                className="inline-flex items-center cursor-pointer bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedCategories.includes(category)}
+                  onChange={() => handleCategoryChange(category)}
+                  className="form-checkbox h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
+                />
+                <span className="ml-2 text-gray-700">{category}</span>
+              </label>
+            </Link>
           ))}
         </div>
       </div>
@@ -108,7 +144,7 @@ export default function ShopPage() {
 
       <ProductSection
         title="Más Vendidos"
-        products={filteredProducts.filter((p) => p.bestSeller)}
+        products={filteredProducts.filter((p) => p.best_seller)}
       />
 
       <ProductSection title="Todos los Productos" products={filteredProducts} />
@@ -118,7 +154,7 @@ export default function ShopPage() {
 
 function ProductSection({ title, products }) {
   return (
-    <section className="mb-12">
+    <section className="mb-12" key={Math.ceil(Math.random() * 10)}>
       <h2 className="text-3xl font-semibold mb-6 text-gray-800 border-b-2 border-blue-500 pb-2">
         {title}
       </h2>

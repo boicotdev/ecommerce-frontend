@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { products } from "../assets/assets";
 import { useCart } from "../context/CartContext";
-import { formatPrice } from "../utils/utils";
+import { formatPrice, saveState } from "../utils/utils";
 import { apiImageURL } from "../api/baseUrls";
 import { retrieveProductDetails } from "../api/actions.api";
 import Spinner from "../components/Spinner.jsx";
@@ -33,17 +33,19 @@ function ProductDetails() {
         // Si el producto no está en el carrito, lo añadimos con cantidad 1
         updatedItems = [...prevItems, { ...item, quantity: 1 }];
       }
-
       // Actualizamos `orders` basándonos en el estado actualizado de `items`
-      setOrders([...updatedItems]);
-
+      setOrders((prev) => {
+        [...updatedItems];
+        saveState ("orders", updatedItems);
+      });
       return updatedItems; // Devuelve el estado actualizado para `items`
     });
   };
 
-  const addProductToCart = (item) => {
+  const addProductAtToCart = (item) => {
     checkItem(item);
   };
+
 
   useEffect(() => {
     const retrieveProduct = async () => {
@@ -107,7 +109,7 @@ function ProductDetails() {
                 ${formatPrice(product.price)}
               </span>
               <button
-                onClick={() => addProductToCart(product)}
+                onClick={() => addProductAtToCart(product)}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
               >
                 Añadir al carrito

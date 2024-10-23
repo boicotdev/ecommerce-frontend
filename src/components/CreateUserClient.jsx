@@ -1,25 +1,29 @@
 import { useState, useEffect } from "react";
-import { retrieveProductDetails, updateProduct } from "../api/actions.api";
 import { resetForm } from "../utils/utils";
 import { toast } from "react-hot-toast";
-import { retrieveCategoryList } from "../api/actions.api";
-import { useNavigate, useParams } from "react-router-dom";
 
-const EditProduct = () => {
-  const [categories, setCategories] = useState([]);
-  const [product, setProduct] = useState({});
+import { useNavigate } from "react-router-dom";
 
-  const { sku } = useParams();
-  const navigate = useNavigate();
+const CreateUserClient = () => {
+  const categories = ["Administrator", "Cliente"];
+  const [userClient, setUserClient] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    password: "",
+    rol: "",
+    avatar: null,
+  });
 
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProduct((prevProduct) => ({
-      ...prevProduct,
+    setUserClient((prevUser) => ({
+      ...prevUser,
       [name]: value,
     }));
   };
@@ -28,7 +32,8 @@ const EditProduct = () => {
     const file = e.target.files[0];
     if (file) {
       setImage(file);
-      setProduct({ ...product, main_image: file });
+
+      setUserClient({ ...userClient, avatar: file });
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
@@ -37,82 +42,37 @@ const EditProduct = () => {
     }
   };
 
-  const registerProductUpdated = async () => {
+  const registerClient = async () => {
     try {
-      if (!image) {
-        const { main_image, ...productData } = product;
-        const response = await updateProduct(productData);
-        if (response.status === 200) {
-          toast.success("Producto actualizado exitosamente");
-          resetForm("product-update__form");
-          setImage(null);
-          setLoading(false);
-          navigate("/shop/products");
-        }
-      } else {
-        const response = await updateProduct(product);
-        if (response.status === 200) {
-          toast.success("Producto actualizado exitosamente");
-          resetForm("product-update__form");
-          setImage(null);
-          setLoading(false);
-          navigate("/shop/products");
-        }
+      const response = await createUserClient(product);
+      if (response.status === 201) {
+        toast.success("Producto creado exitosamente");
+        resetForm("product-create__form");
+        navigate("/shop/products");
+        setImage(null);
       }
     } catch (error) {
-      const message = error.response?.data?.message;
-      toast.error("Product");
-      if (message) {
-        toast.error(message);
-      }
-      setLoading(false);
+      const { message } = error.response.data;
+      toast.error(message);
+
+      console.error(error);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    registerProductUpdated();
+
+    registerClient();
   };
-
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const response = await retrieveCategoryList();
-        if (response.status === 200) {
-          setCategories(response.data);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    loadCategories();
-  }, []);
-
-  const loadProduct = async () => {
-    try {
-      const response = await retrieveProductDetails(sku);
-      if (response.status === 200) {
-        setProduct(response.data);
-        setPreview(`http://127.0.0.1:8000/${response.data.main_image}`);
-      }
-    } catch (error) {
-      console.error("Error fetching product:", error);
-    }
-  };
-
-  useEffect(() => {
-    loadProduct();
-  }, [sku]);
 
   return (
     <div className="p-2 md:p-4 lg:p-6 mt-20 mb-12">
-      {/* TODO: show a Spinner when data is loading */}
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg border border-gray-200">
         <h2 className="text-3xl sm:text-base font-bold mb-6 text-gray-800 border-b pb-2">
-          Editar Producto
+          Crear Nuevo Cliente
         </h2>
         <form
-          id="product-update__form"
+          id="client-create__form"
           onSubmit={handleSubmit}
           className="space-y-6"
         >
@@ -121,7 +81,7 @@ const EditProduct = () => {
               htmlFor="main_image"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Imagen del Producto
+              Imagen de perfíl
             </label>
             <input
               type="file"
@@ -154,13 +114,13 @@ const EditProduct = () => {
               htmlFor="name"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Nombre del Producto
+              Nombres
             </label>
             <input
               type="text"
               id="name"
               name="name"
-              value={product.name}
+              value={userClient.name}
               onChange={handleChange}
               required
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
@@ -170,20 +130,18 @@ const EditProduct = () => {
 
           <div>
             <label
-              htmlFor="price"
+              htmlFor="email"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Precio
+              Email
             </label>
             <input
-              type="number"
-              id="price"
-              name="price"
-              value={product.price}
+              type="email"
+              id="email"
+              name="email"
+              value={userClient.email}
               onChange={handleChange}
               required
-              min="0"
-              step="0.01"
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
               focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
@@ -191,53 +149,34 @@ const EditProduct = () => {
 
           <div>
             <label
-              htmlFor="sku"
+              htmlFor="address"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              SKU
+              Dirección
             </label>
             <input
               type="text"
-              id="sku"
-              name="sku"
-              value={product.sku}
+              id="address"
+              name="address"
+              value={userClient.address}
               onChange={handleChange}
               required
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
               focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
-
-          <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Descripción
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={product.description}
-              onChange={handleChange}
-              rows="3"
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
-              focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-            ></textarea>
-          </div>
-
           <div>
             <label
               htmlFor="stock"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Stock
+              Teléfono
             </label>
             <input
-              type="number"
-              id="stock"
-              name="stock"
-              value={product.stock}
+              type="text"
+              id="phone"
+              name="phone"
+              value={userClient.phone}
               onChange={handleChange}
               required
               min="0"
@@ -248,24 +187,43 @@ const EditProduct = () => {
 
           <div>
             <label
-              htmlFor="category_id"
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Contraseña
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={userClient.password}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+              focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="rol"
               className="block text-sm font-medium text-gray-700"
             >
               Categoria
             </label>
             <select
-              id="category_id"
-              name="category_id" // Cambié 'unit' a 'category_id'
-              value={product.category_id} // Se asegura de que el valor sea category_id
-              onChange={handleChange} // Asegúrate de que handleChange maneje category_id
+              id="rol"
+              name="rol"
+              // value={product.category_id}
+              onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
-              <option value="">Seleccione una categoría</option>
+              <option value="">Seleccione un rol de usuario</option>
               {categories &&
                 categories.length > 0 &&
                 categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
+                  <option key={cat} value={cat}>
+                    {cat}
                   </option>
                 ))}
             </select>
@@ -276,7 +234,7 @@ const EditProduct = () => {
               type="submit"
               className="px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300"
             >
-              Guardar Cambios
+              Crear Usuario
             </button>
           </div>
         </form>
@@ -285,4 +243,4 @@ const EditProduct = () => {
   );
 };
 
-export default EditProduct;
+export default CreateUserClient;
