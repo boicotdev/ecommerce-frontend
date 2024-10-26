@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import { useShop } from "../context/ShopContext";
 import { useEffect, useState } from "react";
-import { getProducts } from "../api/actions.api";
+import { getProducts, getUserComments } from "../api/actions.api";
 
 function LatestProducts() {
-  const { setProducts } = useShop();
+  const { setProducts, setTestimonials } = useShop();
   const [loading, setLoading] = useState(true);
   const [lastProducts, setLastProducts] = useState([]);
 
@@ -25,6 +25,20 @@ function LatestProducts() {
       }
     };
     loadProducts();
+  }, []);
+
+  useEffect(() => {
+    const loadComments = async () => {
+      try {
+        const response = await getUserComments();
+        if (response.status === 200) {
+          setTestimonials(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    loadComments();
   }, []);
 
   return (

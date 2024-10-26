@@ -8,6 +8,7 @@ import {
 import { loadState, validateData } from "../utils/utils";
 import { apiImageURL } from "../api/baseUrls";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 export default function MyAccount() {
   const [userData, setUserData] = useState({});
@@ -114,7 +115,7 @@ export default function MyAccount() {
                   name="username"
                   value={userData.username}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
               <div>
@@ -130,7 +131,7 @@ export default function MyAccount() {
                   name="first_name"
                   value={userData.first_name}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
               <div>
@@ -146,7 +147,7 @@ export default function MyAccount() {
                   name="last_name"
                   value={userData.last_name}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
               <div>
@@ -162,7 +163,7 @@ export default function MyAccount() {
                   name="email"
                   value={userData.email}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
               <div>
@@ -178,7 +179,7 @@ export default function MyAccount() {
                   name="phone"
                   value={userData.phone}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
               <div>
@@ -194,7 +195,7 @@ export default function MyAccount() {
                   name="address"
                   value={userData.address}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
               {userData && userData.is_superuser && (
@@ -208,7 +209,7 @@ export default function MyAccount() {
                   <select
                     name="rol"
                     onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   >
                     <option value="">Seleccione un rol</option>
                     <option value="Administrador">Administrador</option>{" "}
@@ -278,59 +279,78 @@ export default function MyAccount() {
 
         {/* Gestión de Pedidos */}
         {orders && userData && !userData.is_superuser && (
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-700">
-              Mis Pedidos
-            </h2>
-            <div className="space-y-4">
-              {/* Mostrar los pedidos */}
-              {orders.length === 0 ? (
-                <p className="text-lg font-semibold mb-4 text-gray-700">No hay pedidos registrados.</p>
-              ) : (
-                orders.map((order) => (
-                  <div key={order.id} className="border-b pb-4">
-                    <p>
-                      <span className="font-semibold">Pedido #:</span>{" "}
-                      {order.id}
-                    </p>
-                    <p>
-                      <span className="font-semibold">Fecha:</span>{" "}
-                      {order.creation_date}
-                    </p>
-                    <p>
-                      <span className="font-semibold">Total:</span> $
-                      {/*order.total.toFixed(2)*/}
-                    </p>
-                    <p
-                      className={
-                        order.status === "DELIVERED"
-                          ? "text-green-400"
-                          : order.status === "CANCELLED"
-                          ? "text-red-400"
-                          : order.status === "PENDING"
-                          ? "text-blue-400"
-                          : "text-gray-700"
-                      }
-                    >
-                      <span className="font-semibold text-gray-900">
-                        Estado:
-                      </span>{" "}
-                      {order.status}
-                    </p>
-                    {order.status !== "DELIVERED" &&
-                      order.status !== "CANCELLED" && (
-                        <button
-                          onClick={() => handleCancelOrder(order.id)}
-                          className="mt-2 px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
-                        >
-                          Cancelar Pedido
-                        </button>
-                      )}
-                  </div>
-                ))
-              )}
+          <>
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+                Mis Pedidos
+              </h2>
+              <div className="space-y-4">
+                {/* Mostrar los pedidos */}
+                {orders.length === 0 ? (
+                  <p className="text-lg font-semibold mb-4 text-gray-700">
+                    No hay pedidos registrados.
+                  </p>
+                ) : (
+                  orders.map((order) => (
+                    <div key={order.id} className="border-b pb-4">
+                      <p>
+                        <span className="font-semibold">Pedido #:</span>{" "}
+                        {order.id}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Fecha:</span>{" "}
+                        {order.creation_date}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Total:</span> $
+                        {/*order.total.toFixed(2)*/}
+                      </p>
+                      <p
+                        className={
+                          order.status === "DELIVERED"
+                            ? "text-green-400"
+                            : order.status === "CANCELLED"
+                            ? "text-red-400"
+                            : order.status === "PENDING"
+                            ? "text-blue-400"
+                            : "text-gray-700"
+                        }
+                      >
+                        <span className="font-semibold text-gray-900">
+                          Estado:
+                        </span>{" "}
+                        {order.status}
+                      </p>
+                      {order.status !== "DELIVERED" &&
+                        order.status !== "CANCELLED" && (
+                          <button
+                            onClick={() => handleCancelOrder(order.id)}
+                            className="mt-2 px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                          >
+                            Cancelar Pedido
+                          </button>
+                        )}
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
-          </div>
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+                Mis Comentarios
+              </h2>
+              <div className="space-y-4">
+                {/* Mostrar los comentarios del usuario */}
+
+                <Link
+                  to="/testimonials/create/"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 w-fit focus:ring-blue-500 focus:ring-opacity-50"
+                >
+                  Crear un comentario
+                </Link>
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>

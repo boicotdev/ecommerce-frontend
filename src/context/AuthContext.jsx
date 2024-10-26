@@ -1,7 +1,7 @@
 import { useState, createContext, useContext } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { tokenObtain } from "../api/actions.api";
+import { logout, tokenObtain } from "../api/actions.api";
 import { resetForm, saveState } from "../utils/utils";
 const AuthContext = createContext();
 
@@ -20,7 +20,8 @@ export const AuthContextProvider = ({ children }) => {
       if (response.status === 200) {
         setIsLoggedIn(true);
         setToken(response.data.access);
-        const { username, id, is_superuser, access, refresh, avatar } = response.data;
+        const { username, id, is_superuser, access, refresh, avatar } =
+          response.data;
         setUser({
           username,
           id,
@@ -29,7 +30,14 @@ export const AuthContextProvider = ({ children }) => {
           refresh,
           avatar,
         });
-        saveState("user", { username, is_superuser, id, access, refresh, avatar });
+        saveState("user", {
+          username,
+          is_superuser,
+          id,
+          access,
+          refresh,
+          avatar,
+        });
         if (is_superuser) {
           setIsAdmin(true);
           navigate("/dashboard");
@@ -44,13 +52,22 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setIsAdmin(false);
-    setToken("");
-    navigate("/");
-    toast.success("Sesión cerrada correctamente");
-    saveState("user", {});
+  const handleLogout = async () => {
+    try {
+      const response = await logout();
+      if (response.status === 200) {
+        saveState("user", {});
+        navigate("/");
+        setToken("");
+        setIsLoggedIn(false);
+        setIsAdmin(false);
+        toast.success("Sesión cerrada correctamente");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Error al cerrar sesión");
+      return;
+    }
   };
 
   return (
@@ -60,7 +77,7 @@ export const AuthContextProvider = ({ children }) => {
         setIsLoggedIn,
         handleLogin,
         handleLogout,
-        user, 
+        user,
         setUser,
         username,
         setUsername,

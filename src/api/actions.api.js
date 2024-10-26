@@ -3,42 +3,49 @@ import { jwtDecode } from "jwt-decode";
 import { loadState, saveState } from "../utils/utils";
 
 import { apiURL } from "../api/baseUrls";
+import toast from "react-hot-toast";
 
 export const authAxios = axios.create({
   baseURL: apiURL,
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // para manejar cookies en las solicitudes
+  withCredentials: true,
 });
 
 // Interceptor para agregar el token de autenticación a las solicitudes
 authAxios.interceptors.request.use(
   async (config) => {
-    const { access, refresh } = loadState("user");
+    const user = loadState("user");
+    const { access, refresh } = user;
     if (access !== undefined && access !== null) {
       config.headers.Authorization = `Bearer ${access}`;
       const info = jwtDecode(access);
       const today = new Date();
-      const tokenExpiry = new Date(info.exp * 1000); // La propiedad exp está en segundos, por lo que multiplicas por 1000 para obtener milisegundos
+      const tokenExpiry = new Date(info.exp * 1000);
       const limit = 5 * 60; // 5 minutos en segundos
 
       if (tokenExpiry - today <= limit * 1000) {
         // Renovar el token
         try {
-          const response = await axios.post(`${apiURL}/token/refresh/`, {
+          // Realiza la petición para obtener un nuevo token
+          toast.success("El token se va a renovar");
+          const response = await axios.post(`${apiURL}/users/token/refresh/`, {
             refresh,
           });
 
           const newToken = response.data.access;
+          // Actualizar el token en el encabezado de la solicitud
+          const refreshToken = response.data.refresh;
+          console.log(response.data);
           config.headers.Authorization = `Bearer ${newToken}`;
 
           // Actualizar el token en el almacenamiento local
-          saveState("user", { token: newToken, user: info.username });
+          saveState("user", {...user, access: newToken, refresh: refreshToken});
         } catch (error) {
           // Manejar el error de renovación (puedes redirigir a la página de inicio de sesión, por ejemplo)
           console.error("Error during token refresh:", error);
-          // Puedes manejar el error según tus necesidades, por ejemplo, redirigir a la página de inicio de sesión
+          toast.error("Error during token refresh");
           window.location.href = "/login";
         }
       }
@@ -110,6 +117,11 @@ export const tokenObtain = (data) => {
   return authAxios.post("users/token/obtain/", data);
 };
 
+//logout
+export const logout = () => {
+  return authAxios.post("users/logout/");
+};
+
 //orders user list
 export const retrieveUserOrderList = (userId) => {
   return authAxios.get(`carts/orders/list/?user=${userId}`);
@@ -133,4 +145,14 @@ export const getOrderDetails = (orderId) => {
 //retrieve all clients from database
 export const getUserClients = () => {
   return authAxios.get("dashboard/clients/");
+};
+
+//testimonial creation
+export const createTestimonial = (data) => {
+  return authAxios.post("testimonials/create/", data);
+};
+
+//retrieve all user comments from database
+export const getUserComments = () => {
+  return authAxios.get("testimonials/");
 };
