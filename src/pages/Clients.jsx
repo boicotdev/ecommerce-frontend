@@ -14,17 +14,17 @@ function Clients() {
 
   // Filtrado de usuarios por categoría y búsqueda
   {
-    /* useEffect(() => {
-    const results = users.filter(
-      (user) =>
-        user.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (selectedCategory === "" ||
-          selectedCategory === "Todos" ||
-          user.rol === selectedCategory)
-    );
-    setFilteredUsers(results);
-    setCurrentPage(1);
-  }, [searchTerm, selectedCategory, users]);*/
+    useEffect(() => {
+      const results = users.filter(
+        (user) =>
+          user.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          (selectedCategory === "" ||
+            selectedCategory === "Todos" ||
+            user.rol === selectedCategory)
+      );
+      setFilteredUsers(results);
+      setCurrentPage(1);
+    }, [searchTerm, selectedCategory, users]);
   }
 
   // Paginación
@@ -51,7 +51,6 @@ function Clients() {
     console.log(`Ver detalles del usuario con id: ${id}`);
   };
 
-
   useEffect(() => {
     const retrieveClients = async () => {
       try {
@@ -59,7 +58,6 @@ function Clients() {
         if (response.status === 200) {
           setUsers(response.data);
           setFilteredUsers(response.data);
-        
         }
       } catch (error) {
         toast.error("Error en la llamada a la API:", error);

@@ -95,3 +95,17 @@ export function setUserName(firstname, lastname) {
   const username = [...firstnameSplit, ...lastnameSplit].join(".");
   return username;
 }
+
+
+
+/**
+ * 
+ * @param {*} date 
+ * @returns new Date object
+ */
+export const formatDate = (date) => {
+  const tempDate = new Date(date);
+  return tempDate.toISOString().slice(0, 10);
+};
+
+export default formatDate;

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import AdminHeader from "./components/AdminHeader";
 import Footer from "./components/Footer";
@@ -20,18 +20,13 @@ import AdminProtectedRoute from "./routes/ProtectedAdminRoute";
 import { useAuth } from "./context/AuthContext";
 import { useCart } from "./context/CartContext";
 import PrivateUserRoute from "./routes/ProtectedUserRoute";
-
 import { loadState } from "./utils/utils";
-import { useShop } from "./context/ShopContext";
-import { getProducts } from "./api/actions.api";
 import EditProduct from "./pages/EditProduct";
 import ProductAdminDetails from "./pages/ProductAdminDetails";
 import CreateUserClient from "./components/CreateUserClient";
+import TestimonialsCreate from "./pages/TestimonialsCreate";
 
 function App() {
-  const { setProducts } = useShop();
-  const navigate = useNavigate();
-
   const { isAdmin, isLoggedIn, setIsLoggedIn, setUser, setIsAdmin } = useAuth();
   const { setOrders, setItems } = useCart();
 
@@ -75,7 +70,8 @@ function App() {
         <Route
           path="clientes"
           element={<AdminProtectedRoute element={<Clients />} />}
-        /><Route
+        />
+        <Route
           path="clientes/create"
           element={<AdminProtectedRoute element={<CreateUserClient />} />}
         />
@@ -94,6 +90,10 @@ function App() {
         <Route
           path="shop/products/"
           element={<AdminProtectedRoute element={<ProductList />} />}
+        />
+        <Route
+          path="testimonials/create/"
+          element={<PrivateUserRoute element={<TestimonialsCreate />} />}
         />
         {/* Routes without authentication required */}
         <Route path="/" element={<HomePage />} />
