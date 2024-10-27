@@ -4,6 +4,8 @@ import {
   updateUserInfo,
   retrieveUserOrderList,
   orderCancell,
+  getUserTestimonials,
+  deleteUserTestimonial,
 } from "../api/actions.api";
 import { loadState, validateData } from "../utils/utils";
 import { apiImageURL } from "../api/baseUrls";
@@ -14,6 +16,8 @@ export default function MyAccount() {
   const [userData, setUserData] = useState({});
   const [orders, setOrders] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+
+  const [userTestimonials, setUserTestimonials] = useState([]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -61,11 +65,47 @@ export default function MyAccount() {
     }
   };
 
+  const handleDeleteTestimonial = async (testimonialId) => {
+    if (confirm("Está seguro que desea eliminar el testimonio")) {
+      try {
+        const { id } = loadState("user");
+        const response = await deleteUserTestimonial({
+          user: id,
+          testimonial: testimonialId,
+        });
+        if (response.status === 204) {
+          toast.success("Comentario eliminado exitosamente");
+
+          setUserTestimonials((prevTestimonials) =>
+            prevTestimonials.filter(
+              (testimonial) => testimonial.id !== testimonialId
+            )
+          );
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Hubo un error al eliminar el comentario");
+      }
+    }
+  };
+
   const retrieveOrders = async (id) => {
     try {
       const response = await retrieveUserOrderList(id);
       if (response.status === 200) {
         setOrders(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const userCommentsRetrieve = async () => {
+    try {
+      const { id } = loadState("user");
+      const response = await getUserTestimonials(id);
+      if (response.status === 200) {
+        setUserTestimonials(response.data);
       }
     } catch (error) {
       console.error(error);
@@ -85,6 +125,7 @@ export default function MyAccount() {
         console.error(error);
       }
     };
+    userCommentsRetrieve();
     loadUserInfo();
   }, []);
 
@@ -341,6 +382,40 @@ export default function MyAccount() {
               </h2>
               <div className="space-y-4">
                 {/* Mostrar los comentarios del usuario */}
+                {userTestimonials && userTestimonials.length > 0 ? (
+                  userTestimonials.map((testimonial) => (
+                    <div key={testimonial.id} className="border-b pb-4">
+                      <p>
+                        <span className="font-semibold">Comentario #:</span>{" "}
+                        {testimonial.id}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Fecha:</span>{" "}
+                        {testimonial.pub_date}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Comentario:</span>{" "}
+                        {testimonial.raw_comment}
+                      </p>
+                      <button
+                        // onClick={() => handleDeleteTestimonial(testimonial.id)}
+                        className="mt-2 mr-2 px-3 py-1 bg-orange-500 text-white text-sm rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTestimonial(testimonial.id)}
+                        className="mt-2 px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-lg font-semibold mb-4 text-gray-700">
+                    No hay comentarios registrados.
+                  </p>
+                )}
 
                 <Link
                   to="/testimonials/create/"
