@@ -156,3 +156,14 @@ export const createTestimonial = (data) => {
 export const getUserComments = () => {
   return authAxios.get("testimonials/");
 };
+
+
+//retrieve all testimonials of a user
+export const getUserTestimonials = (userId) => {
+  return authAxios.get(`testimonials/user/?user=${userId}`);
+};
+
+//delete a user testimonials
+export const deleteUserTestimonial = (data) => {
+  return authAxios.delete(`testimonials/testimonial/remove/`, { data });
+};
