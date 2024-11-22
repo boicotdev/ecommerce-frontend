@@ -23,7 +23,6 @@ export default function TestimonialsCreate() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     validateData(testimonial);
-    console.log(testimonial);
     // Create testimonial
     try {
       const response = await createTestimonial(testimonial);
