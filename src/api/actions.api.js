@@ -122,6 +122,11 @@ export const logout = () => {
   return authAxios.post("users/logout/");
 };
 
+//orders user create
+export const createOrder = (data) => {
+  return authAxios.post("carts/orders/create/", data);
+};
+
 //orders user list
 export const retrieveUserOrderList = (userId) => {
   return authAxios.get(`carts/orders/list/?user=${userId}`);
@@ -166,4 +171,9 @@ export const getUserTestimonials = (userId) => {
 //delete a user testimonials
 export const deleteUserTestimonial = (data) => {
   return authAxios.delete(`testimonials/testimonial/remove/`, { data });
+};
+
+// create payment preference
+export const createPaymentPreference = (items) => {
+  return authAxios.post("payment/preferences/", items);
 };

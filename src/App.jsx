@@ -25,6 +25,7 @@ import EditProduct from "./pages/EditProduct";
 import ProductAdminDetails from "./pages/ProductAdminDetails";
 import CreateUserClient from "./components/CreateUserClient";
 import TestimonialsCreate from "./pages/TestimonialsCreate";
+import TransactionPage from "./pages/TransactionPage";
 
 function App() {
   const { isAdmin, isLoggedIn, setIsLoggedIn, setUser, setIsAdmin } = useAuth();
@@ -55,7 +56,11 @@ function App() {
       <Routes>
         <Route
           path="checkout"
-          element={<PrivateUserRoute element={<CheckoutPage />} />}
+          element={
+            <PrivateUserRoute
+              element={<CheckoutPage totalPriceWithDelivery={1890} />}
+            />
+          }
         />
         <Route
           path="account"
@@ -78,6 +83,10 @@ function App() {
         <Route
           path="orders/order-details/:id"
           element={<PrivateUserRoute element={<OrderDetails />} />}
+        />
+        <Route
+          path="payments/succes/"
+          element={<PrivateUserRoute element={<TransactionPage />} />}
         />
         <Route
           path="comments/create-comment/:product-id"

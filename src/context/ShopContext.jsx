@@ -1,5 +1,4 @@
 import { createContext, useState, useContext } from "react";
-import { testimonials } from "../assets/assets";
 
 const ShopContext = createContext();
 
