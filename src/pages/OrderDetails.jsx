@@ -15,6 +15,7 @@ function OrderDetails() {
         const response = await getOrderDetails(id);
         if (response.status === 200) {
           setOrder(response.data);
+          console.log(response)
           setLoading(false);
         }
       } catch (error) {

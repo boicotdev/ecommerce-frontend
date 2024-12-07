@@ -132,14 +132,7 @@ function Header() {
                 Nosotros
               </Link>
             </li>
-            <li>
-              <Link
-                to="/account"
-                className="hover:text-white transition-colors"
-              >
-                Mi cuenta
-              </Link>
-            </li>
+
             <li>
               <Link
                 to="/contact"
@@ -158,6 +151,16 @@ function Header() {
                 </Link>
               </li>
             )}
+
+            <li>
+              <Link
+                to="/account"
+                onClick={() => setIsOpen(false)}
+                className="hover:text-white transition-colors py-2 px-6 rounded-2xl bg-indigo-500 hover:bg-indigo-600"
+              >
+                Mi cuenta
+              </Link>
+            </li>
             {isLoggedIn ? (
               <li>
                 <Link
@@ -168,16 +171,7 @@ function Header() {
                   Salir
                 </Link>
               </li>
-            ) : (
-              <li>
-                <Link
-                  to="/authenticate"
-                  className="hover:text-white transition-colors py-2 px-6 rounded-2xl bg-indigo-500 hover:bg-indigo-600"
-                >
-                  Login
-                </Link>
-              </li>
-            )}
+            ) : null}
           </ul>
         </nav>
 
@@ -217,15 +211,7 @@ function Header() {
                   Nosotros
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/account"
-                  onClick={() => setIsOpen(false)}
-                  className="hover:text-slate-300 transition-colors"
-                >
-                  Mi cuenta
-                </Link>
-              </li>
+
               <li>
                 <Link
                   to="/contact"
@@ -246,6 +232,16 @@ function Header() {
                   </Link>
                 </li>
               )}
+
+              <li>
+                <Link
+                  to="/account"
+                  onClick={() => setIsOpen(false)}
+                  className="hover:text-white transition-colors py-2 px-6 rounded-2xl bg-indigo-500 hover:bg-indigo-600"
+                >
+                  Mi cuenta
+                </Link>
+              </li>
               {isLoggedIn ? (
                 <li>
                   <Link
@@ -256,16 +252,7 @@ function Header() {
                     Salir
                   </Link>
                 </li>
-              ) : (
-                <li>
-                  <Link
-                    to="/authenticate"
-                    className="hover:text-white transition-colors py-2 px-6 rounded-2xl bg-indigo-500 hover:bg-indigo-600"
-                  >
-                    Login
-                  </Link>
-                </li>
-              )}
+              ) : null}
             </ul>
           </nav>
         )}
