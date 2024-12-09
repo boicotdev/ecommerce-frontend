@@ -109,3 +109,11 @@ export const formatDate = (date) => {
 };
 
 export default formatDate;
+
+
+export function checkStateWhenUserOpenedANewWindow() {
+  const user = JSON.parse(localStorage.getItem('user')) || {};
+  const { username, is_superuser } = user;
+  const userSession = user && username;
+  return  {userSession, is_superuser}
+}
