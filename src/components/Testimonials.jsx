@@ -1,16 +1,20 @@
-import { Link } from "react-router-dom";
-import { apiImageURL } from "../api/baseUrls";
+import { useEffect } from "react";
 import { useShop } from "../context/ShopContext";
-import { formatDate } from "../utils/utils";
-import { useAuth } from "../context/AuthContext";
+import Paginator from "./Paginator";
+// import { Link } from "react-router-dom";
+// import { apiImageURL } from "../api/baseUrls";
+// import { formatDate } from "../utils/utils";
+// import { useAuth } from "../context/AuthContext";
 
 function Testimonials() {
   const { testimonials } = useShop();
-  const { isLoggedIn, isAdmin } = useAuth();
-
+  // const { isLoggedIn, isAdmin } = useAuth();
+  useEffect(() => {
+    console.log("Testimonials", testimonials);
+  }, []);
   return (
     <section className="bg-gray-100 py-16">
-      <div className="container mx-auto px-4">
+      {/* <div className="container mx-auto px-4">
         <h2 className="text-center text-4xl font-bold text-gray-800 mb-12">
           Testimonios
         </h2>
@@ -77,6 +81,15 @@ function Testimonials() {
             Crear un comentario
           </Link>
         )}
+      </div> */}
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-2 gap-8">
+          <Paginator
+            sectionTitle="Mis comentarios"
+            items={testimonials}
+            perPage={7}
+          />
+        </div>
       </div>
     </section>
   );

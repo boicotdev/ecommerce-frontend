@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Spinner from "../components/Spinner";
+import { checkStateWhenUserOpenedANewWindow } from "../utils/utils";
 
 function PrivateUserRoute({ element }) {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, setIsLoggedIn,  setIsAdmin } = useAuth();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,8 +22,24 @@ function PrivateUserRoute({ element }) {
     return <Spinner />
   }
 
-  // Renderiza el componente si el usuario está autenticado
-  return isLoggedIn ? element : <Navigate to="/authenticate" />;
+  const {userSession, is_superuser} = checkStateWhenUserOpenedANewWindow();
+  console.log('is_superuser', is_superuser);
+  console.log('userSession', userSession);
+  console.log("isLoggedIn", isLoggedIn)
+  if(isLoggedIn && userSession && is_superuser) {
+    setIsAdmin(true);
+    console.log('is_superuser', is_superuser);
+    console.log('userSession', userSession);
+    
+  } else  if (userSession && !is_superuser) {
+    setIsAdmin(false);
+    setIsLoggedIn(true);
+  } else {
+    setIsAdmin(false);
+    setIsLoggedIn(false);
+    return <Navigate to="/authenticate" />;
+  }
+  return userSession ? element : <Navigate to="/authenticate" />;
 }
 
 export default PrivateUserRoute;

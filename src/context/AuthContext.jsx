@@ -10,9 +10,9 @@ export const AuthContextProvider = ({ children }) => {
   const [username, setUsername] = useState("");
   const [isAdmin, setIsAdmin] = useState(true);
   const [token, setToken] = useState("");
-  const navigate = useNavigate();
-
   const [user, setUser] = useState({});
+  
+  const navigate = useNavigate();
 
   const handleLogin = async (userData) => {
     try {
@@ -62,6 +62,8 @@ export const AuthContextProvider = ({ children }) => {
         setIsLoggedIn(false);
         setIsAdmin(false);
         toast.success("Sesión cerrada correctamente");
+        setUser({})
+        window.location.reload();
       }
     } catch (error) {
       console.log(error);
