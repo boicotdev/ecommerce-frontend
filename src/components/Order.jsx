@@ -1,5 +1,3 @@
-import React from "react";
-
 function Order({ order, handleCancelOrder }) {
   return (
     <div className="border-b pb-4">

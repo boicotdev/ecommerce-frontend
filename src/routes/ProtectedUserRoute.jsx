@@ -23,13 +23,8 @@ function PrivateUserRoute({ element }) {
   }
 
   const {userSession, is_superuser} = checkStateWhenUserOpenedANewWindow();
-  console.log('is_superuser', is_superuser);
-  console.log('userSession', userSession);
-  console.log("isLoggedIn", isLoggedIn)
   if(isLoggedIn && userSession && is_superuser) {
     setIsAdmin(true);
-    console.log('is_superuser', is_superuser);
-    console.log('userSession', userSession);
     
   } else  if (userSession && !is_superuser) {
     setIsAdmin(false);

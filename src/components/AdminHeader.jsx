@@ -10,9 +10,6 @@ function AdminHeader() {
   const toggleUserOptions = () =>
     setAccountDropdownOpen(!isAccountDropdownOpen);
 
-
-
-
   return (
     <header className="sticky top-0 z-30 flex justify-between h-14 items-center bg-white px-4 shadow">
       <Link to="/">
@@ -35,9 +32,6 @@ function AdminHeader() {
         </div>
       </Link>
       <nav className="flex  items-center gap-4">
-        {/*<Link to="/dashboard" className="text-gray-500 hover:text-black">
-            Dashboard
-          </Link>*/}
         <Link to="/dashboard/#orders" className="text-blue-600">
           Pedidos
         </Link>
@@ -46,6 +40,9 @@ function AdminHeader() {
         </Link>
         <Link to="clientes/" className="text-gray-500 hover:text-black">
           Clientes
+        </Link>
+        <Link to="coupons" className="text-gray-500 hover:text-black">
+          Cupones
         </Link>
       </nav>
       <div className="relative">

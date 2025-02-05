@@ -1,20 +1,16 @@
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { apiImageURL } from "../api/baseUrls";
 import { useShop } from "../context/ShopContext";
-import Paginator from "./Paginator";
-// import { Link } from "react-router-dom";
-// import { apiImageURL } from "../api/baseUrls";
-// import { formatDate } from "../utils/utils";
-// import { useAuth } from "../context/AuthContext";
+import { formatDate } from "../utils/utils";
+import { useAuth } from "../context/AuthContext";
 
 function Testimonials() {
   const { testimonials } = useShop();
-  // const { isLoggedIn, isAdmin } = useAuth();
-  useEffect(() => {
-    console.log("Testimonials", testimonials);
-  }, []);
+  const { isLoggedIn, isAdmin } = useAuth();
+
   return (
     <section className="bg-gray-100 py-16">
-      {/* <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4">
         <h2 className="text-center text-4xl font-bold text-gray-800 mb-12">
           Testimonios
         </h2>
@@ -72,23 +68,6 @@ function Testimonials() {
               )}
             </p>
           )}
-        </div>
-        {!isAdmin && (
-          <Link
-            to="/testimonials/create/"
-            className="block px-6 py-2 mt-4 rounded-lg mx-auto bg-indigo-500 hover:bg-indigo-600 text-white text-xl w-fit"
-          >
-            Crear un comentario
-          </Link>
-        )}
-      </div> */}
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 gap-8">
-          <Paginator
-            sectionTitle="Mis comentarios"
-            items={testimonials}
-            perPage={7}
-          />
         </div>
       </div>
     </section>

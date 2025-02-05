@@ -2,11 +2,14 @@ import  { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getOrderDetails } from "../api/actions.api";
 import Spinner from "../components/Spinner";
+import { useAuth } from "../context/AuthContext";
+import { formatPrice } from "../utils/utils";
 
 function OrderDetails() {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const address = localStorage.getItem('address');
 
 
   useEffect(() => {
@@ -15,7 +18,7 @@ function OrderDetails() {
         const response = await getOrderDetails(id);
         if (response.status === 200) {
           setOrder(response.data);
-          console.log(response)
+          console.log(response.data)
           setLoading(false);
         }
       } catch (error) {
@@ -26,6 +29,7 @@ function OrderDetails() {
       }
     };
     orderDetails();
+    // console.log(user)
   }, []);
 
 
@@ -65,6 +69,10 @@ function OrderDetails() {
               <p className="text-lg text-gray-800">{`${order.user.first_name}  ${order.user.last_name}`}</p>
             </div>
             <div>
+              <p className="text-sm font-medium text-gray-500">Dirección</p>
+              <p className="text-lg text-gray-800">{address}</p>
+            </div>
+            <div>
               <p className="text-sm font-medium text-gray-500">Fecha</p>
               <p className="text-lg text-gray-800">{order.creation_date}</p>
             </div>
@@ -81,7 +89,7 @@ function OrderDetails() {
             <div>
               <p className="text-sm font-medium text-gray-500">Total</p>
               <p className="text-lg font-bold text-gray-800">
-                {/* ${order.total.toFixed(2)} */}
+                {`$${formatPrice(order.total.toFixed(0))}`} 
               </p>
             </div>
           </div>

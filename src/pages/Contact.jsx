@@ -88,9 +88,9 @@ const Contact = () => {
         <div>
           <div className="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 className="text-2xl font-semibold mb-4">Información de contacto</h2>
-            <p className="mb-2"><strong>Dirección:</strong> Calle Principal 123, Ciudad</p>
-            <p className="mb-2"><strong>Teléfono:</strong> (123) 456-7890</p>
-            <p className="mb-2"><strong>Email:</strong> info@nuestratienda.com</p>
+            <p className="mb-2"><strong>Dirección:</strong> Diagonal 129B #87 - 35</p>
+            <p className="mb-2"><strong>Teléfono:</strong> (+57) 323-6283340</p>
+            <p className="mb-2"><strong>Email:</strong> info@raicesverdes.com</p>
             
             <h3 className="text-xl font-semibold mt-6 mb-2">Horario de atención</h3>
             <p className="mb-1">Lunes a Viernes: 9:00 AM - 8:00 PM</p>
@@ -103,7 +103,7 @@ const Contact = () => {
             <div className="text-center">
               <div className="text-4xl mb-2">📍</div>
               <p className="font-semibold">Nuestra ubicación</p>
-              <p className="text-sm text-gray-600">Calle Principal 123, Ciudad</p>
+              <p className="text-sm text-gray-600">Diagonal 129B #87 - 35</p>
             </div>
           </div>
         </div>
