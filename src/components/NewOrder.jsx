@@ -1,16 +1,10 @@
 import { useState } from "react";
 
-export default function Component() {
+export default function NewOrder({toggleFunc, show}) {
   const [products, setProducts] = useState([
     { id: 1, name: "Product 1", price: 9.99 },
     { id: 2, name: "Product 2", price: 14.99 },
     { id: 3, name: "Product 3", price: 19.99 },
-    { id: 4, name: "Product 4", price: 24.99 },
-    { id: 5, name: "Product 4", price: 24.99 },
-    { id: 6, name: "Product 4", price: 24.99 },
-    { id: 7, name: "Product 4", price: 24.99 },
-    { id: 8, name: "Product 4", price: 24.99 },
-    { id: 9, name: "Product 4", price: 24.99 },
   ]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [quantities, setQuantities] = useState({});
@@ -18,6 +12,7 @@ export default function Component() {
   const [customerEmail, setCustomerEmail] = useState("");
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
   const closeModal = () => {
     setShowModal(false);
     setShowConfirmation(false);
@@ -25,6 +20,8 @@ export default function Component() {
     setCustomerEmail("");
     setCustomerName("");
     setQuantities({});
+    toggleFunc(false);
+
   };
   const handleProductSelect = (productId) => {
     if (selectedProducts.includes(productId)) {
@@ -67,8 +64,9 @@ export default function Component() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="relative w-full max-w-md rounded-lg bg-white max-h-[750px] p-6 shadow-lg sm:p-8 overflow-y-scroll">
-        {showConfirmation ? (
+        {showConfirmation && (
           <>
+            {/* confirmation card */}
             <div className="flex flex-col items-center justify-center gap-4 relative">
               <div className="flex items-center justify-center rounded-full bg-green-500 p-3 text-white">
                 <svg
@@ -97,12 +95,14 @@ export default function Component() {
               <i className="fa fa-times"></i>
             </div>
           </>
-        ) : (
+        )}
+        {show && (
           <>
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold">New Order</h2>
+              <h2 className="text-2xl font-bold">Nuevo Pedido</h2>
               <button
                 type="button"
+                onClick={closeModal}
                 className="text-muted-foreground hover:bg-muted rounded-full p-2 overflow-y-scroll"
               >
                 <svg

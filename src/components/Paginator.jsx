@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import Order from "./Order";
 import Testimonial from "./Testimonial";
+import { orderCancell } from "../api/actions.api";
+import toast from "react-hot-toast";
 
-function Paginator({ sectionTitle, items, perPage }) {
+function Paginator({ sectionTitle, items, perPage=3 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(perPage);
 
@@ -17,6 +19,25 @@ function Paginator({ sectionTitle, items, perPage }) {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  const handleCancelOrder = async (orderId) => {
+    try {
+      const data = { user: userData.id, order: orderId, status: "CANCELLED" };
+      const response = await orderCancell(data);
+      if (response.status === 200) {
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderId ? { ...order, status: "CANCELLED" } : order
+          )
+        );
+        toast.success("Orden cancelada");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al cancelar la orden");
+    }
+  };
+
 
   return (
     <div>
@@ -35,7 +56,7 @@ function Paginator({ sectionTitle, items, perPage }) {
               <Testimonial key={testimonial.id} testimonial={testimonial} />
             ))
           ) : (
-            currentItems.map((order) => <Order key={order.id} order={order} />)
+            currentItems.map((order) => <Order key={order.id} order={order} handleCancelOrder={handleCancelOrder} />)
           )}
         </div>
         {/* Mostrar el paginador */}

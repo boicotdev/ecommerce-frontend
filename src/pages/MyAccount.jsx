@@ -11,7 +11,6 @@ import { loadState, validateData } from "../utils/utils";
 import { apiImageURL } from "../api/baseUrls";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import Paginator from "../components/Paginator";
 
 export default function MyAccount() {
   const [userData, setUserData] = useState({});
@@ -121,6 +120,7 @@ export default function MyAccount() {
         if (response.status === 200) {
           setUserData(response.data);
           retrieveOrders(response.data.id);
+          localStorage.setItem("address", response.data.address);
         }
       } catch (error) {
         console.error(error);
@@ -322,8 +322,110 @@ export default function MyAccount() {
         {/* Gestión de Pedidos */}
         {orders && userData && !userData.is_superuser && (
           <>
-            <Paginator sectionTitle="Mis pedidos" items={orders} perPage={1} />
-            <Paginator sectionTitle="Mis comentarios" items={userTestimonials} perPage={2}/>
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+                Mis Pedidos
+              </h2>
+              <div className="space-y-4">
+                {/* Mostrar los pedidos */}
+                {orders.length === 0 ? (
+                  <p className="text-lg font-semibold mb-4 text-gray-700">
+                    No hay pedidos registrados.
+                  </p>
+                ) : (
+                  orders.map((order) => (
+                    <div key={order.id} className="border-b pb-4">
+                      <Link className="text-blue-400 hover:text-blue-500" to={`/orders/details/order/${order.id}`}>
+                        <span className="font-semibold">Pedido #:</span>{" "}
+                        {order.id}
+                      </Link>
+                      <p>
+                        <span className="font-semibold">Fecha:</span>{" "}
+                        {order.creation_date}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Total:</span> $
+                        {/*order.total.toFixed(2)*/}
+                      </p>
+                      <p
+                        className={
+                          order.status === "DELIVERED"
+                            ? "text-green-400"
+                            : order.status === "CANCELLED"
+                            ? "text-red-400"
+                            : order.status === "PENDING"
+                            ? "text-blue-400"
+                            : "text-gray-700"
+                        }
+                      >
+                        <span className="font-semibold text-gray-900">
+                          Estado:
+                        </span>{" "}
+                        {order.status}
+                      </p>
+                      {order.status !== "DELIVERED" &&
+                        order.status !== "CANCELLED" && (
+                          <button
+                            onClick={() => handleCancelOrder(order.id)}
+                            className="mt-2 px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                          >
+                            Cancelar Pedido
+                          </button>
+                        )}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+                Mis Comentarios
+              </h2>
+              <div className="space-y-4">
+                {/* Mostrar los comentarios del usuario */}
+                {userTestimonials && userTestimonials.length > 0 ? (
+                  userTestimonials.map((testimonial) => (
+                    <div key={testimonial.id} className="border-b pb-4">
+                      <p>
+                        <span className="font-semibold">Comentario #:</span>{" "}
+                        {testimonial.id}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Fecha:</span>{" "}
+                        {testimonial.pub_date}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Comentario:</span>{" "}
+                        {testimonial.raw_comment}
+                      </p>
+                      <button
+                        // onClick={() => handleDeleteTestimonial(testimonial.id)}
+                        className="mt-2 mr-2 px-3 py-1 bg-orange-500 text-white text-sm rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTestimonial(testimonial.id)}
+                        className="mt-2 px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-lg font-semibold mb-4 text-gray-700">
+                    No hay comentarios registrados.
+                  </p>
+                )}
+
+                <Link
+                  to="/testimonials/create/"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 w-fit focus:ring-blue-500 focus:ring-opacity-50"
+                >
+                  Crear un comentario
+                </Link>
+              </div>
+            </div>
           </>
         )}
       </div>

@@ -67,6 +67,16 @@ const axios_ = axios.create({
   },
 });
 
+//handle cart creation
+export const cartCreate = (data) => {
+  return authAxios.post("carts/create/", data);
+};
+
+// add product to cart
+export const addToCart = (data) => {
+  return authAxios.post("carts/products/create/", data);
+};
+
 // retrieve all user info
 export const fetchUserInfo = (userId) => {
   return authAxios.get(`users/user/?user=${userId}`);

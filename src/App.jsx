@@ -26,9 +26,10 @@ import ProductAdminDetails from "./pages/ProductAdminDetails";
 import CreateUserClient from "./components/CreateUserClient";
 import TestimonialsCreate from "./pages/TestimonialsCreate";
 import TransactionPage from "./pages/TransactionPage";
+import CouponsView from "./pages/CouponsView";
 
 function App() {
-  const { isAdmin, isLoggedIn, setIsLoggedIn, setUser, setIsAdmin } = useAuth();
+  const { isAdmin, isLoggedIn, setIsLoggedIn, setUser, setIsAdmin,setCartID, setCartIsSaved } = useAuth();
   const { setOrders, setItems } = useCart();
 
   useEffect(() => {
@@ -47,6 +48,13 @@ function App() {
     if (savedOrders.length > 0) {
       setOrders(savedOrders);
       setItems(savedOrders);
+    }
+    if(localStorage.getItem("cartID") != "") {
+      setCartID(localStorage.getItem("cartID"));
+      setCartIsSaved(true);
+    } else {
+      setCartID("");
+      setCartIsSaved(false);
     }
   }, []);
 
@@ -92,6 +100,10 @@ function App() {
           path="comments/create-comment/:product-id"
           element={<PrivateUserRoute element={<CreateComment />} />}
         />
+         <Route
+          path="orders/details/order/:id"
+          element={<PrivateUserRoute element={<OrderDetails />} />}
+        />
         <Route
           path="shop/create-product/"
           element={<AdminProtectedRoute element={<CreateProduct />} />}
@@ -99,6 +111,10 @@ function App() {
         <Route
           path="shop/products/"
           element={<AdminProtectedRoute element={<ProductList />} />}
+        />
+        <Route
+          path="coupons/"
+          element={<AdminProtectedRoute element={<CouponsView />} />}
         />
         <Route
           path="testimonials/create/"
