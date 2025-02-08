@@ -1,36 +1,72 @@
-"use client";
-
 import { useState } from "react";
+import { createCoupon } from "../api/actions.api";
+import toast from "react-hot-toast";
+import { formatDateStyled } from "../utils/utils";
+import { useNavigate } from "react-router-dom";
 
 export default function CouponCreator() {
   const [coupon, setCoupon] = useState({
     code: "",
     discount: 0,
     expirationDate: "",
-    type: "percentage",
+    type: "PERCENTAGE",
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCoupon((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí iría la lógica para enviar el cupón al backend
-    console.log("Cupón creado:", coupon);
-    // Resetear el formulario
-    setCoupon({
-      code: "",
-      discount: 0,
-      expirationDate: "",
-      type: "percentage",
-    });
+    try {
+      // check the current data
+      if (
+        coupon.code.trim() === "" ||
+        coupon.discount <= 0 ||
+        coupon.expirationDate.trim() === ""
+      ) {
+        throw new Error("Todos los campos son obligatorios");
+      }
+      // check the expiration date
+      const today = new Date();
+      const expirationDate = new Date(coupon.expirationDate);
+      if (today > expirationDate) {
+        toast.error("Expiration date must be in the future");
+        throw new Error("Expiration date must be in the future");
+      }
+      const couponData = {
+        ...coupon,
+        coupon_code: coupon.code.toUpperCase(),
+        expiration_date: formatDateStyled(coupon.expirationDate),
+        discount_type: coupon.type === "PERCENTAGE" ? "PERCENTAGE" : "FIXED",
+      };
+      const response = await createCoupon(couponData);
+      if (response.status === 201) {
+        // Reset the form
+        setCoupon({
+          code: "",
+          discount: 0,
+          expirationDate: "",
+          type: "PERCENTAGE",
+        });
+        toast.success("Cupón creado exitosamente");
+        navigate("/coupons");
+      }
+    } catch (error) {
+      const { message } = error;
+      throw new Error(error);
+    }
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md"
+      >
         <div>
           <label
             htmlFor="code"
