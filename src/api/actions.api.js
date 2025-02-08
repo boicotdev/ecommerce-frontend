@@ -187,3 +187,13 @@ export const deleteUserTestimonial = (data) => {
 export const createPaymentPreference = (items) => {
   return authAxios.post("payment/preferences/", items);
 };
+
+// create a new coupon code
+export const createCoupon = (data) => {
+  return authAxios.post("coupons/create/", data);
+};
+
+// retrieve all coupon codes
+export const getCoupons = () => {
+  return authAxios.get("coupons/");
+};

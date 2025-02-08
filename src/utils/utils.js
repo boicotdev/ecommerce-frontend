@@ -96,11 +96,9 @@ export function setUserName(firstname, lastname) {
   return username;
 }
 
-
-
 /**
- * 
- * @param {*} date 
+ *
+ * @param {*} date
  * @returns new Date object
  */
 export const formatDate = (date) => {
@@ -110,10 +108,14 @@ export const formatDate = (date) => {
 
 export default formatDate;
 
-
 export function checkStateWhenUserOpenedANewWindow() {
-  const user = JSON.parse(localStorage.getItem('user')) || {};
+  const user = JSON.parse(localStorage.getItem("user")) || {};
   const { username, is_superuser } = user;
   const userSession = user && username;
-  return  {userSession, is_superuser}
+  return { userSession, is_superuser };
 }
+
+export const formatDateStyled = (isoString) => {
+  const date = new Date(isoString);
+  return date.toISOString().split("T")[0];
+};

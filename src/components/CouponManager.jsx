@@ -1,34 +1,8 @@
-"use client";
-
-import { useState } from "react";
-
-// Simulación de cupones iniciales
-const initialCoupons = [
-  {
-    id: 1,
-    code: "SUMMER2023",
-    discount: 20,
-    expirationDate: "2023-08-31",
-    type: "percentage",
-  },
-  {
-    id: 2,
-    code: "WELCOME10",
-    discount: 10,
-    expirationDate: "2023-12-31",
-    type: "fixed",
-  },
-  {
-    id: 3,
-    code: "FLASH50",
-    discount: 50,
-    expirationDate: "2023-06-30",
-    type: "percentage",
-  },
-];
+import { useEffect, useState } from "react";
+import { getCoupons } from "../api/actions.api";
 
 export default function CouponManager() {
-  const [coupons, setCoupons] = useState(initialCoupons);
+  const [coupons, setCoupons] = useState([]);
   const [filter, setFilter] = useState("");
   const [editingCoupon, setEditingCoupon] = useState(null);
 
@@ -59,6 +33,31 @@ export default function CouponManager() {
     setEditingCoupon({ ...editingCoupon, [name]: value });
   };
 
+  useEffect(() => {
+    // localStorage.setItem("coupons", JSON.stringify(coupons));
+    const retrieveCoupons = async () => {
+      try {
+        const response = await getCoupons();
+        if (response.status === 200) {
+          const coupons = response.data;
+          const customCoupons = coupons.map((coupon) => {
+            return {
+              code: coupon.coupon_code,
+              expirationDate: coupon.expiration_date,
+              type:
+                coupon.discount_type === "PERCENTAGE" ? "Porcentaje" : "Fijo",
+            };
+          });
+          setCoupons(customCoupons);
+        }
+      } catch (error) {
+        const { message } = error;
+        throw new Error(message);
+      }
+    };
+    retrieveCoupons();
+  }, []);
+
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       {/* Filtro */}
@@ -76,14 +75,14 @@ export default function CouponManager() {
       <div className="space-y-4">
         {filteredCoupons.map((coupon) => (
           <div
-            key={coupon.id}
+            key={coupon.code}
             className="flex items-center justify-between p-4 border border-gray-200 rounded-md"
           >
             <div>
               <h3 className="font-bold">{coupon.code}</h3>
               <p>
                 Descuento: {coupon.discount}
-                {coupon.type === "percentage" ? "%" : " USD"}
+                {coupon.type === "percentage" ? "%" : " COP"}
               </p>
               <p>Expira: {coupon.expirationDate}</p>
             </div>
