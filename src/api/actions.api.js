@@ -41,7 +41,11 @@ authAxios.interceptors.request.use(
           config.headers.Authorization = `Bearer ${newToken}`;
 
           // Actualizar el token en el almacenamiento local
-          saveState("user", {...user, access: newToken, refresh: refreshToken});
+          saveState("user", {
+            ...user,
+            access: newToken,
+            refresh: refreshToken,
+          });
         } catch (error) {
           // Manejar el error de renovación (puedes redirigir a la página de inicio de sesión, por ejemplo)
           console.error("Error during token refresh:", error);
@@ -172,7 +176,6 @@ export const getUserComments = () => {
   return authAxios.get("testimonials/");
 };
 
-
 //retrieve all testimonials of a user
 export const getUserTestimonials = (userId) => {
   return authAxios.get(`testimonials/user/?user=${userId}`);
@@ -196,4 +199,14 @@ export const createCoupon = (data) => {
 // retrieve all coupon codes
 export const getCoupons = () => {
   return authAxios.get("coupons/");
+};
+
+// remove a single coupon
+export const removeCoupon = (couponCode) => {
+  return authAxios.post("coupons/delete/", { coupon_code: couponCode });
+};
+
+// update a single coupon
+export const updateCoupon = (couponCode) => {
+  return authAxios.put("coupons/update/", couponCode);
 };

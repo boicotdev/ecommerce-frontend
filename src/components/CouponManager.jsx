@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCoupons } from "../api/actions.api";
+import { getCoupons, removeCoupon, updateCoupon } from "../api/actions.api";
 
 export default function CouponManager() {
   const [coupons, setCoupons] = useState([]);
@@ -14,18 +14,43 @@ export default function CouponManager() {
     setEditingCoupon(coupon);
   };
 
-  const handleDelete = (id) => {
-    setCoupons(coupons.filter((coupon) => coupon.id !== id));
+  const handleDelete = async (code) => {
+    try {
+      const response = await removeCoupon(code);
+      if (response.status === 204) {
+        setCoupons(coupons.filter((coupon) => coupon.code !== code));
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    setCoupons(
-      coupons.map((coupon) =>
-        coupon.id === editingCoupon.id ? editingCoupon : coupon
-      )
-    );
-    setEditingCoupon(null);
+    try {
+      const servData = {
+        coupon_code: editingCoupon.code,
+        discount: editingCoupon.discount,
+        expiration_date: editingCoupon.expirationDate,
+        discount_type: editingCoupon.type,
+      };
+      const response = await updateCoupon(servData);
+      // Asegurarse de que response tiene status
+      if (response.status === 200) {
+        const updatedCoupon = response.data; // Si `updateCoupon` devuelve los datos actualizados
+
+        setCoupons(
+          coupons.map((coupon) =>
+            coupon.code === editingCoupon.code
+              ? { ...coupon, ...updatedCoupon }
+              : coupon
+          )
+        );
+        setEditingCoupon(null);
+      }
+    } catch (error) {
+      console.error("Error al actualizar el cupón:", error);
+    }
   };
 
   const handleChange = (e) => {
@@ -45,7 +70,8 @@ export default function CouponManager() {
               code: coupon.coupon_code,
               expirationDate: coupon.expiration_date,
               type:
-                coupon.discount_type === "PERCENTAGE" ? "Porcentaje" : "Fijo",
+                coupon.discount_type === "PERCENTAGE" ? "PERCENTAGE" : "FIXED",
+              discount: coupon.discount,
             };
           });
           setCoupons(customCoupons);
@@ -82,7 +108,7 @@ export default function CouponManager() {
               <h3 className="font-bold">{coupon.code}</h3>
               <p>
                 Descuento: {coupon.discount}
-                {coupon.type === "percentage" ? "%" : " COP"}
+                {coupon.type === "PERCENTAGE" ? "%" : " COP"}
               </p>
               <p>Expira: {coupon.expirationDate}</p>
             </div>
@@ -94,7 +120,7 @@ export default function CouponManager() {
                 Editar
               </button>
               <button
-                onClick={() => handleDelete(coupon.id)}
+                onClick={() => handleDelete(coupon.code)}
                 className="px-4 py-2 bg-red-500 text-white rounded-md"
               >
                 Eliminar
@@ -156,8 +182,8 @@ export default function CouponManager() {
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 >
-                  <option value="percentage">Porcentaje</option>
-                  <option value="fixed">Monto Fijo</option>
+                  <option value="PERCENTAGE">Porcentaje</option>
+                  <option value="FIXED">Monto Fijo</option>
                 </select>
               </div>
               <div className="flex justify-end">
