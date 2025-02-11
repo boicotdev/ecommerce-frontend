@@ -111,9 +111,24 @@ export const createProduct = (data) => {
   return axios_.post("/products/create/", data);
 };
 
+//add a new category
+export const createCategory = (data) => {
+  return authAxios.post(`products/categories/create/`, data);
+};
+
 //retrieve category list
 export const retrieveCategoryList = () => {
   return authAxios.get("products/categories/");
+};
+
+//update a single category
+export const updateCategory = (data) => {
+  return authAxios.put(`products/categories/update/`, data);
+};
+
+//delete a single category
+export const deleteCategory = (data) => {
+  return authAxios.post(`products/categories/remove/`, { id: data });
 };
 
 //remove a single product
@@ -207,6 +222,6 @@ export const removeCoupon = (couponCode) => {
 };
 
 // update a single coupon
-export const updateCoupon = (couponCode) => {
-  return authAxios.put("coupons/update/", couponCode);
+export const updateCoupon = (data) => {
+  return authAxios.put("coupons/update/", data);
 };

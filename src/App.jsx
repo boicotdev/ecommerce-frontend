@@ -27,6 +27,7 @@ import CreateUserClient from "./components/CreateUserClient";
 import TestimonialsCreate from "./pages/TestimonialsCreate";
 import TransactionPage from "./pages/TransactionPage";
 import CouponsView from "./pages/CouponsView";
+import CategorieView from "./pages/CategorieView";
 
 function App() {
   const { isAdmin, isLoggedIn, setIsLoggedIn, setUser, setIsAdmin,setCartID, setCartIsSaved } = useAuth();
@@ -115,6 +116,10 @@ function App() {
         <Route
           path="dashboard/coupons/"
           element={<AdminProtectedRoute element={<CouponsView />} />}
+        />
+        <Route
+          path="dashboard/categories/"
+          element={<AdminProtectedRoute element={<CategorieView />} />}
         />
         <Route
           path="testimonials/create/"

@@ -296,7 +296,23 @@ export default function MyAccount() {
                       <div key={key}>
                         <p>
                           <span className="font-semibold">
-                            {key.charAt(0).toUpperCase() + key.slice(1)}:
+                            {key === "username"
+                              ? "Nombre de usuario"
+                              : key === "first_name"
+                              ? "Nombre"
+                              : key === "last_name"
+                              ? "Apellido"
+                              : key === "phone"
+                              ? "Teléfono"
+                              : key === "address"
+                              ? "Dirección"
+                              : key === "date_joined"
+                              ? "Desde"
+                              : key === "is_staff"
+                              ? "Activo"
+                              : key === "is_superuser"
+                              ? "Superusuario"
+                              : key.charAt(0).toUpperCase() + key.slice(1)}
                           </span>
                           {/* Verificar si el valor es booleano y mostrar 'Sí' o 'No' */}
                           {typeof userData[key] === "boolean"
@@ -335,7 +351,10 @@ export default function MyAccount() {
                 ) : (
                   orders.map((order) => (
                     <div key={order.id} className="border-b pb-4">
-                      <Link className="text-blue-400 hover:text-blue-500" to={`/orders/details/order/${order.id}`}>
+                      <Link
+                        className="text-blue-400 hover:text-blue-500"
+                        to={`/orders/details/order/${order.id}`}
+                      >
                         <span className="font-semibold">Pedido #:</span>{" "}
                         {order.id}
                       </Link>
