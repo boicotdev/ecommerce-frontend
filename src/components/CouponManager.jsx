@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { getCoupons, removeCoupon, updateCoupon } from "../api/actions.api";
 import toast from "react-hot-toast";
+import { getCoupons, removeCoupon, updateCoupon } from "../api/actions.api";
 import { useShop } from "../context/ShopContext";
 
 export default function CouponManager() {
-  const {coupons, setCoupons} = useShop();
+  const { coupons, setCoupons } = useShop();
   const [filter, setFilter] = useState("");
   const [editingCoupon, setEditingCoupon] = useState(null);
 
@@ -13,6 +13,7 @@ export default function CouponManager() {
   );
 
   const handleEdit = (coupon) => {
+    console.log(coupon);
     setEditingCoupon(coupon);
   };
 
@@ -34,23 +35,37 @@ export default function CouponManager() {
     e.preventDefault();
     try {
       const servData = {
+        coupon_id: editingCoupon.id,
         coupon_code: editingCoupon.code,
         discount: editingCoupon.discount,
         expiration_date: editingCoupon.expirationDate,
         discount_type: editingCoupon.type,
       };
       const response = await updateCoupon(servData);
-      // Asegurarse de que response tiene status
       if (response.status === 200) {
-        const updatedCoupon = response.data; // Si `updateCoupon` devuelve los datos actualizados
+        const {
+          id,
+          expiration_date: expirationDate,
+          coupon_code: code,
+          discount,
+          discount_type,
+        } = response.data;
 
-        setCoupons(
-          coupons.map((coupon) =>
-            coupon.code === editingCoupon.code
-              ? { ...coupon, ...updatedCoupon }
-              : coupon
-          )
-        );
+        const updateCoupon = {
+          id,
+          expirationDate,
+          discount,
+          code,
+          type: discount_type === "PERCENTAGE" ? "PERCENTAGE" : "FIXED",
+        };
+
+        setCoupons((prevCoupons) => {
+          return prevCoupons.map((coupon) =>
+            coupon.id === updateCoupon.id ? updateCoupon : coupon
+          );
+        });
+        console.log(updateCoupon);
+
         setEditingCoupon(null);
       }
     } catch (error) {
@@ -72,6 +87,7 @@ export default function CouponManager() {
           const coupons = response.data;
           const customCoupons = coupons.map((coupon) => {
             return {
+              id: coupon.id,
               code: coupon.coupon_code,
               expirationDate: coupon.expiration_date,
               type:

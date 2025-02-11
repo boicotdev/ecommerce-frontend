@@ -47,7 +47,7 @@ const EditProduct = () => {
           resetForm("product-update__form");
           setImage(null);
           setLoading(false);
-          navigate("/shop/products");
+          navigate("/dashboard/products");
         }
       } else {
         const response = await updateProduct(product);
@@ -56,7 +56,7 @@ const EditProduct = () => {
           resetForm("product-update__form");
           setImage(null);
           setLoading(false);
-          navigate("/shop/products");
+          navigate("/dashboard/products");
         }
       }
     } catch (error) {

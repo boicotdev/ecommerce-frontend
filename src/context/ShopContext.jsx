@@ -9,6 +9,7 @@ export const ShopContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [coupons, setCoupons] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   return (
     <ShopContext.Provider
@@ -21,6 +22,8 @@ export const ShopContextProvider = ({ children }) => {
         setTestimonials,
         coupons,
         setCoupons,
+        categories,
+        setCategories,
       }}
     >
       {children}

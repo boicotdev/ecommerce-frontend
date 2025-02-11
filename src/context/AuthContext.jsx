@@ -56,21 +56,10 @@ export const AuthContextProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const handleCartCreation = async () => {
+  const handleCartCreation = async (user) => {
     //TODO: check if the current user isn't a superuser
-    
+    if(user.is_superuser) return;
   };
-
-  // useEffect(() => {
-  //   const storedCartID = localStorage.getItem("cartID");
-  //   if (storedCartID) {
-  //     setCartID(storedCartID);
-  //     setCartIsSaved(true);
-  //   } else {
-  //     setCartID("");
-  //     setCartIsSaved(false);
-  //   }
-  // }, []);
 
   const handleLogin = async (userData) => {
     try {

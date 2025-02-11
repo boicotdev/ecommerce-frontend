@@ -50,7 +50,7 @@ const CreateProduct = () => {
       if (response.status === 201) {
         toast.success("Producto creado exitosamente");
         resetForm("product-create__form");
-        navigate("/shop/products");
+        navigate("/dashboard/products");
         setImage(null);
       }
     } catch (error) {
@@ -233,13 +233,16 @@ const CreateProduct = () => {
             >
               Categoria
             </label>
-            
-            <div className="w-3/12 text-white cursor-pointer border shadow-sm rounded text-center bg-green-400 hover:bg-green-500">
+
+            <div
+              onClick={() => navigate("/dashboard/categories/")}
+              className="w-3/12 text-white cursor-pointer border shadow-sm rounded text-center bg-green-400 hover:bg-green-500"
+            >
               Crear nueva <i className="fa fa-plus"></i>
             </div>
             <select
               id="category_id"
-              name="category_id" // Cambié 'unit' a 'category_id'
+              name="category_id"
               value={product.category_id} // Se asegura de que el valor sea category_id
               onChange={handleChange} // Asegúrate de que handleChange maneje category_id
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
