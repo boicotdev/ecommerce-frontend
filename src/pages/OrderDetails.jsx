@@ -106,12 +106,10 @@ function OrderDetails() {
         </div>
       </div>
       <div className="flex justify-center gap-2 items-center mt-2">
-        <Link className="text-indigo-500 hover:text-indigo-600" to="/dashboard">
-          Ver todas las ordenes
+        <Link className="text-indigo-500 hover:text-indigo-600 text-sm" to="/dashboard">
+          <i className="fa fa-arrow-left"></i> Volver
         </Link>
-        <Link className="text-slate-300 hover:text-slate-500" to="/">
-          Inicio
-        </Link>
+        
       </div>
     </div>
   );

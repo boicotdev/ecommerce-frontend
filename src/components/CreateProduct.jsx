@@ -3,7 +3,7 @@ import { createProduct } from "../api/actions.api";
 import { resetForm } from "../utils/utils";
 import { toast } from "react-hot-toast";
 import { retrieveCategoryList } from "../api/actions.api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CreateProduct = () => {
   const [categories, setCategories] = useState([]);
@@ -233,6 +233,10 @@ const CreateProduct = () => {
             >
               Categoria
             </label>
+            
+            <div className="w-3/12 text-white cursor-pointer border shadow-sm rounded text-center bg-green-400 hover:bg-green-500">
+              Crear nueva <i className="fa fa-plus"></i>
+            </div>
             <select
               id="category_id"
               name="category_id" // Cambié 'unit' a 'category_id'

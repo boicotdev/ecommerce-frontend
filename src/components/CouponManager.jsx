@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { getCoupons, removeCoupon, updateCoupon } from "../api/actions.api";
+import toast from "react-hot-toast";
+import { useShop } from "../context/ShopContext";
 
 export default function CouponManager() {
-  const [coupons, setCoupons] = useState([]);
+  const {coupons, setCoupons} = useShop();
   const [filter, setFilter] = useState("");
   const [editingCoupon, setEditingCoupon] = useState(null);
 
@@ -19,6 +21,9 @@ export default function CouponManager() {
       const response = await removeCoupon(code);
       if (response.status === 204) {
         setCoupons(coupons.filter((coupon) => coupon.code !== code));
+        setEditingCoupon(null);
+        setFilter("");
+        toast.success(`Coupon ${code} was successfully deleted`);
       }
     } catch (error) {
       throw new Error(error);

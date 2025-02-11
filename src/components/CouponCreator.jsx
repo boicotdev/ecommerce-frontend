@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { createCoupon } from "../api/actions.api";
 import toast from "react-hot-toast";
+import { createCoupon } from "../api/actions.api";
 import { formatDateStyled } from "../utils/utils";
-import { useNavigate } from "react-router-dom";
+import { useShop } from "../context/ShopContext";
 
 export default function CouponCreator() {
   const [coupon, setCoupon] = useState({
@@ -12,8 +12,7 @@ export default function CouponCreator() {
     type: "PERCENTAGE",
   });
 
-  const navigate = useNavigate();
-
+  const { setCoupons } = useShop();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCoupon((prev) => ({ ...prev, [name]: value }));
@@ -45,6 +44,20 @@ export default function CouponCreator() {
       };
       const response = await createCoupon(couponData);
       if (response.status === 201) {
+        const { coupon_code, discount, expiration_date, discount_type } =
+          response.data;
+
+        const coupon = {
+          code: coupon_code,
+          discount,
+          expirationDate: formatDateStyled(expiration_date),
+          type: discount_type,
+        };
+        // Add the new coupon to the list
+        setCoupons((prev) => {
+          return [...prev, coupon];
+        });
+
         // Reset the form
         setCoupon({
           code: "",
@@ -53,11 +66,10 @@ export default function CouponCreator() {
           type: "PERCENTAGE",
         });
         toast.success("Cupón creado exitosamente");
-        navigate("/coupons");
       }
     } catch (error) {
       const { message } = error;
-      throw new Error(error);
+      console.error(message);
     }
   };
 

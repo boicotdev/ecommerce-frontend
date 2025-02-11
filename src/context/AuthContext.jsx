@@ -1,3 +1,9 @@
+import { useState, createContext, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { tokenObtain, logout, cartCreate, addToCart } from "../api/actions.api";
+import { resetForm, saveState } from "../utils/utils";
+
 // utils/localStorage.js
 export const getFromLocalStorage = (key) => {
   try {
@@ -16,7 +22,6 @@ export const clearLocalStorage = () => {
 };
 
 // api/cartService.js
-import { cartCreate, addToCart } from "../api/actions.api";
 
 export const createCart = async (user) => {
   return cartCreate({
@@ -38,13 +43,6 @@ export const addProductsToCart = async (cartID, orders) => {
   });
 };
 
-// context/AuthContext.js
-import { useState, createContext, useContext, useEffect } from "react";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { tokenObtain, logout } from "../api/actions.api";
-import { resetForm, saveState } from "../utils/utils";
-
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -59,45 +57,20 @@ export const AuthContextProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const handleCartCreation = async () => {
-    if (cartIsSaved) return;
-
-    try {
-      const user = JSON.parse(localStorage.getItem("user"));
-      const response = await createCart(user);
-      if (response.status === 201) {
-        setCartID(response.data.id);
-        setCartIsSaved(true);
-        toast.success("Carrito creado exitosamente.");
-        localStorage.setItem("cartID", response.data.id);
-
-        // create a new product cart
-        try {
-          const orders = JSON.parse(localStorage.getItem("orders"));
-          const res = await addProductsToCart(response.data.id, orders);
-          if (res.status === 200) {
-            toast.success("Productos añadidos al carrito exitosamente.");
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    } catch (error) {
-      console.error("Error al crear el carrito:", error);
-      toast.error("Ocurrió un error. Intenta nuevamente.");
-    }
+    //TODO: check if the current user isn't a superuser
+    
   };
 
-  useEffect(() => {
-    const storedCartID = localStorage.getItem("cartID");
-    if (storedCartID) {
-      setCartID(storedCartID);
-      setCartIsSaved(true);
-    } else {
-      setCartID("");
-      setCartIsSaved(false);
-      handleCartCreation()
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedCartID = localStorage.getItem("cartID");
+  //   if (storedCartID) {
+  //     setCartID(storedCartID);
+  //     setCartIsSaved(true);
+  //   } else {
+  //     setCartID("");
+  //     setCartIsSaved(false);
+  //   }
+  // }, []);
 
   const handleLogin = async (userData) => {
     try {
@@ -137,14 +110,14 @@ export const AuthContextProvider = ({ children }) => {
 
         if (is_superuser) {
           setIsAdmin(true);
-          navigate("/dashboard");
+          navigate("dashboard");
         } else {
           setIsAdmin(false);
-          navigate("/account");
+          navigate("account");
         }
 
         resetForm("login_form");
-        handleCartCreation();
+        // handleCartCreation();
       }
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
