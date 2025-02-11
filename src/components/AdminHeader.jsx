@@ -10,9 +10,34 @@ function AdminHeader() {
   const toggleUserOptions = () =>
     setAccountDropdownOpen(!isAccountDropdownOpen);
 
+  const navlinks = {
+    orders: {
+      path: "/dashboard/#orders",
+      label: "Pedidos",
+    },
+    products: {
+      path: "/dashboard/products",
+      label: "Productos",
+    },
+    categories: {
+      path: "/dashboard/categories",
+      label: "Categorías",
+    },
+    customers: {
+      path: "/dashboard/customers",
+      label: "Clientes",
+    },
+    coupons: {
+      path: "dashboard/coupons",
+      label: "Cupones",
+    },
+  };
+
+  const [activeLink, setActiveLink] = useState("");
+
   return (
     <header className="sticky top-0 z-30 flex justify-between h-14 items-center bg-white px-4 shadow">
-      <Link to="/">
+      <Link to="/" onClick={() => setActiveLink("")}>
         <div className="flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -32,18 +57,18 @@ function AdminHeader() {
         </div>
       </Link>
       <nav className="flex  items-center gap-4">
-        <Link to="/dashboard/#orders" className="text-blue-600">
-          Pedidos
-        </Link>
-        <Link to="/shop/products/" className="text-gray-500 hover:text-black">
-          Productos
-        </Link>
-        <Link to="clientes/" className="text-gray-500 hover:text-black">
-          Clientes
-        </Link>
-        <Link to="coupons" className="text-gray-500 hover:text-black">
-          Cupones
-        </Link>
+        {Object.entries(navlinks).map(([label, { path, label: navLabel }]) => (
+          <Link
+          onClick={() => setActiveLink(navLabel)}
+            key={label}
+            to={path}
+            className={`text-gray-500 hover:text-black ${
+              navLabel === activeLink ? "text-green-600" : null
+            }`}
+          >
+            {navLabel}
+          </Link>
+        ))}
       </nav>
       <div className="relative">
         <button

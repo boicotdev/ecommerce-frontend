@@ -81,7 +81,7 @@ function App() {
           element={<AdminProtectedRoute element={<DashboardAdmin />} />}
         />
         <Route
-          path="clientes"
+          path="/dashboard/customers"
           element={<AdminProtectedRoute element={<Clients />} />}
         />
         <Route
@@ -109,11 +109,11 @@ function App() {
           element={<AdminProtectedRoute element={<CreateProduct />} />}
         />
         <Route
-          path="shop/products/"
+          path="/dashboard/products/"
           element={<AdminProtectedRoute element={<ProductList />} />}
         />
         <Route
-          path="coupons/"
+          path="dashboard/coupons/"
           element={<AdminProtectedRoute element={<CouponsView />} />}
         />
         <Route
