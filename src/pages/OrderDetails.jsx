@@ -70,7 +70,7 @@ function OrderDetails() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500">Dirección</p>
-              <p className="text-lg text-gray-800">{address}</p>
+              <p className="text-lg text-gray-800">{order.user.address}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500">Fecha</p>
