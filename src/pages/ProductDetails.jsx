@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { products } from "../assets/assets";
 import { useCart } from "../context/CartContext";
-import { formatPrice, saveState } from "../utils/utils";
+import { createCartID, formatPrice } from "../utils/utils";
 import { apiImageURL } from "../api/baseUrls";
 import { retrieveProductDetails } from "../api/actions.api";
 import Spinner from "../components/Spinner.jsx";
+import { useCustomLocalStorage } from "../hooks/CustomHooks.jsx";
 
 function ProductDetails() {
   const { sku } = useParams();
   const [product, setProduct] = useState({});
   const { setItems, setOrders } = useCart();
+  const { loadState, saveState } = useCustomLocalStorage();
   const [loading, setLoading] = useState(true);
 
   const checkItem = (item) => {
@@ -36,16 +37,19 @@ function ProductDetails() {
       // Actualizamos `orders` basándonos en el estado actualizado de `items`
       setOrders((prev) => {
         [...updatedItems];
-        saveState ("orders", updatedItems);
+        saveState("orders", updatedItems);
       });
       return updatedItems; // Devuelve el estado actualizado para `items`
     });
   };
 
   const addProductAtToCart = (item) => {
+    if (loadState("CartID") === null) {
+      const cartID = createCartID();
+      saveState("CartID", cartID);
+    }
     checkItem(item);
   };
-
 
   useEffect(() => {
     const retrieveProduct = async () => {

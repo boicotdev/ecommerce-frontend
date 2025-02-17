@@ -14,7 +14,7 @@ export const capitalize = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-// state into the localStorage
+//save state into the localStorage
 export function saveState(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
@@ -118,4 +118,16 @@ export function checkStateWhenUserOpenedANewWindow() {
 export const formatDateStyled = (isoString) => {
   const date = new Date(isoString);
   return date.toISOString().split("T")[0];
+};
+
+
+// create a new shopping cart identifier
+export const createCartID = () => {
+  const shopName = "RAICES_VERDES";
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+  const time = today.getTime();
+  return `${shopName}-${year}-${month}-${day}-${time}`;
 };

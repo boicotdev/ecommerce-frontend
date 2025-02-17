@@ -92,7 +92,7 @@ function Clients() {
         </select>
         <Link
           className="p-2 border rounded-md w-full md:w-auto mt-4 text-center text-white bg-green-500 hover:bg-green-600"
-          to="create"
+          to="/dashboard/customers/create"
         >
           Crear Cliente <i className="fa fa-plus ml-2"></i>
         </Link>

@@ -37,7 +37,6 @@ authAxios.interceptors.request.use(
           const newToken = response.data.access;
           // Actualizar el token en el encabezado de la solicitud
           const refreshToken = response.data.refresh;
-          console.log(response.data);
           config.headers.Authorization = `Bearer ${newToken}`;
 
           // Actualizar el token en el almacenamiento local

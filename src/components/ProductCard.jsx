@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { saveState, formatPrice } from "../utils/utils";
+import { formatPrice, createCartID } from "../utils/utils";
 import { apiImageURL } from "../api/baseUrls";
+import { useCustomLocalStorage } from "../hooks/CustomHooks";
 
 function ProductCard({ item }) {
   const { setItems, setOrders } = useCart();
+  const { saveState, loadState } = useCustomLocalStorage();
 
   const checkItem = (item) => {
     if (!item || !item.sku) return;
@@ -36,6 +38,11 @@ function ProductCard({ item }) {
   };
 
   const addProductAtToCart = (item) => {
+    if (loadState("CartID") === null ) {
+      console.log(loadState("CartID"));
+      const cartID = createCartID();
+      saveState("CartID", cartID);
+    }
     checkItem(item);
   };
 
