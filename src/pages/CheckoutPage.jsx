@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { initMercadoPago, Payment } from "@mercadopago/sdk-react";
 import { useCart } from "../context/CartContext";
 import { formatPrice, loadState } from "../utils/utils";
 import { createOrder, createPaymentPreference } from "../api/actions.api";
+import CouponForm from "../components/CouponForm";
 
 const MP_ACCESS_KEY = import.meta.env.VITE_APP_MERCADO_PAGO_PUBLIC_KEY;
 initMercadoPago(MP_ACCESS_KEY); // Inicializamos mercado pago
@@ -131,9 +132,34 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     // Cargar el carrito de compras del local storage
-    const orders = loadState('orders');
+    const orders = loadState("orders");
     setOrders(orders);
   }, []);
+
+  const applyDiscount = (discount, type) => {
+    const orders = loadState("orders");
+    const total = getTotalCheck(orders) + delivery;
+    let discountPrice = 0;
+
+    switch (type) {
+      case "FIXED":
+        discountPrice = discount;
+        break;
+      case "PERCENTAGE":
+        discountPrice = (total * discount) / 100;
+        break;
+      default:
+        console.warn("Tipo de descuento desconocido");
+        break;
+    }
+
+    const discountedTotal = Math.ceil(total - discountPrice);
+    return {
+      total,
+      discounted: discountedTotal,
+      totalCheck: Math.ceil(discountPrice),
+    };
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen mt-8">
@@ -192,16 +218,19 @@ export default function CheckoutPage() {
                 </div>
               )}
             </div>
+            {!preferenceId && <CouponForm applyDiscount={applyDiscount} />}
             {orders && orders.length > 0 && (
               <form onSubmit={handleCreatePrefenceId}>
                 {!preferenceId && (
                   <div className="mt-8">
-                    <button
-                      type="submit"
-                      className="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      Realizar pedido
-                    </button>
+                    <div>
+                      <button
+                        type="submit"
+                        className="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Realizar pedido
+                      </button>
+                    </div>
                   </div>
                 )}
               </form>

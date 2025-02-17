@@ -5,13 +5,16 @@ import { useAuth } from "../context/AuthContext";
 import { formatPrice } from "../utils/utils";
 import menuIcon from "../assets/menuIcon.svg";
 import { useCustomLocalStorage } from "../hooks/CustomHooks";
+
+
+
 function Header() {
-  const { items, setItems, setOrders, orders } = useCart();
+  const { items, setItems, setOrders, setCartIsSaved } = useCart();
   const [cartItems, setCartItems] = useState([]);
   const [showItems, setShowItems] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { isAdmin, isLoggedIn, handleLogout } = useAuth();
-  const { saveState, loadState } = useCustomLocalStorage();
+  const { saveState } = useCustomLocalStorage();
 
   const removeItem = (sku) => {
     const item = cartItems.find((item) => item.sku === sku);
@@ -21,12 +24,13 @@ function Header() {
       setItems((prevItems) => prevItems.filter((item) => item.sku !== sku));
       setCartItems((prevItems) => {
         const updatedItems = prevItems.filter((item) => item.sku !== sku);
-        console.log(updatedItems);
         if (updatedItems.length > 0) {
           saveState("orders", updatedItems);
         } else {
           localStorage.removeItem("CartID");
           localStorage.removeItem("orders");
+          saveState("cartIsSaved", false);
+          setCartIsSaved(false);
         }
         return updatedItems;
       });

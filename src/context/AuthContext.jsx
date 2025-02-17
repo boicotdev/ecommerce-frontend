@@ -1,34 +1,20 @@
-import { useState, createContext, useContext, useEffect } from "react";
+import { useState, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { tokenObtain, logout, cartCreate, addToCart } from "../api/actions.api";
-import { resetForm, saveState } from "../utils/utils";
-
-// utils/localStorage.js
-export const getFromLocalStorage = (key) => {
-  try {
-    return JSON.parse(localStorage.getItem(key));
-  } catch {
-    return null;
-  }
-};
+import {
+  tokenObtain,
+  logout,
+  cartCreate,
+  addToCart,
+  cartItemsCreate,
+} from "../api/actions.api";
+import { resetForm } from "../utils/utils";
+import { useCustomLocalStorage } from "../hooks/CustomHooks";
+import { useCart } from "./CartContext";
+import { data } from "autoprefixer";
 
 export const setToLocalStorage = (key, value) => {
   localStorage.setItem(key, JSON.stringify(value));
-};
-
-export const clearLocalStorage = () => {
-  localStorage.clear();
-};
-
-// api/cartService.js
-
-export const createCart = async (user) => {
-  return cartCreate({
-    name: `cart_dummy_${Math.ceil(Math.random() * 1000000)}`,
-    description: `Cart created at ${new Date()}`,
-    user: user.id,
-  });
 };
 
 export const addProductsToCart = async (cartID, orders) => {
@@ -51,14 +37,57 @@ export const AuthContextProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [token, setToken] = useState("");
   const [user, setUser] = useState({});
-  const [cartIsSaved, setCartIsSaved] = useState(false);
   const [cartID, setCartID] = useState("");
+  const { saveState, loadState } = useCustomLocalStorage();
+  const { cartIsSaved, setCartIsSaved } = useCart();
 
   const navigate = useNavigate();
 
-  const handleCartCreation = async (user) => {
-    //TODO: check if the current user isn't a superuser
-    if(user.is_superuser) return;
+  //handle cart items creation
+  const createCartItems = async () => {
+    try {
+      const orders = loadState("orders").map((cartItem) => {
+        return {
+          quantity: cartItem.quantity,
+          product: cartItem.id,
+        };
+      });
+      const response = await cartItemsCreate({
+        data: {
+          items: orders,
+          cart_id: cartID ? cartID : loadState("CartID"),
+        },
+      });
+      if (response.status === 201) {
+        toast.success("Productos añadidos al carrito exitosamente");
+      }
+    } catch (error) {
+      const { response } = error;
+      console.error(response);
+    }
+  };
+
+  const handleCartCreation = async () => {
+    //check if the current user is a superuser
+    if (user.is_superuser) return;
+
+    try {
+      const response = await cartCreate({
+        user: loadState("user")["id"],
+        name: loadState("CartID"),
+        description: `Cart created at ${new Date().toDateString()}`,
+      });
+      if (response.status === 201) {
+        setCartID(response.data.name);
+        setCartIsSaved(true);
+        saveState("cartIsSaved", true);
+        toast.success("Carrito creado exitosamente");
+        createCartItems();
+      }
+    } catch (error) {
+      const { response } = error;
+      console.error(response);
+    }
   };
 
   const handleLogin = async (userData) => {
@@ -106,7 +135,17 @@ export const AuthContextProvider = ({ children }) => {
         }
 
         resetForm("login_form");
-        // handleCartCreation();
+        if (
+          loadState("CartID") !== null &&
+          loadState("cartIsSaved") === false
+        ) {
+          const orders = loadState("orders");
+          if (orders.length > 0) {
+            handleCartCreation();
+            setCartIsSaved(true);
+            saveState("cartIsSaved", true);
+          }
+        }
       }
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
@@ -118,15 +157,16 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const response = await logout();
       if (response.status === 200) {
-        clearLocalStorage();
         setToken("");
         setIsLoggedIn(false);
         setIsAdmin(false);
         setUser({});
-        setCartIsSaved(false);
         setCartID("");
         toast.success("Sesión cerrada correctamente");
         navigate("/");
+        localStorage.removeItem("user");
+        localStorage.removeItem("address");
+        localStorage.removeItem("user");
       }
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
@@ -149,6 +189,7 @@ export const AuthContextProvider = ({ children }) => {
         setIsAdmin,
         token,
         setToken,
+        cartID,
         setCartID,
         cartIsSaved,
         setCartIsSaved,

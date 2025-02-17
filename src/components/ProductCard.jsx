@@ -5,7 +5,7 @@ import { apiImageURL } from "../api/baseUrls";
 import { useCustomLocalStorage } from "../hooks/CustomHooks";
 
 function ProductCard({ item }) {
-  const { setItems, setOrders } = useCart();
+  const { setItems, setOrders, setCartIsSaved } = useCart();
   const { saveState, loadState } = useCustomLocalStorage();
 
   const checkItem = (item) => {
@@ -39,9 +39,10 @@ function ProductCard({ item }) {
 
   const addProductAtToCart = (item) => {
     if (loadState("CartID") === null ) {
-      console.log(loadState("CartID"));
       const cartID = createCartID();
       saveState("CartID", cartID);
+      saveState("cartIsSaved", false);
+      setCartIsSaved(false);
     }
     checkItem(item);
   };

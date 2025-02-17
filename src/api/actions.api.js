@@ -75,6 +75,11 @@ export const cartCreate = (data) => {
   return authAxios.post("carts/create/", data);
 };
 
+//handle cart items creation
+export const cartItemsCreate = (data) => {
+  return authAxios.post("carts/items/create/", data);
+};
+
 // add product to cart
 export const addToCart = (data) => {
   return authAxios.post("carts/products/create/", data);
@@ -223,4 +228,9 @@ export const removeCoupon = (couponCode) => {
 // update a single coupon
 export const updateCoupon = (data) => {
   return authAxios.put("coupons/update/", data);
+};
+
+// validate a single coupon
+export const validateCoupon = (couponCode) => {
+  return authAxios.post("coupons/validate/", { coupon_code: couponCode });
 };

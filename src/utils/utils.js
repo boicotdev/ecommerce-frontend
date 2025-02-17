@@ -123,7 +123,7 @@ export const formatDateStyled = (isoString) => {
 
 // create a new shopping cart identifier
 export const createCartID = () => {
-  const shopName = "RAICES_VERDES";
+  const shopName = "RV";
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
