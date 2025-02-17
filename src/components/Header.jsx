@@ -1,36 +1,36 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import menuIcon from "../assets/menuIcon.svg";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { formatPrice, saveState } from "../utils/utils";
+import { formatPrice } from "../utils/utils";
+import menuIcon from "../assets/menuIcon.svg";
+import { useCustomLocalStorage } from "../hooks/CustomHooks";
 function Header() {
-  const { items, setItems, setOrders } = useCart();
+  const { items, setItems, setOrders, orders } = useCart();
   const [cartItems, setCartItems] = useState([]);
   const [showItems, setShowItems] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { isAdmin, isLoggedIn, handleLogout } = useAuth();
+  const { saveState, loadState } = useCustomLocalStorage();
 
   const removeItem = (sku) => {
     const item = cartItems.find((item) => item.sku === sku);
     const response = confirm(`Desea eliminar el ${item.name}`);
+
     if (item && response) {
       setItems((prevItems) => prevItems.filter((item) => item.sku !== sku));
       setCartItems((prevItems) => {
         const updatedItems = prevItems.filter((item) => item.sku !== sku);
+        console.log(updatedItems);
         if (updatedItems.length > 0) {
           saveState("orders", updatedItems);
         } else {
-          saveState("orders", []);
+          localStorage.removeItem("CartID");
+          localStorage.removeItem("orders");
         }
         return updatedItems;
       });
-      setOrders((prevOrders) => {
-        const updatedOrders = prevOrders.filter((item) => item.sku !== sku);
-        saveState("orders", updatedOrders);
-        setItems([...updatedOrders]);
-        return updatedOrders;
-      });
+      setOrders((prevOrders) => items.filter((item) => item.sku !== sku));
     }
   };
 

@@ -2,14 +2,13 @@ import  { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getOrderDetails } from "../api/actions.api";
 import Spinner from "../components/Spinner";
-import { useAuth } from "../context/AuthContext";
 import { formatPrice } from "../utils/utils";
 
 function OrderDetails() {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
-  const address = localStorage.getItem('address');
+  
 
 
   useEffect(() => {
@@ -18,7 +17,6 @@ function OrderDetails() {
         const response = await getOrderDetails(id);
         if (response.status === 200) {
           setOrder(response.data);
-          console.log(response.data)
           setLoading(false);
         }
       } catch (error) {
@@ -29,7 +27,6 @@ function OrderDetails() {
       }
     };
     orderDetails();
-    // console.log(user)
   }, []);
 
 

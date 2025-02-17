@@ -14,7 +14,7 @@ export default function CheckoutPage() {
     failure: "/payments/failure/",
     pending: "/payments/pending/",
   };
-  const { orders, setOrders, setItems } = useCart();
+  const { orders, setOrders, setItems, items } = useCart();
   const [preferenceId, setPreferenceId] = useState(null);
   const delivery = 5000;
   const totalPrice =
@@ -23,13 +23,6 @@ export default function CheckoutPage() {
       : 0;
   const totalPriceWithDelivery = totalPrice + delivery;
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const items = loadState("orders");
-    if (items.length > 0) {
-      setOrders(items);
-    }
-  }, []);
 
   const initialization = {
     amount: totalPriceWithDelivery,
@@ -136,6 +129,12 @@ export default function CheckoutPage() {
     paymentPreference();
   };
 
+  useEffect(() => {
+    // Cargar el carrito de compras del local storage
+    const orders = loadState('orders');
+    setOrders(orders);
+  }, []);
+
   return (
     <div className="bg-gray-100 min-h-screen mt-8">
       <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -149,18 +148,20 @@ export default function CheckoutPage() {
                     Resumen del pedido
                   </h2>
                   <div className="space-y-4">
-                    {orders.map((order) => (
-                      <div key={order.sku}>
-                        <div className="flex justify-between">
-                          <span>Producto {order.name}</span>
-                          <span>Cantidad {order.quantity}</span>
-                          <span>
-                            ${formatPrice(order.price * order.quantity)}
-                          </span>
+                    {orders &&
+                      orders.length > 0 &&
+                      orders.map((order) => (
+                        <div key={order.sku}>
+                          <div className="flex justify-between">
+                            <span>Producto {order.name}</span>
+                            <span>Cantidad {order.quantity}</span>
+                            <span>
+                              ${formatPrice(order.price * order.quantity)}
+                            </span>
+                          </div>
+                          <hr />
                         </div>
-                        <hr />
-                      </div>
-                    ))}
+                      ))}
                     <div className="flex justify-between">
                       <span>Subtotal Productos</span>
                       <span>${formatPrice(getTotalCheck(orders))}</span>

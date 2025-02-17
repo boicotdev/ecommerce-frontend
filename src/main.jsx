@@ -6,6 +6,7 @@ import { AuthContextProvider } from "./context/AuthContext.jsx";
 import { CartContextProvider } from "./context/CartContext";
 import { ShopContextProvider } from "./context/ShopContext.jsx";
 import "./index.css";
+import { CustomLocalStorageProvider } from "./hooks/CustomHooks.jsx";
 
 createRoot(document.getElementById("root")).render(
   <HashRouter>
@@ -23,7 +24,9 @@ createRoot(document.getElementById("root")).render(
       />
       <CartContextProvider>
         <ShopContextProvider>
-          <App />
+          <CustomLocalStorageProvider>
+            <App />
+          </CustomLocalStorageProvider>
         </ShopContextProvider>
       </CartContextProvider>
     </AuthContextProvider>
