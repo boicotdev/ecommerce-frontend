@@ -10,25 +10,25 @@ import { CustomLocalStorageProvider } from "./hooks/CustomHooks.jsx";
 
 createRoot(document.getElementById("root")).render(
   <HashRouter>
-    <AuthContextProvider>
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-        toastOptions={{
-          duration: 1500,
-          style: {
-            background: "#363636",
-            color: "#fff",
-          },
-        }}
-      />
+    <CustomLocalStorageProvider>
       <CartContextProvider>
-        <ShopContextProvider>
-          <CustomLocalStorageProvider>
+        <AuthContextProvider>
+          <Toaster
+            position="top-right"
+            reverseOrder={false}
+            toastOptions={{
+              duration: 1500,
+              style: {
+                background: "#363636",
+                color: "#fff",
+              },
+            }}
+          />
+          <ShopContextProvider>
             <App />
-          </CustomLocalStorageProvider>
-        </ShopContextProvider>
+          </ShopContextProvider>
+        </AuthContextProvider>
       </CartContextProvider>
-    </AuthContextProvider>
+    </CustomLocalStorageProvider>
   </HashRouter>
 );
