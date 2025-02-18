@@ -15,20 +15,26 @@ export default function CheckoutPage() {
     failure: "/payments/failure/",
     pending: "/payments/pending/",
   };
-  const { orders, setOrders, setItems, items } = useCart();
+  const { orders, setOrders, setItems, couponIsValid, setCouponIsValid } = useCart();
   const [preferenceId, setPreferenceId] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const delivery = 5000;
   const totalPrice =
     orders && orders.length > 0
       ? orders.reduce((acc, item) => acc + item.price * (item.quantity || 1), 0)
       : 0;
   const totalPriceWithDelivery = totalPrice + delivery;
+  const [initialization, setInitialization] = useState({
+    amount: totalPriceWithDelivery,
+    preferenceId: null,
+  });
   const navigate = useNavigate();
 
-  const initialization = {
-    amount: totalPriceWithDelivery,
-    preferenceId,
-  };
+  // const initialization = {
+  //   amount: totalPriceWithDelivery,
+  //   preferenceId,
+  // };
 
   const customization = {
     paymentMethods: {
@@ -70,7 +76,8 @@ export default function CheckoutPage() {
         })
         .catch((error) => {
           // manejar la respuesta de error al intentar crear el pago
-          console.error(error);
+          const { response } = error;
+          console.error(response.data);
           reject();
         });
     });
@@ -89,7 +96,10 @@ export default function CheckoutPage() {
     try {
       const { id } = loadState("user");
       const response = await createOrder({
-        user: id,
+        user: {
+          id: id,
+          address: "BOICOT2025",
+        },
         status: "PENDING",
       });
       if (response.status === 201) {
@@ -146,14 +156,18 @@ export default function CheckoutPage() {
         discountPrice = discount;
         break;
       case "PERCENTAGE":
-        discountPrice = (total * discount) / 100;
+        discountPrice = total - ((total / 100) * discount);
         break;
       default:
         console.warn("Tipo de descuento desconocido");
         break;
     }
-
-    const discountedTotal = Math.ceil(total - discountPrice);
+    setCouponIsValid(true)
+    const discountedTotal = discountPrice //Math.floor(total - discountPrice);
+    setInitialization({
+      amount: Math.floor(discountedTotal),
+      preferenceId,
+    });
     return {
       total,
       discounted: discountedTotal,
@@ -196,14 +210,46 @@ export default function CheckoutPage() {
                       <span>Envío</span>
                       <span>${formatPrice(delivery.toString())}</span>
                     </div>
-                    <div className="border-t pt-4">
-                      <div className="flex justify-between font-semibold">
-                        <span>Total</span>
-                        <span>
-                          ${formatPrice(totalPriceWithDelivery.toString())}
-                        </span>
+
+                    {couponIsValid ? (
+                      <>
+                        <div className="border-t pt-4">
+                          <div className="flex justify-between font-semibold">
+                            <span>Total antes del descuento</span>
+                            <span>
+                              ${formatPrice(totalPriceWithDelivery.toString())}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="border-t pt-4">
+                          <div className="flex justify-between font-semibold">
+                            <span>Descuento</span>
+                            <span>
+                              $
+                              {formatPrice((totalPriceWithDelivery - initialization.amount).toString()
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="border-t pt-4">
+                          <div className="flex justify-between font-semibold">
+                            <span>Total a pagar</span>
+                            <span>
+                              ${formatPrice(initialization.amount.toString())}
+                            </span>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="border-t pt-4">
+                        <div className="flex justify-between font-semibold">
+                          <span>Total</span>
+                          <span>
+                            ${formatPrice(totalPriceWithDelivery.toString())}
+                          </span>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </>
               ) : (

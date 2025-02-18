@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { validateCoupon } from "../api/actions.api";
+import { useCart } from "../context/CartContext";
 
 export default function CouponForm({ applyDiscount }) {
   const [showForm, setShowForm] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [error, setError] = useState(null);
+  const { setCouponIsValid } = useCart();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,21 +16,24 @@ export default function CouponForm({ applyDiscount }) {
         setError("El código de cupón no puede estar vacío");
         return;
       }
-      // Here you would typically check if the coupon exists and is valid
       const response = await validateCoupon(
         couponCode.trim().toLocaleUpperCase()
       );
+      // Here we can check if the coupon exists and is valid
       if (response.status === 200) {
         const { discount, type } = response.data;
         handleApplyCoupon(discount, type);
+        setCouponIsValid(true);
       }
     } catch (error) {
       const { response } = error;
       if (response && response.status === 400) {
         setError(response.data.error);
+        setCouponIsValid(false);
         return;
       }
-    //   setError(response.data.message);
+      setError(response.data.message);
+      setCouponIsValid(false);
       return;
     }
 
