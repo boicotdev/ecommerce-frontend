@@ -5,6 +5,8 @@ export const CartContextProvider = ({ children }) => {
   const [items, setItems] = useState([]);
   const [orders, setOrders] = useState([]);
   const [cartIsSaved, setCartIsSaved] = useState(false);
+  const [couponIsValid, setCouponIsValid] = useState(false);
+
 
   return (
     <CartContext.Provider
@@ -15,6 +17,8 @@ export const CartContextProvider = ({ children }) => {
         setOrders,
         cartIsSaved,
         setCartIsSaved,
+        couponIsValid,
+        setCouponIsValid,
       }}
     >
       {children}
