@@ -2,22 +2,20 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { initMercadoPago, Payment } from "@mercadopago/sdk-react";
 import { useCart } from "../context/CartContext";
-import { formatPrice, loadState, saveState } from "../utils/utils";
-import {
-  createOrder,
-  createPayment,
-  createPaymentPreference,
-} from "../api/actions.api";
+import { formatPrice, saveState, loadState } from "../utils/utils";
+import { createPaymentPreference } from "../api/actions.api";
 import CouponForm from "../components/CouponForm";
+import { createPayment } from "../api/payments.api";
 
 const MP_ACCESS_KEY = import.meta.env.VITE_APP_MERCADO_PAGO_PUBLIC_KEY;
 initMercadoPago(MP_ACCESS_KEY); // Inicializamos mercado pago
 
 export default function CheckoutPage() {
+  const [orderID, setOrderID] = useState("");
   const back_urls = {
-    success: "/payments/succes/",
-    failure: "/payments/failure/",
-    pending: "/payments/pending/",
+    success: `/payments/succes/${orderID}`,
+    failure: `/payments/failure/${orderID}`,
+    pending: `/payments/pending/${orderID}`,
   };
   const { orders, setOrders, setItems, couponIsValid, setCouponIsValid } =
     useCart();
@@ -59,25 +57,33 @@ export default function CheckoutPage() {
         .then((response) => {
           const status = response.status;
           if (status === "approved") {
-            //TODO: handle
-
             // const url = response.data.sandbox_redirect_url;
             const {
               date_approved,
-              date_created,
-              authorization_code,
               transaction_details,
-              items,
+              payment_method,
+              status,
             } = response;
-            localStorage.removeItem("orders");
-            localStorage.removeItem("cartIsSaved");
-            localStorage.removeItem("CartID");
+            const { type: paymentMethod } = payment_method;
+            const { total_paid_amount } = transaction_details;
+
+            setOrderID(loadState("orderID"));
             setOrders([]);
             setItems([]);
             setPreferenceId(null);
-            processPayment();
-            // Redireccionar al sitio de éxito
-            navigate(back_urls["success"]);
+            processPayment(
+              orderID,
+              date_approved,
+              total_paid_amount,
+              paymentMethod.toUpperCase(),
+              status.toUpperCase()
+            );
+
+            // Eliminar el carrito de la sesión
+            localStorage.removeItem("orders");
+            localStorage.removeItem("cartIsSaved");
+            localStorage.removeItem("CartID");
+            navigate(back_urls["success"]); // Redireccionar al sitio de éxito
           } else {
             window.location.href = response.data.sandbox_redirect_url;
             console.log(response);
@@ -99,17 +105,24 @@ export default function CheckoutPage() {
   const onReady = async () => {
     //Callback llamado cuando el Brick está listo.
   };
-  const processPayment = async () => {
+  const processPayment = async (
+    orderID,
+    paymentDate,
+    totalAmount,
+    paymentMethod,
+    paymentStatus
+  ) => {
     try {
       const response = await createPayment({
-        order: 30,
-        payment_amount: 10000,
-        payment_method: "CREDIT_CARD",
-        payment_status: "APPROVED",
+        order_id: orderID,
+        payment_date: paymentDate,
+        payment_amount: totalAmount,
+        payment_method: paymentMethod,
+        payment_status: paymentStatus,
       });
       if (response.status === 201) {
         // Borrar el carrito de compras
-        saveState("paymentID", response.data.id)
+        saveState("paymentID", response.data.id);
       }
     } catch (error) {
       console.error(error);
@@ -129,7 +142,9 @@ export default function CheckoutPage() {
 
       const response = await createPaymentPreference({ items });
       if (response.status === 201) {
-        setPreferenceId(response.data.id);
+        setPreferenceId(response.data.preference_data.id);
+        const orderID = response.data.order;
+        setOrderID(orderID);
       }
     } catch (error) {
       console.error(error);

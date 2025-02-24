@@ -18,6 +18,7 @@ function OrderDetails() {
         if (response.status === 200) {
           setOrder(response.data);
           setLoading(false);
+          console.log(response.data);
         }
       } catch (error) {
         setLoading(true);

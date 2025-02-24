@@ -81,8 +81,8 @@ export const cartDetails = (cartId) => {
 };
 
 //load payment details
-export const paymentDetails = (paymentId) => {
-  return authAxios.get(`orders/carts/payments/?payment=${paymentId}`);
+export const paymentDetails = (orderId) => {
+  return authAxios.get(`orders/carts/payments/?order=${orderId}`);
 };
 
 //handle cart items creation
@@ -220,10 +220,7 @@ export const createPaymentPreference = (items) => {
   return authAxios.post("payment/preferences/", items);
 };
 
-//process payment
-export const createPayment = (data) => {
-  return authAxios.post("payment/process/", data);
-};
+
 
 // create a new coupon code
 export const createCoupon = (data) => {

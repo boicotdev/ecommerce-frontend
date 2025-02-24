@@ -102,7 +102,7 @@ function App() {
           element={<PrivateUserRoute element={<OrderDetails />} />}
         />
         <Route
-          path="payments/succes/"
+          path="payments/succes/:order/"
           element={<PrivateUserRoute element={<TransactionPage />} />}
         />
         <Route

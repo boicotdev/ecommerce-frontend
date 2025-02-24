@@ -9,7 +9,7 @@ import {
   getUserTestimonials,
   deleteUserTestimonial,
 } from "../api/actions.api";
-import { loadState, validateData } from "../utils/utils";
+import { formatPrice, loadState, validateData } from "../utils/utils";
 import { apiImageURL } from "../api/baseUrls";
 
 export default function MyAccount() {
@@ -364,7 +364,7 @@ export default function MyAccount() {
                       </p>
                       <p>
                         <span className="font-semibold">Total:</span> $
-                        {/*order.total.toFixed(2)*/}
+                        {formatPrice(order.total)}
                       </p>
                       <p
                         className={
@@ -383,7 +383,7 @@ export default function MyAccount() {
                         {order.status}
                       </p>
                       {order.status !== "DELIVERED" &&
-                        order.status !== "CANCELLED" && (
+                        order.status !== "CANCELLED" && order.status !== "PENDING" && (
                           <button
                             onClick={() => handleCancelOrder(order.id)}
                             className="mt-2 px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
