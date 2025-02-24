@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   fetchUserInfo,
   updateUserInfo,
@@ -9,8 +11,6 @@ import {
 } from "../api/actions.api";
 import { loadState, validateData } from "../utils/utils";
 import { apiImageURL } from "../api/baseUrls";
-import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
 
 export default function MyAccount() {
   const [userData, setUserData] = useState({});

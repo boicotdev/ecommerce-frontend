@@ -81,8 +81,9 @@ export const AuthContextProvider = ({ children }) => {
         setCartID(response.data.name);
         setCartIsSaved(true);
         saveState("cartIsSaved", true);
+        saveState("CartID", response.data.name);
         toast.success("Carrito creado exitosamente");
-        createCartItems();
+        await createCartItems();
       }
     } catch (error) {
       const { response } = error;
@@ -93,13 +94,12 @@ export const AuthContextProvider = ({ children }) => {
   const handleLogin = async (userData) => {
     try {
       const response = await tokenObtain(userData);
+
       if (response.status === 200) {
         const { username, id, is_superuser, access, refresh, avatar, address } =
           response.data;
 
-        setIsLoggedIn(true);
-        setToken(access);
-        setUser({
+        const user = {
           username,
           id,
           is_superuser,
@@ -107,43 +107,27 @@ export const AuthContextProvider = ({ children }) => {
           refresh,
           avatar,
           address,
-        });
+        };
 
-        saveState("user", {
-          username,
-          id,
-          is_superuser,
-          access,
-          refresh,
-          avatar,
-        });
-        setToLocalStorage("user", {
-          username,
-          id,
-          is_superuser,
-          access,
-          refresh,
-          avatar,
-        });
+        setIsLoggedIn(true);
+        setToken(access);
+        setUser(user);
+        saveState("user", user);
 
-        if (is_superuser) {
-          setIsAdmin(true);
-          navigate("dashboard");
-        } else {
-          setIsAdmin(false);
-          navigate("account");
-        }
+        setIsAdmin(is_superuser);
+        navigate(is_superuser ? "/dashboard" : "/account");
 
         resetForm("login_form");
-        if (
-          loadState("CartID") !== null &&
-          loadState("cartIsSaved") === false
-        ) {
+
+        // Manejo de creación del carrito
+        const cartID = loadState("CartID");
+        const cartIsSaved = loadState("cartIsSaved");
+
+        if (cartID !== null && cartIsSaved === false) {
           const orders = loadState("orders");
+
           if (orders.length > 0) {
-            handleCartCreation();
-            setCartIsSaved(true);
-            saveState("cartIsSaved", true);
+            await handleCartCreation();
           }
         }
       }

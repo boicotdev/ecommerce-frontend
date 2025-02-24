@@ -1,41 +1,50 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { paymentDetails } from "../api/actions.api";
+import { formatPrice } from "../utils/utils";
 
 const TransactionPage = () => {
   const navigate = useNavigate();
   const [transaction, setTransaction] = useState({
     id: "TX123456",
-    status: "pending",
-    date: new Date().toISOString(),
-    total: 159.97,
-    // products: [
-    //   { id: 1, name: "Camiseta", price: 29.99, quantity: 2 },
-    //   { id: 2, name: "Pantalón", price: 49.99, quantity: 1 },
-    //   { id: 3, name: "Zapatos", price: 79.99, quantity: 1 },
-    // ],
+    payment_status: "pending",
+    payment_date: new Date().toISOString(),
+    payment_amount: 159.97,
     shippingAddress: "Calle Principal 123, Ciudad, País",
-    paymentMethod: "Tarjeta de crédito",
+    payment_method: "Tarjeta de crédito",
   });
 
   useEffect(() => {
-    // Simulación de cambio de estado después de 5 segundos
-    const timer = setTimeout(() => {
-      setTransaction((prev) => ({ ...prev, status: "completed" }));
-      navigate("/account");
-    }, 5000);
+    const loadPaymentDetails = async () => {
+      try {
+        const response = await paymentDetails(4);
+        if (response.status === 200) {
+          setTransaction(response.data);
+          console.log(response.data);
 
-    return () => clearTimeout(timer);
+          const timer = setTimeout(() => {
+            navigate("/account");
+          }, 5000);
+
+          return () => clearTimeout(timer);
+        }
+      } catch (error) {
+        const { data } = error;
+        console.error(error);
+      }
+    };
+    loadPaymentDetails();
   }, []);
 
   const getStatusColor = (status) => {
-    switch (status) {
-      case "pending":
+    switch (status.toUpperCase()) {
+      case "WAITING":
         return "bg-yellow-200 text-yellow-800";
-      case "processing":
+      case "PENDING":
         return "bg-blue-200 text-blue-800";
-      case "completed":
+      case "APPROVED":
         return "bg-green-200 text-green-800";
-      case "failed":
+      case "DECLINED":
         return "bg-red-200 text-red-800";
       default:
         return "bg-gray-200 text-gray-800";
@@ -58,27 +67,27 @@ const TransactionPage = () => {
                   Estado:
                   <span
                     className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                      transaction.status
+                      transaction.payment_status
                     )}`}
                   >
-                    {transaction.status.toUpperCase()}
+                    {transaction.payment_status.toUpperCase()}
                   </span>
                 </p>
-                <p>Fecha: {new Date(transaction.date).toLocaleString()}</p>
-                <p>Total: ${transaction.total.toFixed(2)}</p>
-                {/* <div>
-                  <h3 className="text-xl font-bold mt-4 mb-2">Productos:</h3>
-                  <ul>
-                    {transaction.products.map((product) => (
-                      <li key={product.id} className="mb-2">
-                        {product.name} - ${product.price.toFixed(2)} x{" "}
-                        {product.quantity}
-                      </li>
-                    ))}
-                  </ul>
-                </div> */}
-                <p>Dirección de envío: {transaction.shippingAddress}</p>
-                <p>Método de pago: {transaction.paymentMethod}</p>
+                <p>
+                  Fecha: {new Date(transaction.payment_date).toLocaleString()}
+                </p>
+                <p>Total: ${formatPrice(transaction.payment_amount)}</p>
+                <p>
+                  Dirección de envío: {transaction.shippingAddress || "Uknown"}
+                </p>
+                <p>
+                  Método de pago:{" "}
+                  {transaction.payment_method.toUpperCase() === "CREDIT_CARD"
+                    ? "Tarjeta de credito"
+                    : transaction.payment_method === "DEBIT_CARD"
+                    ? "Tarjeta debito"
+                    : "Efectivo"}
+                </p>
               </div>
             </div>
           </div>

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { formatPrice } from "../utils/utils";
 import menuIcon from "../assets/menuIcon.svg";
 import { useCustomLocalStorage } from "../hooks/CustomHooks";
-
-
+import { cartCreate, cartDetails, cartItemsCreate } from "../api/actions.api";
+import toast from "react-hot-toast";
 
 function Header() {
   const { items, setItems, setOrders, setCartIsSaved } = useCart();
@@ -14,7 +14,10 @@ function Header() {
   const [showItems, setShowItems] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { isAdmin, isLoggedIn, handleLogout } = useAuth();
-  const { saveState } = useCustomLocalStorage();
+
+  const { saveState, loadState } = useCustomLocalStorage();
+
+  const navigate = useNavigate();
 
   const removeItem = (sku) => {
     const item = cartItems.find((item) => item.sku === sku);
@@ -36,6 +39,89 @@ function Header() {
       });
       setOrders((prevOrders) => items.filter((item) => item.sku !== sku));
     }
+  };
+
+  //handle cart items creation
+  const createCartItems = async () => {
+    try {
+      const orders = loadState("orders").map((cartItem) => {
+        return {
+          quantity: cartItem.quantity,
+          product: cartItem.id,
+        };
+      });
+      const response = await cartItemsCreate({
+        data: {
+          items: orders,
+          cart_id: loadState("CartID"),
+        },
+      });
+      if (response.status === 201) {
+        toast.success("Productos añadidos al carrito exitosamente");
+      }
+    } catch (error) {
+      const { response } = error;
+      console.error(error);
+      console.error(response);
+      toast.error("Error al crear los productos del carrito");
+    }
+  };
+
+  const handleCartCreation = async () => {
+    //check if the current user is a superuser
+    const user = loadState("user");
+    if (user.is_superuser) return;
+
+    try {
+      const response = await cartCreate({
+        user: loadState("user")["id"],
+        name: loadState("CartID"),
+        description: `Cart created at ${new Date().toDateString()}`,
+      });
+      if (response.status === 201) {
+        setCartIsSaved(true);
+        saveState("cartIsSaved", true);
+        saveState("CartID", response.data.name);
+        toast.success("Carrito creado exitosamente");
+      }
+    } catch (error) {
+      const { response } = error;
+      console.error(response);
+    } finally {
+      await createCartItems();
+    }
+  };
+
+  const handleToggleMenu = async () => {
+    const user = loadState('user');
+    const cartExists = loadState("cartIsSaved");
+    const ID = loadState("CartID");
+    if (!ID) {
+      // Si no existe un CartID, intenta crearlo
+      await handleCartCreation();
+    }
+    if (!user) {
+      navigate("/checkout");
+    }
+    if (!cartExists && ID) {
+      /**  Si el carrito ya existe pero no está guardado, intenta crear los productos asociados
+      primero se verifica que el cart exista */
+      try {
+        const response = await cartDetails(ID);
+        if (response.status === 200) {
+          await createCartItems();
+        }
+      } catch (error) {
+        const { response } = error;
+        const { data } = response;
+        if (!data.exists) {
+          await handleCartCreation();
+        }
+      }
+    }
+    setShowItems(false);
+    setIsOpen(false);
+    navigate("/checkout");
   };
 
   const CartItem = ({ item, quantity, subTotal }) => {
@@ -100,13 +186,12 @@ function Header() {
                 <p className="text-lg font-bold">
                   Total ${formatPrice(totalPrice())}
                 </p>
-                <Link
-                  to="checkout"
-                  onClick={() => setShowItems(false)}
+                <div
+                  onClick={handleToggleMenu}
                   className="px-4 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors"
                 >
                   Proceder al pago
-                </Link>
+                </div>
               </>
             )}
           </div>
