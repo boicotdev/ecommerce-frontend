@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { paymentDetails } from "../api/actions.api";
 import { formatPrice } from "../utils/utils";
 
@@ -13,15 +13,16 @@ const TransactionPage = () => {
     shippingAddress: "Calle Principal 123, Ciudad, País",
     payment_method: "Tarjeta de crédito",
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const {order} = useParams();
 
   useEffect(() => {
     const loadPaymentDetails = async () => {
       try {
-        const response = await paymentDetails(4);
+        const response = await paymentDetails(order);
         if (response.status === 200) {
           setTransaction(response.data);
-          console.log(response.data);
-
           const timer = setTimeout(() => {
             navigate("/account");
           }, 5000);
