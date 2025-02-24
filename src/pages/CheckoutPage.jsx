@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { initMercadoPago, Payment } from "@mercadopago/sdk-react";
 import { useCart } from "../context/CartContext";
-import { formatPrice, loadState } from "../utils/utils";
-import { createOrder, createPaymentPreference } from "../api/actions.api";
+import { formatPrice, loadState, saveState } from "../utils/utils";
+import {
+  createOrder,
+  createPayment,
+  createPaymentPreference,
+} from "../api/actions.api";
 import CouponForm from "../components/CouponForm";
 
 const MP_ACCESS_KEY = import.meta.env.VITE_APP_MERCADO_PAGO_PUBLIC_KEY;
@@ -15,10 +19,11 @@ export default function CheckoutPage() {
     failure: "/payments/failure/",
     pending: "/payments/pending/",
   };
-  const { orders, setOrders, setItems, couponIsValid, setCouponIsValid } = useCart();
+  const { orders, setOrders, setItems, couponIsValid, setCouponIsValid } =
+    useCart();
   const [preferenceId, setPreferenceId] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState(null);
+  // const [loading, setLoading] = useState(false);
   const delivery = 5000;
   const totalPrice =
     orders && orders.length > 0
@@ -30,11 +35,6 @@ export default function CheckoutPage() {
     preferenceId: null,
   });
   const navigate = useNavigate();
-
-  // const initialization = {
-  //   amount: totalPriceWithDelivery,
-  //   preferenceId,
-  // };
 
   const customization = {
     paymentMethods: {
@@ -59,6 +59,8 @@ export default function CheckoutPage() {
         .then((response) => {
           const status = response.status;
           if (status === "approved") {
+            //TODO: handle
+
             // const url = response.data.sandbox_redirect_url;
             const {
               date_approved,
@@ -67,9 +69,17 @@ export default function CheckoutPage() {
               transaction_details,
               items,
             } = response;
-            createNewOrder();
+            localStorage.removeItem("orders");
+            localStorage.removeItem("cartIsSaved");
+            localStorage.removeItem("CartID");
+            setOrders([]);
+            setItems([]);
+            setPreferenceId(null);
+            processPayment();
+            // Redireccionar al sitio de éxito
+            navigate(back_urls["success"]);
           } else {
-            // window.location.href = response.data.sandbox_redirect_url;
+            window.location.href = response.data.sandbox_redirect_url;
             console.log(response);
           }
           resolve();
@@ -87,29 +97,19 @@ export default function CheckoutPage() {
     console.log(error);
   };
   const onReady = async () => {
-    /*
-    Callback llamado cuando el Brick está listo.
-    Aquí puede ocultar cargamentos de su sitio, por ejemplo.
-  */
+    //Callback llamado cuando el Brick está listo.
   };
-  const createNewOrder = async () => {
+  const processPayment = async () => {
     try {
-      const { id } = loadState("user");
-      const response = await createOrder({
-        user: {
-          id: id,
-          address: "BOICOT2025",
-        },
-        status: "PENDING",
+      const response = await createPayment({
+        order: 30,
+        payment_amount: 10000,
+        payment_method: "CREDIT_CARD",
+        payment_status: "APPROVED",
       });
       if (response.status === 201) {
         // Borrar el carrito de compras
-        localStorage.removeItem("orders");
-        setOrders([]);
-        setItems([]);
-        setPreferenceId(null);
-        // Redireccionar al sitio de éxito
-        navigate(back_urls["success"]);
+        saveState("paymentID", response.data.id)
       }
     } catch (error) {
       console.error(error);
@@ -120,6 +120,7 @@ export default function CheckoutPage() {
     try {
       const items = orders.map((item) => {
         return {
+          sku: item.sku,
           title: item.name,
           quantity: item.quantity,
           unit_price: item.price,
@@ -144,6 +145,10 @@ export default function CheckoutPage() {
     // Cargar el carrito de compras del local storage
     const orders = loadState("orders");
     setOrders(orders);
+    setInitialization({
+      ...initialization,
+      amount: getTotalCheck(orders) + delivery,
+    });
   }, []);
 
   const applyDiscount = (discount, type) => {
@@ -156,14 +161,14 @@ export default function CheckoutPage() {
         discountPrice = discount;
         break;
       case "PERCENTAGE":
-        discountPrice = total - ((total / 100) * discount);
+        discountPrice = total - (total / 100) * discount;
         break;
       default:
         console.warn("Tipo de descuento desconocido");
         break;
     }
-    setCouponIsValid(true)
-    const discountedTotal = discountPrice //Math.floor(total - discountPrice);
+    setCouponIsValid(true);
+    const discountedTotal = discountPrice;
     setInitialization({
       amount: Math.floor(discountedTotal),
       preferenceId,
@@ -226,7 +231,10 @@ export default function CheckoutPage() {
                             <span>Descuento</span>
                             <span>
                               $
-                              {formatPrice((totalPriceWithDelivery - initialization.amount).toString()
+                              {formatPrice(
+                                (
+                                  totalPriceWithDelivery - initialization.amount
+                                ).toString()
                               )}
                             </span>
                           </div>

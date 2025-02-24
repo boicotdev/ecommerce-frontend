@@ -36,7 +36,7 @@ function Footer() {
         <hr className="border-slate-700 mb-6"/>
         <p className="text-center text-sm">
           &copy; {year} Derechos reservados | Desarrollado por{" "}
-          <Link to="https://portfolio-rose-nine-33.vercel.app/" rel="opener noopener" target="_blank" className="text-slate-400 hover:text-slate-300 transition-colors">
+          <Link to="https://guzmandeveloper.vercel.app/" rel="opener noopener" target="_blank" className="text-slate-400 hover:text-slate-300 transition-colors">
             Carlos Alberto Guzmán
           </Link>
         </p>

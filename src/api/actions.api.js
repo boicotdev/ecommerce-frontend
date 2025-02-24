@@ -75,6 +75,16 @@ export const cartCreate = (data) => {
   return authAxios.post("carts/create/", data);
 };
 
+//get cart details
+export const cartDetails = (cartId) => {
+  return authAxios.get(`orders/carts/check/?cart=${cartId}`);
+};
+
+//load payment details
+export const paymentDetails = (paymentId) => {
+  return authAxios.get(`orders/carts/payments/?payment=${paymentId}`);
+};
+
 //handle cart items creation
 export const cartItemsCreate = (data) => {
   return authAxios.post("carts/items/create/", data);
@@ -208,6 +218,11 @@ export const deleteUserTestimonial = (data) => {
 // create payment preference
 export const createPaymentPreference = (items) => {
   return authAxios.post("payment/preferences/", items);
+};
+
+//process payment
+export const createPayment = (data) => {
+  return authAxios.post("payment/process/", data);
 };
 
 // create a new coupon code
