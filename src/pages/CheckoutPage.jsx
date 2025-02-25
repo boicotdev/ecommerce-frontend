@@ -186,7 +186,7 @@ export default function CheckoutPage() {
 
         if (orderItemsHasChanged) {
           const response = await createPaymentPreference({ items: orderItems });
-          if (response.status === 201) {
+          if (response.status === 201 || response.status === 200) {
             setPreferenceId(response.data.preference_data.id);
             const orderID = response.data.order;
             // TODO: save  all details of the preference data
