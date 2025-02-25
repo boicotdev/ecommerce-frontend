@@ -5,7 +5,7 @@ import { useCart } from "../context/CartContext";
 import { formatPrice, saveState, loadState } from "../utils/utils";
 import { createPaymentPreference } from "../api/actions.api";
 import CouponForm from "../components/CouponForm";
-import { createPayment } from "../api/payments.api";
+import { checkOrderItemsChanged, createPayment } from "../api/payments.api";
 
 const MP_ACCESS_KEY = import.meta.env.VITE_APP_MERCADO_PAGO_PUBLIC_KEY;
 initMercadoPago(MP_ACCESS_KEY); // Inicializamos mercado pago
@@ -144,16 +144,71 @@ export default function CheckoutPage() {
       if (response.status === 201) {
         setPreferenceId(response.data.preference_data.id);
         const orderID = response.data.order;
+        // TODO: save  all details of the preference data
         setOrderID(orderID);
+        saveState("preferenceCreated", true);
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleCreatePrefenceId = (e) => {
+  const handleCreatePreferenceId = async (e) => {
     e.preventDefault();
-    paymentPreference();
+
+    try {
+      const savedPreference = loadState("preferenceCreated");
+    
+      // Validar que la preferencia guardada es un JSON válido
+      const preferenceCreated = savedPreference
+        ? JSON.parse(savedPreference)
+        : false;
+
+      const orderItems = orders.map((item) => {
+        return {
+          sku: item.sku,
+          title: item.name,
+          quantity: item.quantity,
+          unit_price: item.price,
+        };
+      });
+
+      if (preferenceCreated) {
+        const { id } = loadState("user");
+        const CartID = loadState("CartID");
+        const orderItemsHasChanged = await checkOrderItemsChanged(
+          orders,
+          id,
+          CartID
+        );
+
+        console.log("OrderItemsHasChanged", orderItemsHasChanged);
+
+        if (orderItemsHasChanged) {
+          const response = await createPaymentPreference({ items: orderItems });
+          if (response.status === 201) {
+            setPreferenceId(response.data.preference_data.id);
+            const orderID = response.data.order;
+            // TODO: save  all details of the preference data
+            setOrderID(orderID);
+            saveState("preferenceCreated", true);
+          }
+        }
+        return;
+      } else {
+        // Si no hay preferencia creada, generar una nueva
+        const response = await createPaymentPreference({ items: orderItems });
+        if (response.status === 201) {
+          setPreferenceId(response.data.preference_data.id);
+          const orderID = response.data.order;
+          // TODO: save  all details of the preference data
+          setOrderID(orderID);
+          saveState("preferenceCreated", true);
+        }
+      }
+    } catch (error) {
+      console.error("Error al manejar la preferencia de pago:", error);
+    }
   };
 
   useEffect(() => {
@@ -289,7 +344,7 @@ export default function CheckoutPage() {
             </div>
             {!preferenceId && <CouponForm applyDiscount={applyDiscount} />}
             {orders && orders.length > 0 && (
-              <form onSubmit={handleCreatePrefenceId}>
+              <form onSubmit={handleCreatePreferenceId}>
                 {!preferenceId && (
                   <div className="mt-8">
                     <div>

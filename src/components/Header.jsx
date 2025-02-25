@@ -114,6 +114,7 @@ function Header() {
       } catch (error) {
         const { response } = error;
         const { data } = response;
+        console.error(error);
         if (!data.exists) {
           await handleCartCreation();
         }
