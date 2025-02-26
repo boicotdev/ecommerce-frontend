@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { paymentDetails } from "../api/actions.api";
-import { formatPrice } from "../utils/utils";
+import { formatPrice, loadState } from "../utils/utils";
 import Spinner from "../components/Spinner";
+import { useCart } from "../context/CartContext";
 const TransactionPage = () => {
   const navigate = useNavigate();
   const [transaction, setTransaction] = useState({
@@ -14,7 +15,6 @@ const TransactionPage = () => {
     payment_method: "Tarjeta de crédito",
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const { order } = useParams();
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const TransactionPage = () => {
           const timer = setTimeout(() => {
             navigate("/account");
           }, 5000);
-          
+          localStorage.removeItem("orderID");
           return () => clearTimeout(timer);
         }
       } catch (error) {
@@ -34,6 +34,7 @@ const TransactionPage = () => {
         console.error(error);
       } finally {
         setLoading(false);
+        localStorage.removeItem("orderID");
       }
     };
     loadPaymentDetails();

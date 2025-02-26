@@ -6,6 +6,10 @@ export const createPayment = (data) => {
   return authAxios.post("payment/process/", data);
 };
 
+// create payment preference
+export const createPaymentPreference = (items) => {
+  return authAxios.post("payment/preferences/", items);
+};
 
 
 /**

@@ -11,18 +11,15 @@ const MP_ACCESS_KEY = import.meta.env.VITE_APP_MERCADO_PAGO_PUBLIC_KEY;
 initMercadoPago(MP_ACCESS_KEY); // Inicializamos mercado pago
 
 export default function CheckoutPage() {
-  const [orderID, setOrderID] = useState("");
   const back_urls = {
-    success: `/payments/succes/${orderID}`,
-    failure: `/payments/failure/${orderID}`,
-    pending: `/payments/pending/${orderID}`,
+    success: `/payments/succes`,
+    failure: `/payments/failure`,
+    pending: `/payments/pending`,
   };
+  const delivery = 5000;
   const { orders, setOrders, setItems, couponIsValid, setCouponIsValid } =
     useCart();
   const [preferenceId, setPreferenceId] = useState(null);
-  // const [error, setError] = useState(null);
-  // const [loading, setLoading] = useState(false);
-  const delivery = 5000;
   const totalPrice =
     orders && orders.length > 0
       ? orders.reduce((acc, item) => acc + item.price * (item.quantity || 1), 0)
@@ -44,13 +41,19 @@ export default function CheckoutPage() {
     },
   };
   const onSubmit = async ({ selectedPaymentMethod, formData }) => {
+    formData.append("order", JSON.parse(loadState("orderID")));
     // callback llamado al hacer clic en el botón enviar datos
     return new Promise((resolve, reject) => {
       fetch("http://127.0.0.1:8000/api/v1/process_payment/", {
         method: "POST",
+
         headers: {
+          Authorization: `Bearer ${
+            JSON.parse(localStorage.getItem("user"))["access"]
+          }`,
           "Content-Type": "application/json",
         },
+
         body: JSON.stringify(formData),
       })
         .then((response) => response.json())
@@ -66,13 +69,12 @@ export default function CheckoutPage() {
             } = response;
             const { type: paymentMethod } = payment_method;
             const { total_paid_amount } = transaction_details;
-
-            setOrderID(loadState("orderID"));
+            let orderId = loadState("orderID");
             setOrders([]);
             setItems([]);
             setPreferenceId(null);
             processPayment(
-              orderID,
+              orderId,
               date_approved,
               total_paid_amount,
               paymentMethod.toUpperCase(),
@@ -83,7 +85,9 @@ export default function CheckoutPage() {
             localStorage.removeItem("orders");
             localStorage.removeItem("cartIsSaved");
             localStorage.removeItem("CartID");
-            navigate(back_urls["success"]); // Redireccionar al sitio de éxito
+            saveState("preferenceCreated", false);
+            let id = JSON.parse(localStorage.getItem("ordeID"));
+            navigate(`${back_urls["success"]}/${id}`); // Redireccionar al sitio de éxito
           } else {
             window.location.href = response.data.sandbox_redirect_url;
             console.log(response);
@@ -93,7 +97,7 @@ export default function CheckoutPage() {
         .catch((error) => {
           // manejar la respuesta de error al intentar crear el pago
           const { response } = error;
-          console.error(response.data);
+          console.error(response);
           reject();
         });
     });
@@ -123,30 +127,7 @@ export default function CheckoutPage() {
       if (response.status === 201) {
         // Borrar el carrito de compras
         saveState("paymentID", response.data.id);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const paymentPreference = async () => {
-    try {
-      const items = orders.map((item) => {
-        return {
-          sku: item.sku,
-          title: item.name,
-          quantity: item.quantity,
-          unit_price: item.price,
-        };
-      });
-
-      const response = await createPaymentPreference({ items });
-      if (response.status === 201) {
-        setPreferenceId(response.data.preference_data.id);
-        const orderID = response.data.order;
-        // TODO: save  all details of the preference data
-        setOrderID(orderID);
-        saveState("preferenceCreated", true);
+        saveState("preferenceCreated", false);
       }
     } catch (error) {
       console.error(error);
@@ -155,10 +136,11 @@ export default function CheckoutPage() {
 
   const handleCreatePreferenceId = async (e) => {
     e.preventDefault();
+    saveState("preferenceCreated", true);
 
     try {
       const savedPreference = loadState("preferenceCreated");
-    
+
       // Validar que la preferencia guardada es un JSON válido
       const preferenceCreated = savedPreference
         ? JSON.parse(savedPreference)
@@ -172,6 +154,7 @@ export default function CheckoutPage() {
           unit_price: item.price,
         };
       });
+      // saveState('preferenceCreated', true)
 
       if (preferenceCreated) {
         const { id } = loadState("user");
@@ -182,16 +165,12 @@ export default function CheckoutPage() {
           CartID
         );
 
-        console.log("OrderItemsHasChanged", orderItemsHasChanged);
-
         if (orderItemsHasChanged) {
           const response = await createPaymentPreference({ items: orderItems });
           if (response.status === 201 || response.status === 200) {
             setPreferenceId(response.data.preference_data.id);
-            const orderID = response.data.order;
-            // TODO: save  all details of the preference data
-            setOrderID(orderID);
             saveState("preferenceCreated", true);
+            saveState("orderID", response.data.order);
           }
         }
         return;
@@ -200,10 +179,8 @@ export default function CheckoutPage() {
         const response = await createPaymentPreference({ items: orderItems });
         if (response.status === 201) {
           setPreferenceId(response.data.preference_data.id);
-          const orderID = response.data.order;
-          // TODO: save  all details of the preference data
-          setOrderID(orderID);
           saveState("preferenceCreated", true);
+          saveState("orderID", response.data.order);
         }
       }
     } catch (error) {

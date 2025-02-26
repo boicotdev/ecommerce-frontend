@@ -93,7 +93,7 @@ function Header() {
   };
 
   const handleToggleMenu = async () => {
-    const user = loadState('user');
+    const user = loadState("user");
     const cartExists = loadState("cartIsSaved");
     const ID = loadState("CartID");
     if (!ID) {
@@ -127,20 +127,39 @@ function Header() {
 
   const CartItem = ({ item, quantity, subTotal }) => {
     return (
-      <>
-        <div className="flex justify-between items-center gap-2 text-xs md:text-sm lg:text-base py-2">
-          <span className="font-medium">{item.name}</span>
-          <span>Cantidad ({quantity})</span>
-          <span className="font-semibold">${formatPrice(subTotal)}</span>
-          <button
-            onClick={() => removeItem(item.sku)}
-            className="bg-red-600 text-white rounded-full p-1 hover:bg-red-700 transition-colors"
+      <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-3 p-3 border-b border-gray-300">
+        {/* Nombre del producto */}
+        <span className="text-sm md:text-base font-medium">{item.name}</span>
+
+        {/* Cantidad */}
+        <span className="text-xs md:text-sm text-gray-600">x{quantity}</span>
+
+        {/* Subtotal */}
+        <span className="font-semibold text-sm md:text-base text-gray-800">
+          {formatPrice(subTotal)}
+        </span>
+
+        {/* Botón de eliminar */}
+        <button
+          onClick={() => removeItem(item.sku)}
+          className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+          aria-label="Eliminar producto"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <i className="fa fa-trash"></i>
-          </button>
-        </div>
-        <hr className="border-gray-200" />
-      </>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
     );
   };
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useShop } from "../context/ShopContext"
 import { getProducts } from "../api/actions.api"
@@ -53,7 +53,9 @@ export default function ShopPage() {
 
   // Get search params
   const searchTerm = searchParams.get("search") || ""
-  const selectedCategories = searchParams.get("categories")?.split(",") || []
+  //const selectedCategories = searchParams.get("categories")?.split(",") || []
+  const selectedCategories = useMemo(() => searchParams.get("categories")?.split(",") || [], [searchParams]);
+
 
   const updateSearchParams = (params) => {
     const newParams = new URLSearchParams(searchParams)
@@ -96,7 +98,7 @@ export default function ShopPage() {
       return matchesSearch && matchesCategory
     })
     setFilteredProducts(filtered)
-  }, [searchTerm, selectedCategories, allProducts])
+  }, [searchTerm, allProducts, selectedCategories])
 
   const handleSearch = (value) => {
     updateSearchParams({ search: value || null })

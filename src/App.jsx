@@ -28,6 +28,7 @@ import TestimonialsCreate from "./pages/TestimonialsCreate";
 import TransactionPage from "./pages/TransactionPage";
 import CouponsView from "./pages/CouponsView";
 import CategorieView from "./pages/CategorieView";
+import DeliveryManager from "./pages/DeliveryManager";
 
 function App() {
   const {
@@ -120,6 +121,10 @@ function App() {
         <Route
           path="/dashboard/products/"
           element={<AdminProtectedRoute element={<ProductList />} />}
+        />
+        <Route
+          path="/dashboard/deliveryes/"
+          element={<AdminProtectedRoute element={<DeliveryManager />} />}
         />
         <Route
           path="dashboard/coupons/"
