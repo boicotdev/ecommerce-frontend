@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getOrders } from "../api/actions.api";
+import { formatPrice } from "../utils/utils";
 // import NewOrder from "../components/NewOrder";
 
 export default function Component() {
@@ -56,14 +57,13 @@ export default function Component() {
         const response = await getOrders();
         if (response.status === 200) {
           const data = response.data;
-
           const info = data.map((order) => {
             return {
               id: order.id,
               customer: `${order.user.first_name} ${order.user.last_name}`,
               date: order.creation_date,
               status: order.status,
-              total: 5000,
+              total: order.total,
             };
           });
           setOrders(info);
@@ -321,7 +321,7 @@ export default function Component() {
                             key={key}
                             className="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
                           >
-                            {order[key]}
+                            {key === "total" ? `$${formatPrice(order[key])}` : order[key]}
                           </td>
                         ))}
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">

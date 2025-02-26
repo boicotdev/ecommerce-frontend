@@ -31,6 +31,10 @@ function AdminHeader() {
       path: "dashboard/coupons",
       label: "Cupones",
     },
+    delivery: {
+      path: "dashboard/deliveryes",
+      label: "Entregas",
+    },
   };
 
   const [activeLink, setActiveLink] = useState("");
