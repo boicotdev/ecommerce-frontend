@@ -3,120 +3,165 @@ import { useCart } from "../context/CartContext";
 import { formatPrice, createCartID } from "../utils/utils";
 import { apiImageURL } from "../api/baseUrls";
 import { useCustomLocalStorage } from "../hooks/CustomHooks";
+import { useState } from "react";
 
 function ProductCard({ item }) {
   const { setItems, setOrders, setCartIsSaved } = useCart();
   const { saveState, loadState } = useCustomLocalStorage();
+  const [isAdding, setIsAdding] = useState(false);
 
   const checkItem = (item) => {
     if (!item || !item.sku) return;
 
-    // Actualizamos el estado de items
     setItems((prevItems) => {
       const product = prevItems.find((prod) => prod.sku === item.sku);
-
       let updatedItems;
 
       if (product) {
-        // Si el producto ya existe en el carrito, aumentamos la cantidad
         updatedItems = prevItems.map((prod) =>
           prod.sku === item.sku
             ? { ...prod, quantity: (prod.quantity || 0) + 1 }
             : prod
         );
       } else {
-        // Si el producto no está en el carrito, lo añadimos con cantidad 1
         updatedItems = [...prevItems, { ...item, quantity: 1 }];
       }
-      // Actualizamos `orders` basándonos en el estado actualizado de `items`
+      
       setOrders((prev) => {
         [...updatedItems];
         saveState("orders", updatedItems);
       });
-      return updatedItems; // Devuelve el estado actualizado para `items`
+      return updatedItems;
     });
   };
 
-  const addProductAtToCart = (item) => {
-    if (loadState("CartID") === null ) {
-      const cartID = createCartID();
-      saveState("CartID", cartID);
-      saveState("cartIsSaved", false);
-      setCartIsSaved(false);
+  const addProductAtToCart = async (item) => {
+    setIsAdding(true);
+    try {
+      if (loadState("CartID") === null) {
+        const cartID = createCartID();
+        saveState("CartID", cartID);
+        saveState("cartIsSaved", false);
+        setCartIsSaved(false);
+      }
+      checkItem(item);
+      // Simular un pequeño delay para mejor feedback visual
+      await new Promise(resolve => setTimeout(resolve, 500));
+    } finally {
+      setIsAdding(false);
     }
-    checkItem(item);
   };
 
   return (
-    <div className="shadow-lg rounded-lg bg-white hover:shadow-xl transition-shadow duration-300">
-      <div className="p-4">
-        <h5 className="text-lg font-semibold text-slate-900 my-3">
-          <span className="font-bold text-slate-700">Producto : </span>
-          <Link
-            to={`/shop/products/${item.sku}/`}
-            className="text-green-500 hover:text-green-700 transition-colors"
-          >
-            {item.name}
-          </Link>
-        </h5>
-        <div className="relative">
-          <img
-            className="rounded-lg w-full h-48 object-cover"
-            src={`${apiImageURL}${item.main_image}`}
-            alt={item.name}
-          />
-          {item.best_seller && (
-            <span className="absolute top-2 right-2 bg-yellow-400 text-white px-2 py-1 rounded-full text-xs font-bold">
+    <div className="group relative bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col">
+      {/* Imagen y badges */}
+      <div className="relative aspect-square overflow-hidden bg-gray-100">
+        <img
+          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+          src={`${apiImageURL}${item.main_image}`}
+          alt={item.name}
+          loading="lazy"
+        />
+        {item.best_seller && (
+          <div className="absolute top-2 right-2">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
               Popular
             </span>
+          </div>
+        )}
+      </div>
+
+      {/* Contenido */}
+      <div className="flex flex-col flex-1 p-4">
+        <div className="flex-1">
+          <Link
+            to={`/shop/products/${item.sku}/`}
+            className="inline-block mb-2 hover:underline"
+          >
+            <h3 className="text-lg font-medium text-gray-900 line-clamp-2">
+              {item.name}
+            </h3>
+          </Link>
+
+          {/* Rating */}
+          {item.score && item.votes > 0 && (
+            <div className="flex items-center gap-1 mb-3">
+              <div className="flex">
+                {item.score.map((_, idx) => (
+                  <svg
+                    key={idx}
+                    className="w-4 h-4 text-amber-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <span className="text-sm text-gray-500">
+                ({item.votes} reseñas)
+              </span>
+            </div>
           )}
-        </div>
-        <div className="flex items-center my-2">
-          {item.score &&
-            item.votes > 0 &&
-            item.score.map((_, idx) => (
-              <svg
-                key={idx}
-                className="w-5 h-5 text-yellow-400 fill-current"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-              </svg>
-            ))}
-          {item.votes > 0 && (
-            <span className="ml-1 text-slate-300">({item.votes})</span>
+
+          {/* Descripción opcional */}
+          {item.description && (
+            <p className="text-sm text-gray-500 line-clamp-2 mb-4">
+              {item.description}
+            </p>
           )}
         </div>
 
-        {/* <p className="text-slate-500 mb-2 mt-2">
-          <span className="font-bold text-slate-900">
-            Product Description :{" "}
-          </span>
-          {item.description}
-        </p> */}
-        <div className="flex justify-between items-center mt-4">
-          <span className="text-slate-700 text-lg font-bold">
-            ${formatPrice(item.price)}
-          </span>
+        {/* Precio y botón */}
+        <div className="mt-4 flex items-center justify-between gap-4">
+          <div className="flex flex-col">
+            <span className="text-lg font-semibold text-gray-900">
+              ${formatPrice(item.price)}
+            </span>
+            {item.stock > 0 ? (
+              <span className="text-xs text-emerald-600">
+                {item.stock} disponibles
+              </span>
+            ) : (
+              <span className="text-xs text-red-600">
+                Agotado
+              </span>
+            )}
+          </div>
+          
           <button
             onClick={() => addProductAtToCart(item)}
-            className=" bg-green-500 text-white py-2 px-2 rounded-md hover:bg-green-600 transition-colors duration-300 flex items-center justify-center"
+            disabled={isAdding || item.stock === 0}
+            className={`
+              flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium
+              transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2
+              ${item.stock === 0
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : isAdding
+                  ? 'bg-emerald-100 text-emerald-800 cursor-wait'
+                  : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+              }
+            `}
           >
-            <svg
-              className="w-5 h-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-            Agregar al carrito
+            {isAdding ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Agregando...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                {item.stock === 0 ? 'Agotado' : 'Agregar'}
+              </>
+            )}
           </button>
         </div>
       </div>

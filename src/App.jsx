@@ -26,9 +26,13 @@ import ProductAdminDetails from "./pages/ProductAdminDetails";
 import CreateUserClient from "./components/CreateUserClient";
 import TestimonialsCreate from "./pages/TestimonialsCreate";
 import TransactionPage from "./pages/TransactionPage";
-import CouponsView from "./pages/CouponsView";
-import CategorieView from "./pages/CategorieView";
 import DeliveryManager from "./pages/DeliveryManager";
+import ManagementView from "./pages/ManagementView";
+import CategorieCreator from "./components/CategorieCreator";
+import CategorieManager from "./components/CategorieManager";
+import CouponCreator from "./components/CouponCreator";
+import CouponManager from "./components/CouponManager";
+import AboutUs from "./pages/AboutUs";
 
 function App() {
   const {
@@ -128,11 +132,33 @@ function App() {
         />
         <Route
           path="dashboard/coupons/"
-          element={<AdminProtectedRoute element={<CouponsView />} />}
+          element={<AdminProtectedRoute 
+            element={
+              <ManagementView
+                title="Gestión de Cupones"
+                createTitle="Crear Nuevo Cupón"
+                managerTitle="Cupones Existentes"
+                CreatorComponent={CouponCreator}
+                ManagerComponent={CouponManager}
+              />
+            }
+             />}
         />
         <Route
           path="dashboard/categories/"
-          element={<AdminProtectedRoute element={<CategorieView />} />}
+          element={
+            <AdminProtectedRoute
+              element={
+                <ManagementView
+                  title="Gestión de Categorias"
+                  createTitle="Crear Nueva Categoria"
+                  managerTitle="Categorias Existentes"
+                  CreatorComponent={CategorieCreator}
+                  ManagerComponent={CategorieManager}
+                />
+              }
+            />
+          }
         />
         <Route
           path="testimonials/create/"
@@ -141,6 +167,7 @@ function App() {
         {/* Routes without authentication required */}
         <Route path="/" element={<HomePage />} />
         <Route path="shop" element={<ShopPage />} />
+        <Route path="/about" element={<AboutUs />} />
         <Route path="/shop/products/:sku/" element={<ProductDetails />} />
         <Route path="/shop/products/edit/:sku/" element={<EditProduct />} />
         <Route

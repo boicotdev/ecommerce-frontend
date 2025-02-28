@@ -1,11 +1,5 @@
 import { useState } from "react";
 
-const statusColors = {
-  PENDING: "bg-yellow-100 text-yellow-800",
-  ON_THE_WAY: "bg-blue-100 text-blue-800",
-  DELIVERED: "bg-green-100 text-green-800",
-  CANCELLED: "bg-red-100 text-red-800",
-};
 
 const initialDeliveries = [
   {
@@ -83,6 +77,22 @@ const initialDeliveries = [
 ];
 
 
+const statusColors = {
+  PENDING: "bg-amber-50 text-amber-600 border border-amber-200",
+  ON_THE_WAY: "bg-sky-50 text-sky-600 border border-sky-200",
+  DELIVERED: "bg-emerald-50 text-emerald-600 border border-emerald-200",
+  CANCELLED: "bg-rose-50 text-rose-600 border border-rose-200",
+};
+
+const statusLabels = {
+  PENDING: "Pendiente",
+  ON_THE_WAY: "En camino",
+  DELIVERED: "Entregado",
+  CANCELLED: "Cancelado",
+};
+
+// Mantener initialDeliveries sin cambios...
+
 export default function DeliveryManager() {
   const [deliveries, setDeliveries] = useState(initialDeliveries);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -98,147 +108,193 @@ export default function DeliveryManager() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Gestión de Entregas</h2>
+    <div className="container mx-auto p-4 sm:p-6 max-w-7xl">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-800">Gestión de Entregas</h2>
+          <p className="text-gray-500 text-sm mt-1">Administra y realiza seguimiento de los pedidos</p>
+        </div>
         <button
           onClick={() => openModal()}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+          className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-600 px-4 py-2 rounded-lg hover:bg-emerald-100 transition-colors"
         >
-          + Nueva Orden
-        </button>
-      </div>
-
-      <div className="grid gap-6 sm:grid-cols-2">
-  {deliveries.map((delivery) => (
-    <div key={delivery.id} className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 flex flex-col">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white">{delivery.client}</h3>
-          <p className="text-sm text-gray-500">{delivery.date}</p>
-        </div>
-        <span className={`px-3 py-1 text-sm rounded-full ${statusColors[delivery.status]}`}>
-          {delivery.status}
-        </span>
-      </div>
-
-      <div className="flex flex-col space-y-2 mb-4">
-        <div className="flex items-center">
-          <span className="font-semibold text-gray-700 dark:text-gray-300">Dirección:</span>
-          <p className="ml-2 text-gray-600 dark:text-gray-400">{delivery.address}</p>
-        </div>
-        <div className="flex items-center">
-          <span className="font-semibold text-gray-700 dark:text-gray-300">Número de seguimiento:</span>
-          <p className="ml-2 text-gray-600 dark:text-gray-400">{delivery.trackingNumber}</p>
-        </div>
-        <div className="flex items-center">
-          <span className="font-semibold text-gray-700 dark:text-gray-300">Método de entrega:</span>
-          <p className="ml-2 text-gray-600 dark:text-gray-400">{delivery.deliveryMethod}</p>
-        </div>
-        <div className="flex items-center">
-          <span className="font-semibold text-gray-700 dark:text-gray-300">Notas:</span>
-          <p className="ml-2 text-gray-600 dark:text-gray-400">{delivery.notes}</p>
-        </div>
-        <div className="flex items-center">
-          <span className="font-semibold text-gray-700 dark:text-gray-300">Monto:</span>
-          <p className="ml-2 text-gray-600 dark:text-gray-400">${delivery.amount}</p>
-        </div>
-        <div className="flex items-center">
-          <span className="font-semibold text-gray-700 dark:text-gray-300">Persona de entrega:</span>
-          <p className="ml-2 text-gray-600 dark:text-gray-400">{delivery.deliveryPerson}</p>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between mt-auto">
-        <select
-          className="bg-gray-200 dark:bg-gray-700 p-2 rounded-md text-sm flex-1 mr-2"
-          value={delivery.status}
-          onChange={(e) => updateStatus(delivery.id, e.target.value)}
-        >
-          {Object.keys(statusColors).map((status) => (
-            <option key={status} value={status}>
-              {status}
-            </option>
-          ))}
-        </select>
-        <button
-          onClick={() => openModal(delivery)}
-          className="text-blue-600 dark:text-blue-400 hover:scale-110 transition-transform duration-200"
-          aria-label="Editar entrega"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 4l4 4-8 8H8v-4l8-8z" />
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
           </svg>
+          Nueva Orden
         </button>
       </div>
-    </div>
-  ))}
-</div>
-      {isModalOpen && <OrderModal order={editingOrder} onClose={() => setIsModalOpen(false)} />}
-    </div>
-  );
-}
 
-function OrderModal({ order, onClose }) {
-  const [formData, setFormData] = useState(order || { client: "", date: "", status: "PENDING" });
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {deliveries.map((delivery) => (
+          <div key={delivery.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+            <div className="p-4">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">{delivery.client}</h3>
+                  <p className="text-sm text-gray-500">{new Date(delivery.date).toLocaleDateString()}</p>
+                </div>
+                <span className={`px-3 py-1 text-xs font-medium rounded-full ${statusColors[delivery.status]}`}>
+                  {statusLabels[delivery.status]}
+                </span>
+              </div>
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+              <div className="space-y-3 text-sm">
+                <div className="flex gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <p className="text-gray-600 flex-1">{delivery.address}</p>
+                </div>
+                
+                <div className="flex gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  <p className="text-gray-600">{delivery.trackingNumber}</p>
+                </div>
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert(order ? "Orden actualizada" : "Nueva orden creada");
-    onClose();
-  };
+                <div className="flex gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p className="text-gray-600">{delivery.deliveryMethod}</p>
+                </div>
 
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg w-80 relative">
-        <button onClick={onClose} className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 dark:hover:text-gray-300">
-          ✖️
-        </button>
-        <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">{order ? "Editar Orden" : "Nueva Orden"}</h3>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <input
-            type="text"
-            name="client"
-            value={formData.client}
-            onChange={handleChange}
-            placeholder="Nombre del cliente"
-            required
-            className="border p-2 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-          />
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            required
-            className="border p-2 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-          />
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className="border p-2 rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-          >
-            {Object.keys(statusColors).map((status) => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
-          <div className="flex justify-between mt-3">
-            <button type="button" onClick={onClose} className="text-gray-600 dark:text-gray-400">
-              Cancelar
-            </button>
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md">
-              Guardar
-            </button>
+                <div className="flex gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <p className="text-gray-600">{delivery.deliveryPerson}</p>
+                </div>
+
+                {delivery.notes && (
+                  <div className="flex gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <p className="text-gray-600">{delivery.notes}</p>
+                  </div>
+                )}
+
+                <div className="flex gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-gray-600">${delivery.amount.toFixed(2)}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 p-4 bg-gray-50 border-t border-gray-100">
+              <select
+                className="flex-1 text-sm bg-white border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                value={delivery.status}
+                onChange={(e) => updateStatus(delivery.id, e.target.value)}
+              >
+                {Object.entries(statusLabels).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={() => openModal(delivery)}
+                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+                aria-label="Editar entrega"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </button>
+            </div>
           </div>
-        </form>
+        ))}
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/25 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-800">
+                  {editingOrder ? "Editar Orden" : "Nueva Orden"}
+                </h3>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                setIsModalOpen(false);
+              }} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Cliente
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    placeholder="Nombre del cliente"
+                    defaultValue={editingOrder?.client}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Fecha de entrega
+                  </label>
+                  <input
+                    type="date"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    defaultValue={editingOrder?.date}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Estado
+                  </label>
+                  <select
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    defaultValue={editingOrder?.status || "PENDING"}
+                  >
+                    {Object.entries(statusLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 text-sm font-medium text-white bg-emerald-500 rounded-lg hover:bg-emerald-600"
+                  >
+                    {editingOrder ? "Actualizar" : "Crear"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

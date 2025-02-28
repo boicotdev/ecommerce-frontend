@@ -9,12 +9,80 @@ import { retrieveProductDetails } from "../api/actions.api"
 import { useCustomLocalStorage } from "../hooks/CustomHooks"
 import toast from "react-hot-toast"
 
+// SVG de respaldo para productos sin imagen
+const FallbackImage = ({ category = "default" }) => {
+  // Diferentes SVGs según la categoría
+  const svgs = {
+    frutas: (
+      <svg className="w-full h-full text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1"
+          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1"
+          d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"
+        />
+      </svg>
+    ),
+    verduras: (
+      <svg className="w-full h-full text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1"
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1"
+          d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"
+        />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M15 9l-3 3m0 0l-3-3m3 3V6" />
+      </svg>
+    ),
+    legumbres: (
+      <svg className="w-full h-full text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1"
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+        />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M12 8v8m-4-4h8" />
+      </svg>
+    ),
+    default: (
+      <svg className="w-full h-full text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1"
+          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+        />
+      </svg>
+    ),
+  }
+
+  return (
+    <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
+      {svgs[category.toLowerCase()] || svgs.default}
+    </div>
+  )
+}
+
 function ProductDetails() {
   const { sku } = useParams()
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [addingToCart, setAddingToCart] = useState(false)
+  const [selectedImage, setSelectedImage] = useState(0)
   const { setItems, setOrders } = useCart()
   const { loadState, saveState } = useCustomLocalStorage()
 
@@ -25,6 +93,7 @@ function ProductDetails() {
         const response = await retrieveProductDetails(sku)
         if (response.status === 200) {
           setProduct(response.data)
+          console.log(response.data)
         }
       } catch (error) {
         console.error(error)
@@ -91,40 +160,74 @@ function ProductDetails() {
 
   if (!product) return null
 
+  // Array de imágenes del producto (principal + adicionales)
+  const productImages = [
+    product.main_image,
+    product.additional_image_1,
+    product.additional_image_2,
+    product.additional_image_3,
+  ].filter(Boolean) // Filtra las imágenes null o undefined
+
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12 sm:pt-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
-          {/* Image gallery */}
+          {/* Galería de imágenes */}
           <div className="flex flex-col">
-            <div className="w-full aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden">
-              <img
-                src={`${apiImageURL}${product.main_image}`}
-                alt={product.name}
-                className="w-full h-full object-center object-cover hover:scale-105 transition-transform duration-300"
-              />
+            <div className="w-full aspect-w-1 aspect-h-1 bg-gray-100 rounded-lg overflow-hidden">
+              {productImages.length > 0 ? (
+                <img
+                  src={`${apiImageURL}${productImages[selectedImage]}`}
+                  alt={`${product.name} - Imagen ${selectedImage + 1}`}
+                  className="w-full h-full object-center object-cover hover:scale-105 transition-transform duration-300"
+                />
+              ) : (
+                <FallbackImage category={product.category} />
+              )}
             </div>
-            {/* Product badges */}
+
+            {/* Miniaturas */}
+            {productImages.length > 1 && (
+              <div className="mt-4 grid grid-cols-4 gap-4">
+                {productImages.map((image, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(index)}
+                    className={`relative aspect-w-1 aspect-h-1 rounded-lg overflow-hidden ${
+                      selectedImage === index ? "ring-2 ring-emerald-500" : "ring-1 ring-gray-200"
+                    }`}
+                  >
+                    <img
+                      src={`${apiImageURL}${image}`}
+                      alt={`${product.name} - Miniatura ${index + 1}`}
+                      className="w-full h-full object-center object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Badges del producto */}
             <div className="mt-4 flex space-x-2">
-              {product.organic && (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  Orgánico
+              {product.recommended && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                  Recomendado
                 </span>
               )}
               {product.best_seller && (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
                   Más Vendido
                 </span>
               )}
             </div>
           </div>
 
-          {/* Product info */}
+          {/* Información del producto */}
           <div className="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
             <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">{product.name}</h1>
 
-            {/* Rating */}
-            {product.votes > 0 && (
+            {/* Valoraciones */}
+            {product.rank > 0 && (
               <div className="mt-3">
                 <div className="flex items-center">
                   <div className="flex items-center">
@@ -132,18 +235,18 @@ function ProductDetails() {
                       <StarIcon
                         key={index}
                         className={`h-5 w-5 flex-shrink-0 ${
-                          index < product.score ? "text-yellow-400" : "text-gray-300"
+                          index < product.score ? "text-amber-400" : "text-gray-300"
                         }`}
                         aria-hidden="true"
                       />
                     ))}
                   </div>
-                  <p className="ml-2 text-sm text-gray-500">{product.votes} valoraciones</p>
+                  <p className="ml-2 text-sm text-gray-500">{product.rank} valoraciones</p>
                 </div>
               </div>
             )}
 
-            {/* Price */}
+            {/* Precio */}
             <div className="mt-4">
               <p className="text-3xl text-gray-900">${formatPrice(product.price)}</p>
               {product.discount > 0 && (
@@ -154,13 +257,13 @@ function ProductDetails() {
               )}
             </div>
 
-            {/* Description */}
+            {/* Descripción */}
             <div className="mt-6">
               <h3 className="sr-only">Descripción</h3>
               <div className="text-base text-gray-700 space-y-6">{product.description}</div>
             </div>
 
-            {/* Product details */}
+            {/* Detalles del producto */}
             <div className="mt-8 border-t border-gray-200 pt-8">
               <h3 className="text-sm font-medium text-gray-900">Detalles</h3>
               <div className="mt-4 prose prose-sm text-gray-500">
@@ -172,13 +275,13 @@ function ProductDetails() {
               </div>
             </div>
 
-            {/* Add to cart */}
+            {/* Añadir al carrito */}
             <div className="mt-8">
               <button
                 type="button"
                 onClick={() => addToCart(product)}
                 disabled={addingToCart}
-                className="w-full bg-cyan-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                className="w-full bg-emerald-600 border border-transparent rounded-lg py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >
                 {addingToCart ? (
                   <>
@@ -194,14 +297,21 @@ function ProductDetails() {
                   </>
                 ) : (
                   <>
-                    <ShoppingCartIcon className="h-5 w-5 mr-2" />
+                    <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
                     Añadir al carrito
                   </>
                 )}
               </button>
             </div>
 
-            {/* Stock status */}
+            {/* Estado del stock */}
             {product.stock <= 5 && product.stock > 0 && (
               <p className="mt-4 text-sm text-red-500">¡Solo quedan {product.stock} unidades!</p>
             )}
@@ -220,14 +330,6 @@ function StarIcon(props) {
   )
 }
 
-function ShoppingCartIcon(props) {
-  return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-      <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-    </svg>
-  )
-}
-
 function ProductSkeleton() {
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12 sm:pt-32">
@@ -235,6 +337,11 @@ function ProductSkeleton() {
         <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
           <div className="animate-pulse">
             <div className="w-full aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg" />
+            <div className="mt-4 grid grid-cols-4 gap-4">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg" />
+              ))}
+            </div>
             <div className="mt-4 flex space-x-2">
               <div className="h-6 w-16 bg-gray-200 rounded-full" />
               <div className="h-6 w-16 bg-gray-200 rounded-full" />
