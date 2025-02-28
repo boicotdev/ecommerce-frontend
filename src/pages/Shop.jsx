@@ -33,6 +33,15 @@ const categories = [
     ),
   },
   {
+    id: "hortalizes",
+    name: "Hortalizas",
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+      </svg>
+    ),
+  },
+  {
     id: "others",
     name: "Otros",
     icon: (
@@ -140,7 +149,7 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 mt-14">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="max-w-3xl mx-auto text-center mb-12">

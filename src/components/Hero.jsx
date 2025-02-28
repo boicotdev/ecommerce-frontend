@@ -9,14 +9,14 @@ function Hero() {
         <div className="absolute -right-4 -bottom-4 h-72 w-72 rounded-full bg-cyan-50/50" />
       </div>
 
-      <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <div className="container relative mt-12 mx-auto px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           {/* Content */}
           <div className="max-w-xl">
             <div className="relative">
               <div className="inline-flex items-center rounded-full bg-cyan-50 px-4 py-1.5 text-sm font-medium text-cyan-700 ring-1 ring-inset ring-cyan-600/20">
                 <span className="mr-2">✨</span>
-                <span>Productos 100% Orgánicos</span>
+                <span>Productos 100% Colombianos</span>
               </div>
               <h1 className="mt-6 bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl lg:text-6xl">
                 Frescura Directa del Campo a Tu Hogar
@@ -65,7 +65,7 @@ function Hero() {
               <div className="absolute bottom-0 left-0 right-0 grid grid-cols-2 gap-4 bg-white/90 p-6 backdrop-blur-sm">
                 <div>
                   <p className="text-3xl font-bold text-cyan-500">100%</p>
-                  <p className="mt-1 text-sm text-slate-600">Productos Orgánicos</p>
+                  <p className="mt-1 text-sm text-slate-600">Productos Colombianos</p>
                 </div>
                 <div>
                   <p className="text-3xl font-bold text-cyan-500">24h</p>

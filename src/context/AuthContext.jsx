@@ -126,7 +126,7 @@ export const AuthContextProvider = ({ children }) => {
         if (cartID !== null && cartIsSaved === false) {
           const orders = loadState("orders");
 
-          if (orders.length > 0) {
+          if (orders.length > 0 && !user.is_superuser ) {
             await handleCartCreation();
           }
         }

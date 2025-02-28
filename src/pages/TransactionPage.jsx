@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { paymentDetails } from "../api/actions.api";
-import { formatPrice, loadState } from "../utils/utils";
+import { formatPrice } from "../utils/utils";
 import Spinner from "../components/Spinner";
-import { useCart } from "../context/CartContext";
+
 const TransactionPage = () => {
   const navigate = useNavigate();
   const [transaction, setTransaction] = useState({
